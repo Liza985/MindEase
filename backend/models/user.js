@@ -126,3 +126,4 @@ userSchema.methods.matchPassword=async function(password){
 const User=mongoose.model("User",userSchema);
 
 export default User;
+

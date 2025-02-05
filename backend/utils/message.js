@@ -5,7 +5,7 @@ export const message={
     idNotFound: "Id not found",
     userNotFound: "User not found , register first",
     userAlreadyVerified: "User is already verified",
-    otpAttemptsExceed: "OTP attempts are exceeded, Please try agin after some time",
+    otpAttemptsExceed: "OTP attempts are exceeded, Please try again after some time",
     otpNotFound: "Please provide an otp",
     otpExpire: "OTP expired, please resend",
     userVerified: "User verified successfully",
@@ -13,7 +13,7 @@ export const message={
     userNotVerified: "Please verify your account",
     loginLockedMessage: "Login attempts exceed, Please try again later",
     badAuthMessage: "Invalid name or password",
-    loginSuccessfull: "Login Successfull",
+    loginSuccessful: "Login Successful",
     invalidOtp: "OTP entered is incorrect",
     otpVerified: "OTP verified successfully",
     passwordChange: "Password updated successfully",
@@ -25,5 +25,6 @@ export const message={
     volunteerNotVerified: "Please verify your account",
     volunteerCreated: "Volunteer created",
     volunteerAlreadyExist: "Volunteer already exist",
-    
+    logoutMessage: "Logout successful",
+
 }
