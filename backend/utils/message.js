@@ -18,4 +18,12 @@ export const message={
     otpVerified: "OTP verified successfully",
     passwordChange: "Password updated successfully",
     logoutMessage: "Logout successfull",
+    unAuthorized: "Please login to access",
+    volunteerNotFound: "Volunteer not found, register first",
+    volunteerAlreadyVerified: "Volunteer already verified",
+    volunteerVerified: "Volunteer verified successfully",
+    volunteerNotVerified: "Please verify your account",
+    volunteerCreated: "Volunteer created",
+    volunteerAlreadyExist: "Volunteer already exist",
+    
 }

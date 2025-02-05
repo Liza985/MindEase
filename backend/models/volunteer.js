@@ -46,7 +46,7 @@ const volunteerSchema=mongoose.Schema({
         minlength:10
     },
     expertiseAreas: [{ type: String }], 
-  availability: { 
+    availability: { 
     daysAvailable: [{ type: String }], 
     timeSlots: [{ 
       start: { type: String }, 
