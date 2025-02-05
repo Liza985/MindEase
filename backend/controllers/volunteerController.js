@@ -38,6 +38,8 @@ export const registerVolunteer = async (req, res) => {
         }
 
         let volunteer = await Volunteer.findOne({ email })
+
+        
         if (volunteer) {
             return Response(res, 400, false, message.volunteerAlreadyExist)
         }
