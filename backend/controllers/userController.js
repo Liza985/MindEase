@@ -5,6 +5,8 @@ import { Response } from "../utils/response";
 import fs from "fs"
 import path from "path"
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export const registerUser = async (req,res) => {
     try{
@@ -21,7 +23,7 @@ export const registerUser = async (req,res) => {
         } = req.body;
 
         //check body data 
-        console.log("workig");
+        console.log("working");
         if(
             !firstName ||
             !lastName ||
