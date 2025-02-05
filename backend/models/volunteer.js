@@ -113,7 +113,6 @@ const volunteerSchema = mongoose.Schema(
 		timestamps: true,
 	},
 );
-
 volunteerSchema.pre("save", async function (next) {
 	if (!this.isModified("password")) {
 		return next();
@@ -122,6 +121,7 @@ volunteerSchema.pre("save", async function (next) {
 	this.password = bcrypt.hash(this.password, salt);
 	next();
 });
+
 
 volunteerSchema.methods.generateToken = async function () {
 	return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {

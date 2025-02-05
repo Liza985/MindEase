@@ -1,9 +1,13 @@
-import { sendEMail } from "../middlewares/sendMail";
-import User from "../models/user";
-import { message } from "../utils/message";
-import { Response } from "../utils/response";
+import { sendEMail } from "../middlewares/sendMail.js";
+import User from "../models/user.js";
+import { message } from "../utils/message.js";
+import { Response } from "../utils/response.js";
 import fs from "fs"
 import path from "path"
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -42,7 +46,7 @@ export const registerUser = async (req,res) => {
             return Response(res, 400, false, message.userAlreadyExist)
         }
 
-        user = await User.findOne({username});
+        
         user = await User.create({ ...req.body })
 
         //generating otp
@@ -53,6 +57,9 @@ export const registerUser = async (req,res) => {
 
         //save user 
         await user.save()
+
+		//generate token
+		const token = await user.generateToken(); 
 
         //verification email
         let emailTemplate = fs.readFileSync(
@@ -67,11 +74,14 @@ export const registerUser = async (req,res) => {
         await sendEMail({ email, subject, html: emailTemplate});
 
         //create user
-        Response(res, 200, true, message?.userCreatedMessage, user);
+		return Response(res, 200, true, message.userCreatedMessage, {
+            user,
+            token,  // Include token in the response data
+        });
 
         //send response
     } catch(error){
-        Response(res,500,error?.message);
+		Response(res, 500, false, error?.message);
     }
 };
 
