@@ -1,4 +1,5 @@
 import { sendEMail } from "../middlewares/sendMail.js"
+import User from "../models/user.js"
 import Volunteer from "../models/volunteer.js"
 import { message } from "../utils/message.js"
 import { Response } from "../utils/response.js"
@@ -38,13 +39,22 @@ export const registerVolunteer = async (req, res) => {
         }
 
         let volunteer = await Volunteer.findOne({ email })
+        let user = await User.findOne({ email })
 
+        
         
         if (volunteer) {
             return Response(res, 400, false, message.volunteerAlreadyExist)
         }
 
         volunteer = await Volunteer.create({...req.body})
+
+        if(user){
+            volunteer.userId= user._id;
+            user.isVolunteer=true;
+        }
+      
+        await user.save();
 
         const otp = Math.floor(100000 + Math.random() * 900000)
         const otpExpire = new Date(Date.now() + 5 * 60 * 1000)
@@ -53,7 +63,7 @@ export const registerVolunteer = async (req, res) => {
 
         await volunteer.save()
 
-        const token = await volunteer.generateToken()
+        // const token = await volunteer.generateToken()
 
         let emailTemplate = fs.readFileSync(path.join(__dirname, "../templates/mail.html"), "utf-8")
         const subject = "Verify your volunteer account"
@@ -61,13 +71,11 @@ export const registerVolunteer = async (req, res) => {
         emailTemplate = emailTemplate.replaceAll("{{MAIL}}", process.env.SMTP_USER)
         emailTemplate = emailTemplate.replace("{{PORT}}", process.env.PORT)
         emailTemplate = emailTemplate.replace("{{USER_ID}}", volunteer._id.toString())
-        console.log(email);
+        // console.log(email);
+
         await sendEMail({ email, subject, html: emailTemplate});
 
-        await sendEMail(res, 200, true, message.volunteerCreated, {
-            volunteer,
-            token
-        })
+        return Response(res, 200, true, message.volunteerCreated, volunteer)
     } catch(error){
         return Response(res, 500, false, error?.message)
     }
@@ -180,6 +188,7 @@ export const loginVolunteer = async (req, res) => {
         
         // find volunteer
         const volunteer = await Volunteer.findOne({ email }).select("+password");
+
         // check volunteer 
         if(!volunteer){
             return Response(res, 400, false, message.volunteerNotFound);
@@ -188,12 +197,14 @@ export const loginVolunteer = async (req, res) => {
         if(!volunteer.isVerified){
             return Response(res, 400, false, message.volunteerNotVerified)
         }
+
         //login attempt locked or not
         if (volunteer.lockUntil < Date.now()) {
             volunteer.loginAttempts = 0;
             await volunteer.save();
             return Response(res, 400, false, message.loginLockedMessage);
         }
+
         //login attempt exceeded or not
         if (volunteer.loginAttempts >= process.env.MAX_LOGIN_ATTEMPTS) {
             volunteer.loginAttempts = 0;
@@ -217,7 +228,7 @@ export const loginVolunteer = async (req, res) => {
         await volunteer.save();
 
         //authenticate user
-        const token = await user.generateToken();
+        const token = await volunteer.generateToken();
         const options = {
             expires: new Date(
                 Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000
@@ -229,13 +240,14 @@ export const loginVolunteer = async (req, res) => {
         //sending response
         res.status(200).cookie("token", token, options).json({
             success: true,
-            message: message.loginSuccessfull,
+            message: message.loginSuccessful,
             data: volunteer,
         });
     } catch(error){
         Response(res, 500, false, error.message)
     }
 }
+
 
 export const logoutVolunteer = async (req, res) => {
     try {

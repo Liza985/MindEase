@@ -57,7 +57,7 @@ export const registerUser = async (req,res) => {
         await user.save()
 
 		//generate token
-		const token = await user.generateToken(); 
+		// const token = await user.generateToken(); 
 
         //verification email
         let emailTemplate = fs.readFileSync(
@@ -72,11 +72,7 @@ export const registerUser = async (req,res) => {
         await sendEMail({ email, subject, html: emailTemplate});
 
         //create user
-		return Response(res, 200, true, message.userCreatedMessage, {
-            user,
-            token,  // Include token in the response data
-        });
-
+		return Response(res, 200, true, message.userCreatedMessage,user)
         //send response
     } catch(error){
 		Response(res, 500, false, error?.message);
@@ -281,7 +277,7 @@ export const loginUser = async (req, res) => {
 		//sending response
 		res.status(200).cookie("token", token, options).json({
 			success: true,
-			message: message.loginSuccessfull,
+			message: message.loginSuccessful,
 			data: user,
 		});
 	} catch (error) {
