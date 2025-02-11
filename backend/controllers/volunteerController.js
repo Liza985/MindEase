@@ -300,7 +300,60 @@ export const verifyVolunteerLogin = async (req, res) => {
         if(!volunteer){
             return Response(res,400,false,message.volunteerNotFound);
         }
-        
+
+        if(!volunteer.isVerified){
+            return Response(Response,400,false,message.volunteerNotVerified);
+        }
+
+        if(volunteer.loginOtpAttemptsExpire>Date.now()){
+            return Response(res, 400, false, message.loginLockedMessage);
+        }
+
+        if(volunteer.loginOtpAttempts >= process.env.MAX_LOGIN_ATTEMPTS){
+            return Response(res,400,false,message.otpAttemptsExceed)
+        }
+
+        if (!otp) {
+			volunteer.loginOtpAttempts += 1;
+			await volunteer.save();
+			return Response(res, 400, false, message.otpNotFound);
+		}
+
+        if (volunteer.loginOtpExpire < Date.now()) {
+			return Response(res, 400, false, message.otpExpire);
+		}
+
+
+        otp = Number(otp);
+		if (volunteer.loginOtp !== otp) {
+			volunteer.loginOtpAttempts += 1;
+			await volunteer.save();
+			return Response(res, 400, false, message.invalidOtp);
+		}
+		volunteer.loginOtp = undefined;
+		volunteer.loginOtpAttempts = 0;
+		volunteer.loginOtpAttemptsExpire = undefined;
+		volunteer.loginOtpExpire = undefined;
+		await volunteer.save();
+
+        const token = await volunteer.generateToken();
+
+        const options = {
+			expires: new Date(
+				Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000
+			),
+			httpOnly: true,
+			sameSite: "none",
+			secure: true,
+		};
+
+
+        res.status(200).cookie("token", token, options).json({
+			success: true,
+			message: message.loginSuccessful,
+			data: volunteer,
+		});
+
 	} catch (error) {
 		Response(res, 500, false, error.message);
 	}
@@ -308,6 +361,53 @@ export const verifyVolunteerLogin = async (req, res) => {
 
 export const resendVerifyVolunteerLogin = async (req, res) => {
 	try {
+        //parsing params
+		const { id } = req.params;
+
+		//checking it
+		if (!id) {
+			return Response(res, 400, false, message.idNotFound);
+		}
+		//checking volunteer
+		let volunteer = await Volunteer.findById(id);
+
+		if (!volunteer) {
+			return Response(res, 400, false, message.volunteerNotFound);
+		}
+		//generating otp and saving
+		const otp = Math.floor(100000 + Math.random() * 900000);
+		const otpExpire = new Date(
+			Date.now() + process.env.LOGIN_OTP_EXPIRE * 15 * 60 * 1000
+		);
+
+		volunteer.loginOtp = otp;
+		volunteer.loginOtpAttempts = 0;
+		volunteer.loginOtpAttemptsExpire = undefined;
+		volunteer.loginOtpExpire = otpExpire;
+		await volunteer.save();
+
+		//send mail
+
+		let emailTemplate = fs.readFileSync(
+			path.join(__dirname, "../templates/mail.html"),
+			"utf-8"
+		);
+		const subject = "Two step verification";
+
+		emailTemplate = emailTemplate.replace("{{OTP_CODE}}", otp);
+		emailTemplate = emailTemplate.replaceAll("{{MAIL}}", process.env.SMTP_USER);
+		emailTemplate = emailTemplate.replace("{{PORT}}", process.env.PORT);
+		emailTemplate = emailTemplate.replace(
+			"{{USER_ID}}",
+			volunteer._id.toString()
+		);
+
+		const email = volunteer.email;
+        
+		await sendEMail({ email, subject, html: emailTemplate });
+
+
+		Response(res, 200, true, message.otpSendMessage);
 	} catch (error) {
 		Response(res, 500, false, error.message);
 	}
