@@ -17,7 +17,7 @@ export const message={
     invalidOtp: "OTP entered is incorrect",
     otpVerified: "OTP verified successfully",
     passwordChange: "Password updated successfully",
-    logoutMessage: "Logout successfull",
+    logoutMessage: "Logout successful",
     unAuthorized: "Please login to access",
     volunteerNotFound: "Volunteer not found, register first",
     volunteerAlreadyVerified: "Volunteer already verified",
@@ -26,5 +26,7 @@ export const message={
     volunteerCreated: "Volunteer created",
     volunteerAlreadyExist: "Volunteer already exist",
     logoutMessage: "Logout successful",
+    userProfileFoundMessage:"User profile fetched",
+    userProfileUpdatedMessage:"Profile updated successfully"
 
 }

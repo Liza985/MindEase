@@ -1,4 +1,5 @@
 import { sendEMail } from "../middlewares/sendMail.js";
+import User from "../models/user.js";
 import Volunteer from "../models/volunteer.js";
 import { message } from "../utils/message.js";
 import { Response } from "../utils/response.js";
@@ -37,12 +38,17 @@ export const registerVolunteer = async (req, res) => {
 		}
 
 		let volunteer = await Volunteer.findOne({ email });
+        let user=await User.findOne({email});
 		if (volunteer) {
 			return Response(res, 400, false, message.volunteerAlreadyExist);
 		}
 
 		volunteer = await Volunteer.create({ ...req.body });
 
+        if(user){
+            volunteer.userId=user._id;
+            await volunteer.save();
+        }        
 		const otp = Math.floor(100000 + Math.random() * 900000);
 		const otpExpire = new Date(Date.now() + 5 * 60 * 1000);
 		volunteer.registerOtp = otp;
@@ -170,6 +176,7 @@ export const verifyVolunteer = async (req, res) => {
 		return Response(res, 500, false, error.message);
 	}
 };
+
 export const resendVolunteer = async (req, res) => {
 	try {
 		const { id } = req.params;
@@ -278,7 +285,7 @@ export const loginVolunteer = async (req, res) => {
 		//sending response
 		res.status(200).cookie("token", token, options).json({
 			success: true,
-			message: message.loginSuccessfull,
+			message: message.loginSuccessful,
 			data: volunteer,
 		});
 	} catch (error) {
@@ -568,3 +575,60 @@ export const changeVolunteerPassword = async (req, res) => {
 		Response(res, 500, false, error.message);
 	}
 };
+
+export const getVolunteerProfile=async(req,res)=>{
+	try {
+		
+	} catch (error) {
+		Response(res,500,false,error.message);
+	}
+}
+
+export const updateVolunteerProfile=async(req,res)=>{
+	try {
+		
+	} catch (error) {
+		Response(res,500,false,error.message);
+	}
+}
+
+export const getVolunteerChats=async(req,res)=>{
+	try {
+		
+	} catch (error) {
+		Response(res,500,false,error.message);
+	}
+}
+
+export const getChatsById=async(req,res)=>{
+	try {
+		
+	} catch (error) {
+		Response(res,500,false,error.message);
+	}
+}
+
+export const getVolunteerRatings=async(req,res)=>{
+	try {
+		
+	} catch (error) {
+		Response(res,500,false,error.message);
+	}
+}
+
+// controller is for getting the requests from users
+export const getRequestsOfUsers=async(req,res)=>{
+	try {
+		
+	} catch (error) {
+		Response(res,500,false,error.message);
+	}
+}
+
+export const deleteVolunteer=async(req,res)=>{
+	try {
+		
+	} catch (error) {
+		Response(res,500,false,error.message);
+	}
+}

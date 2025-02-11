@@ -446,3 +446,53 @@ export const logoutUser = async(req, res) => {
         Response(res, 500, false, error.message);
     }
 }
+
+export const getUserProfile=async(req,res)=>{
+	try {
+		if(!req.user){
+			return Response(res,400,false.message.userNotFound);
+		}
+		const user=await User.findById(req.user._id);
+		Response(res,200,true,message.userProfileFoundMessage,user);
+
+	} catch (error) {
+		Response(res,500,false,error.message);
+	}
+}
+
+
+export const updateUserProfile=async(req,res)=>{
+	try {
+		const user=await User.findIdAndUpdate(req.user._id,req.body,{
+			new: true,
+			runValidators: true,
+			timestamps: true,
+			upsert: true,
+		})
+
+		if (!user) {
+			return Response(res, 404, false, message.userNotFound);
+		}
+		
+		Response(res, 200, true, message.userProfileUpdatedMessage, user);
+	} catch (error) {
+		Response(res,500,false,error.message);
+	}
+}
+
+
+export const getUserActivityLog=async(req,res)=>{
+	try {
+		
+	} catch (error) {
+		Response(res,500,false,error.message);
+	}
+}
+
+export const deleteUser=async(req,res)=>{
+	try {
+		
+	} catch (error) {
+		Response(res,500,false,error.message);
+	}
+}
