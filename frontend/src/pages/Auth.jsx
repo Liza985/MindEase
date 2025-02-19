@@ -214,13 +214,19 @@ const Auth = () => {
 										icon={faVenusMars}
 										className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
 									/>
-									<select className="bg-gray-100 border border-gray-300 rounded-lg p-3 w-full">
+									<select className="bg-gray-100 border border-gray-300 rounded-lg p-3 pl-10 w-full">
 										<option value="" disabled>
 											Select Gender
 										</option>
-										<option value="male">♂ Male</option>
-										<option value="female">♀ Female</option>
-										<option value="other">⚥ Other</option>
+										<option value="male">
+											♂ Male
+										</option>
+										<option value="female">
+											♀ Female
+										</option>
+										<option value="other">
+											⚥ Other
+										</option>
 									</select>
 								</div>
 								<div className="relative w-full">
@@ -238,13 +244,7 @@ const Auth = () => {
 							<button className="bg-[#FF4B2B] text-white text-xs font-bold py-3 px-8 md:px-12 rounded-2xl border border-[#FF4B2B] uppercase tracking-wider mb-4">
 								Sign Up
 							</button>
-							<button
-								type="button"
-								onClick={handleSignInClick}
-								className="md:hidden text-gray-600 text-xs mb-4"
-							>
-								Already have an account? Sign In
-							</button>
+							
 						</form>
 					</div>
 
@@ -323,13 +323,7 @@ const Auth = () => {
 							<button className="bg-[#FF4B2B] text-white text-xs font-bold py-3 px-8 md:px-12 rounded-2xl border border-[#FF4B2B] uppercase tracking-wider mb-4">
 								Sign In
 							</button>
-							<button
-								type="button"
-								onClick={handleSignUpClick}
-								className="md:hidden text-gray-600 text-xs mb-4"
-							>
-								Don't have an account? Sign Up
-							</button>
+							
 						</form>
 					</div>
 
