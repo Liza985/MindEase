@@ -214,7 +214,7 @@ const Auth = () => {
 										icon={faVenusMars}
 										className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
 									/>
-									<select className="bg-gray-100 border border-gray-300 rounded-lg p-3 pl-10 w-full">
+									<select className="bg-gray-100 border border-gray-300 rounded-lg p-3 pl-10 w-full" defaultValue="">
 										<option value="" disabled>
 											Select Gender
 										</option>
