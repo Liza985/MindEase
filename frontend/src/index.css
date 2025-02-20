@@ -1,1 +1,58 @@
 @import "tailwindcss";
+
+/* Custom Scrollbar Styling */
+::-webkit-scrollbar {
+	width: 4px;  /* Very thin scrollbar */
+	height: 4px; /* Thin horizontal scrollbar */
+}
+
+/* Track (Background of the scrollbar) */
+::-webkit-scrollbar-track {
+	background: #f1f1f1;
+	border-radius: 10px;
+}
+
+/* Thumb (The draggable part of the scrollbar) */
+::-webkit-scrollbar-thumb {
+	background: #ff4b2b;
+	border-radius: 50px; /* More rounded corners */
+	transition: all 0.3s ease;
+}
+
+/* Hover effect */
+::-webkit-scrollbar-thumb:hover {
+	background: #ff416c;
+}
+
+/* 🔥 Full Removal of Scrollbar Arrows */
+::-webkit-scrollbar-button:single-button {
+	display: none;
+	background: transparent;
+	width: 0;
+	height: 0;
+}
+
+/* 🚀 Alternative Fix (Ensure Webkit Doesn't Show the Buttons) */
+::-webkit-scrollbar-button {
+	display: none !important;
+	width: 0px;
+	height: 0px;
+	background: none;
+}
+
+/* For Firefox */
+* {
+	scrollbar-width: thin;
+	scrollbar-color: #ff4b2b #f1f1f1;
+}
+
+/* Hide scrollbar for Chrome, Safari, and Opera on specific elements while maintaining functionality */
+.hide-scrollbar::-webkit-scrollbar {
+	display: none;
+}
+
+/* Hide scrollbar for IE, Edge, and Firefox on specific elements */
+.hide-scrollbar {
+	-ms-overflow-style: none; /* IE and Edge */
+	scrollbar-width: none; /* Firefox */
+}
