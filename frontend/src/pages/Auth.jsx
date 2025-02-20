@@ -16,9 +16,6 @@ import {
 	faPhone,
 	faEye,
 	faEyeSlash,
-	faMars,
-	faVenus,
-	faGenderless,
 } from "@fortawesome/free-solid-svg-icons";
 
 const Auth = () => {
@@ -56,7 +53,7 @@ const Auth = () => {
 		<Layout>
 			<div className="flex justify-center items-center overflow-x-hidden min-h-screen py-10 px-4">
 				{/* Mobile Navigation */}
-				<div className="md:hidden fixed top-4 left-0 right-0 flex justify-center z-[100] px-4">
+				<div className="md:hidden fixed top-40 left-0 right-0 flex justify-center z-[100] px-4">
 					<div className="bg-white rounded-full shadow-lg p-1 flex gap-2">
 						<button
 							onClick={handleSignInClick}
@@ -214,19 +211,16 @@ const Auth = () => {
 										icon={faVenusMars}
 										className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
 									/>
-									<select className="bg-gray-100 border border-gray-300 rounded-lg p-3 pl-10 w-full" defaultValue="">
+									<select
+										className="bg-gray-100 border border-gray-300 rounded-lg p-3 pl-10 w-full"
+										defaultValue=""
+									>
 										<option value="" disabled>
 											Select Gender
 										</option>
-										<option value="male">
-											♂ Male
-										</option>
-										<option value="female">
-											♀ Female
-										</option>
-										<option value="other">
-											⚥ Other
-										</option>
+										<option value="male">♂ Male</option>
+										<option value="female">♀ Female</option>
+										<option value="other">⚥ Other</option>
 									</select>
 								</div>
 								<div className="relative w-full">
@@ -244,7 +238,6 @@ const Auth = () => {
 							<button className="bg-[#FF4B2B] text-white text-xs font-bold py-3 px-8 md:px-12 rounded-2xl border border-[#FF4B2B] uppercase tracking-wider mb-4">
 								Sign Up
 							</button>
-							
 						</form>
 					</div>
 
@@ -323,7 +316,6 @@ const Auth = () => {
 							<button className="bg-[#FF4B2B] text-white text-xs font-bold py-3 px-8 md:px-12 rounded-2xl border border-[#FF4B2B] uppercase tracking-wider mb-4">
 								Sign In
 							</button>
-							
 						</form>
 					</div>
 
