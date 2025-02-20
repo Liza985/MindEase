@@ -99,7 +99,7 @@ const HowItWorks = () => {
 
 				<div className="text-center mt-20">
 					<Link
-						to="/signup"
+						to="/login"
 						className="inline-block bg-gradient-to-r from-orange-500 to-orange-600 text-white px-10 py-4 rounded-full text-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-200 transform hover:scale-105 hover:shadow-lg"
 					>
 						Get Started
