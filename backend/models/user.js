@@ -36,7 +36,7 @@ const userSchema=mongoose.Schema({
         enum: ["male", "female", "other"],
 
     },
-    PhoneNumber:{
+    phoneNumber:{
         type:Number,
         required:true,
         minlength:10
