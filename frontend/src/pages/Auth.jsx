@@ -6,7 +6,6 @@ import {
 	faLinkedinIn,
 } from "@fortawesome/free-brands-svg-icons";
 import { useLocation } from "react-router-dom";
-import Layout from "../components/Layout";
 import {
 	faUser,
 	faEnvelope,
@@ -17,23 +16,69 @@ import {
 	faEye,
 	faEyeSlash,
 } from "@fortawesome/free-solid-svg-icons";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import toastOptions from "../constants/toast";
+import { toast } from "react-toastify";
+import { registerUser, loginUser } from "../redux/Actions/userAction";
 
 const Auth = () => {
 	const [isRightPanelActive, setIsRightPanelActive] = useState(false);
-	const [showSignupPassword, setShowSignupPassword] = useState(false);
+	const [showRegisterPassword, setShowRegisterPassword] = useState(false);
 	const [showLoginPassword, setShowLoginPassword] = useState(false);
 	const location = useLocation();
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
+
+	const { loading, message, error, id, isAuthenticated } = useSelector(
+		(state) => state.user
+	);
+
+	const [loginForm, setLoginForm] = useState({
+		email: "",
+		password: "",
+	});
+
+	const [registerForm, setRegisterForm] = useState({
+		firstName: "",
+		middleName: "",
+		lastName: "",
+		email: "",
+		password: "",
+		dateOfBirth: "",
+		gender: "",
+		phoneNumber: "",
+	});
 
 	useEffect(() => {
-		// Check if the current path is /signup
-		if (location.pathname === "/signup") {
+		// Check if the current path is /register
+		if (location.pathname === "/register") {
 			setIsRightPanelActive(true);
 		} else {
 			setIsRightPanelActive(false);
 		}
 	}, [location]);
 
-	const handleSignUpClick = () => {
+	useEffect(() => {
+		if (isAuthenticated) {
+			navigate("/");
+		}
+	}, [isAuthenticated, navigate]);
+
+	useEffect(() => {
+		if (message) {
+			toast.success(message, toastOptions);
+			dispatch({ type: "CLEAR_MESSAGE" });
+		}
+
+		if (error) {
+			toast.error(error, toastOptions);
+			dispatch({ type: "CLEAR_ERROR" });
+		}
+	}, [message, error, dispatch]);
+
+
+	const handleRegisterClick = () => {
 		setIsRightPanelActive(true);
 	};
 
@@ -41,339 +86,405 @@ const Auth = () => {
 		setIsRightPanelActive(false);
 	};
 
-	const toggleSignupPassword = () => {
-		setShowSignupPassword(!showSignupPassword);
+	const toggleRegisterPassword = () => {
+		setShowRegisterPassword(!showRegisterPassword);
 	};
 
 	const toggleLoginPassword = () => {
 		setShowLoginPassword(!showLoginPassword);
 	};
 
+	const handleRegisterChange = (e) => {
+		setRegisterForm({
+			...registerForm,
+			[e.target.name]: e.target.value,
+		});
+	};
+
+	const handleLoginChange = (e) => {
+		setLoginForm({
+			...loginForm,
+			[e.target.name]: e.target.value,
+		});
+	};
+
+	const handleRegisterSubmit = (e) => {
+		e.preventDefault();
+
+		// Dispatch register action
+		dispatch(registerUser(registerForm));
+	};
+
+	const handleLoginSubmit = (e) => {
+		e.preventDefault();
+
+		// Dispatch login action
+		dispatch(loginUser(loginForm));
+	};
+
 	return (
-		<Layout>
-			<div className="flex justify-center items-center overflow-x-hidden min-h-screen py-10 px-4">
-				{/* Mobile Navigation */}
-				<div className="md:hidden fixed top-40 left-0 right-0 flex justify-center z-[100] px-4">
-					<div className="bg-white rounded-full shadow-lg p-1 flex gap-2">
-						<button
-							onClick={handleSignInClick}
-							className={`px-6 py-2 rounded-full text-sm font-semibold transition-all ${
-								!isRightPanelActive
-									? "bg-[#FF4B2B] text-white"
-									: "text-gray-500"
-							}`}
-						>
-							Sign In
-						</button>
-						<button
-							onClick={handleSignUpClick}
-							className={`px-6 py-2 rounded-full text-sm font-semibold transition-all ${
-								isRightPanelActive ? "bg-[#FF4B2B] text-white" : "text-gray-500"
-							}`}
-						>
-							Sign Up
-						</button>
-					</div>
+		<div className="flex justify-center items-center min-h-screen px-4">
+			{/* Mobile Navigation */}
+			<div className="md:hidden fixed left-0 right-0 flex justify-center z-[100] px-4">
+				<div className="bg-white rounded-full shadow-lg p-1 flex gap-2">
+					<button
+						onClick={handleSignInClick}
+						className={`px-6 py-2 rounded-full text-sm font-semibold transition-all ${
+							!isRightPanelActive ? "bg-[#FF4B2B] text-white" : "text-gray-500"
+						}`}
+					>
+						Sign In
+					</button>
+					<button
+						onClick={handleRegisterClick}
+						className={`px-6 py-2 rounded-full text-sm font-semibold transition-all ${
+							isRightPanelActive ? "bg-[#FF4B2B] text-white" : "text-gray-500"
+						}`}
+					>
+						Register
+					</button>
 				</div>
+			</div>
 
+			<div
+				className={`relative bg-white rounded-xl shadow-2xl overflow-y-auto overflow-x-hidden w-full max-w-[1024px] min-h-[600px] max-h-[90vh] md:max-h-none mt-16 md:mt-0 ${
+					isRightPanelActive ? "right-panel-active" : ""
+				}`}
+				id="container"
+			>
+				{/* Register Form */}
 				<div
-					className={`relative bg-white rounded-xl shadow-2xl overflow-y-auto overflow-x-hidden w-full max-w-[1024px] min-h-[600px] max-h-[90vh] md:max-h-none mt-16 md:mt-0 ${
-						isRightPanelActive ? "right-panel-active" : ""
+					className={`absolute top-0 left-0 h-full w-full md:w-1/2 transition-all duration-600 ease-in-out overflow-y-auto ${
+						isRightPanelActive
+							? "md:translate-x-full opacity-100 z-50"
+							: "opacity-0 z-10"
 					}`}
-					id="container"
 				>
-					{/* Sign Up Form */}
-					<div
-						className={`absolute top-0 left-0 h-full w-full md:w-1/2 transition-all duration-600 ease-in-out overflow-y-auto ${
-							isRightPanelActive
-								? "md:translate-x-full opacity-100 z-50"
-								: "opacity-0 z-10"
-						}`}
+					<form
+						onSubmit={handleRegisterSubmit}
+						className="bg-white flex flex-col items-center justify-center min-h-full px-4 md:px-12 text-center py-8"
 					>
-						<form className="bg-white flex flex-col items-center justify-center min-h-full px-4 md:px-12 text-center py-8">
-							<h1 className="font-bold text-xl md:text-2xl mb-4">
-								Create Account
-							</h1>
-							<div className="flex space-x-4 mb-6">
-								<a
-									href="#"
-									className="border border-gray-300 rounded-full w-8 h-8 md:w-10 md:h-10 flex items-center justify-center"
-								>
-									<FontAwesomeIcon
-										icon={faFacebookF}
-										className="text-sm md:text-base"
-									/>
-								</a>
-								<a
-									href="#"
-									className="border border-gray-300 rounded-full w-8 h-8 md:w-10 md:h-10 flex items-center justify-center"
-								>
-									<FontAwesomeIcon
-										icon={faGooglePlusG}
-										className="text-sm md:text-base"
-									/>
-								</a>
-								<a
-									href="#"
-									className="border border-gray-300 rounded-full w-8 h-8 md:w-10 md:h-10 flex items-center justify-center"
-								>
-									<FontAwesomeIcon
-										icon={faLinkedinIn}
-										className="text-sm md:text-base"
-									/>
-								</a>
+						<h1 className="font-bold text-xl md:text-2xl mb-4">
+							Create Account
+						</h1>
+						<div className="flex space-x-4 mb-6">
+							<a
+								href="#"
+								className="border border-gray-300 rounded-full w-8 h-8 md:w-10 md:h-10 flex items-center justify-center"
+							>
+								<FontAwesomeIcon
+									icon={faFacebookF}
+									className="text-sm md:text-base"
+								/>
+							</a>
+							<a
+								href="#"
+								className="border border-gray-300 rounded-full w-8 h-8 md:w-10 md:h-10 flex items-center justify-center"
+							>
+								<FontAwesomeIcon
+									icon={faGooglePlusG}
+									className="text-sm md:text-base"
+								/>
+							</a>
+							<a
+								href="#"
+								className="border border-gray-300 rounded-full w-8 h-8 md:w-10 md:h-10 flex items-center justify-center"
+							>
+								<FontAwesomeIcon
+									icon={faLinkedinIn}
+									className="text-sm md:text-base"
+								/>
+							</a>
+						</div>
+						<span className="text-xs mb-4">
+							or use your email for registration
+						</span>
+						<div className="flex flex-col md:flex-row gap-4 w-full mb-4">
+							<div className="relative w-full">
+								<FontAwesomeIcon
+									icon={faUser}
+									className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+								/>
+								<input
+									type="text"
+									name="firstName"
+									value={registerForm.firstName}
+									onChange={handleRegisterChange}
+									placeholder="First Name"
+									className="bg-gray-100 border border-gray-300 rounded-lg p-3 pl-10 w-full"
+								/>
 							</div>
-							<span className="text-xs mb-4">
-								or use your email for registration
-							</span>
-							<div className="flex flex-col md:flex-row gap-4 w-full mb-4">
-								<div className="relative w-full">
-									<FontAwesomeIcon
-										icon={faUser}
-										className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-									/>
-									<input
-										type="text"
-										placeholder="First Name"
-										className="bg-gray-100 border border-gray-300 rounded-lg p-3 pl-10 w-full"
-									/>
-								</div>
-								<div className="relative w-full">
-									<FontAwesomeIcon
-										icon={faUser}
-										className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-									/>
-									<input
-										type="text"
-										placeholder="Middle Name"
-										className="bg-gray-100 border border-gray-300 rounded-lg p-3 pl-10 w-full"
-									/>
-								</div>
-								<div className="relative w-full">
-									<FontAwesomeIcon
-										icon={faUser}
-										className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-									/>
-									<input
-										type="text"
-										placeholder="Last Name"
-										className="bg-gray-100 border border-gray-300 rounded-lg p-3 pl-10 w-full"
-									/>
-								</div>
+							<div className="relative w-full">
+								<FontAwesomeIcon
+									icon={faUser}
+									className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+								/>
+								<input
+									type="text"
+									name="middleName"
+									value={registerForm.middleName}
+									onChange={handleRegisterChange}
+									placeholder="Middle Name"
+									className="bg-gray-100 border border-gray-300 rounded-lg p-3 pl-10 w-full"
+								/>
 							</div>
-							<div className="flex flex-col md:flex-row gap-4 w-full mb-4">
-								<div className="relative w-full">
-									<FontAwesomeIcon
-										icon={faEnvelope}
-										className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-									/>
-									<input
-										type="email"
-										placeholder="Email"
-										className="bg-gray-100 border border-gray-300 rounded-lg p-3 pl-10 w-full"
-									/>
-								</div>
-								<div className="relative w-full">
-									<FontAwesomeIcon
-										icon={faLock}
-										className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-									/>
-									<input
-										type={showSignupPassword ? "text" : "password"}
-										placeholder="Password"
-										className="bg-gray-100 border border-gray-300 rounded-lg p-3 pl-10 w-full"
-									/>
-									<button
-										type="button"
-										onClick={toggleSignupPassword}
-										className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
-									>
-										<FontAwesomeIcon
-											icon={showSignupPassword ? faEyeSlash : faEye}
-										/>
-									</button>
-								</div>
+							<div className="relative w-full">
+								<FontAwesomeIcon
+									icon={faUser}
+									className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+								/>
+								<input
+									type="text"
+									name="lastName"
+									value={registerForm.lastName}
+									onChange={handleRegisterChange}
+									placeholder="Last Name"
+									className="bg-gray-100 border border-gray-300 rounded-lg p-3 pl-10 w-full"
+								/>
 							</div>
-							<div className="flex flex-col md:flex-row gap-4 w-full mb-4">
-								<div className="relative w-full">
-									<FontAwesomeIcon
-										icon={faCalendar}
-										className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-									/>
-									<input
-										type="date"
-										placeholder="Date of Birth"
-										className="bg-gray-100 border border-gray-300 rounded-lg p-3 pl-10 w-full"
-									/>
-								</div>
-								<div className="relative w-full">
-									<FontAwesomeIcon
-										icon={faVenusMars}
-										className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-									/>
-									<select
-										className="bg-gray-100 border border-gray-300 rounded-lg p-3 pl-10 w-full"
-										defaultValue=""
-									>
-										<option value="" disabled>
-											Select Gender
-										</option>
-										<option value="male">♂ Male</option>
-										<option value="female">♀ Female</option>
-										<option value="other">⚥ Other</option>
-									</select>
-								</div>
-								<div className="relative w-full">
-									<FontAwesomeIcon
-										icon={faPhone}
-										className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-									/>
-									<input
-										type="tel"
-										placeholder="Phone Number"
-										className="bg-gray-100 border border-gray-300 rounded-lg p-3 pl-10 w-full"
-									/>
-								</div>
-							</div>
-							<button className="bg-[#FF4B2B] text-white text-xs font-bold py-3 px-8 md:px-12 rounded-2xl border border-[#FF4B2B] uppercase tracking-wider mb-4">
-								Sign Up
-							</button>
-						</form>
-					</div>
-
-					{/* Sign In Form */}
-					<div
-						className={`absolute top-0 left-0 h-full w-full md:w-1/2 transition-all duration-600 ease-in-out z-20 overflow-y-auto ${
-							isRightPanelActive ? "md:translate-x-full" : ""
-						}`}
-					>
-						<form className="bg-white flex flex-col items-center justify-center min-h-full px-4 md:px-12 text-center py-8">
-							<h1 className="font-bold text-xl md:text-2xl mb-4">Sign in</h1>
-							<div className="flex space-x-4 mb-6">
-								<a
-									href="#"
-									className="border border-gray-300 rounded-full w-8 h-8 md:w-10 md:h-10 flex items-center justify-center"
-								>
-									<FontAwesomeIcon
-										icon={faFacebookF}
-										className="text-sm md:text-base"
-									/>
-								</a>
-								<a
-									href="#"
-									className="border border-gray-300 rounded-full w-8 h-8 md:w-10 md:h-10 flex items-center justify-center"
-								>
-									<FontAwesomeIcon
-										icon={faGooglePlusG}
-										className="text-sm md:text-base"
-									/>
-								</a>
-								<a
-									href="#"
-									className="border border-gray-300 rounded-full w-8 h-8 md:w-10 md:h-10 flex items-center justify-center"
-								>
-									<FontAwesomeIcon
-										icon={faLinkedinIn}
-										className="text-sm md:text-base"
-									/>
-								</a>
-							</div>
-							<span className="text-xs mb-4">or use your account</span>
-							<div className="relative w-full mb-4">
+						</div>
+						<div className="flex flex-col md:flex-row gap-4 w-full mb-4">
+							<div className="relative w-full">
 								<FontAwesomeIcon
 									icon={faEnvelope}
 									className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
 								/>
 								<input
 									type="email"
+									name="email"
+									value={registerForm.email}
+									onChange={handleRegisterChange}
 									placeholder="Email"
-									className="bg-gray-100 border-none p-3 pl-10 w-full"
+									className="bg-gray-100 border border-gray-300 rounded-lg p-3 pl-10 w-full"
 								/>
 							</div>
-							<div className="relative w-full mb-4">
+							<div className="relative w-full">
 								<FontAwesomeIcon
 									icon={faLock}
 									className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
 								/>
 								<input
-									type={showLoginPassword ? "text" : "password"}
+									type={showRegisterPassword ? "text" : "password"}
+									name="password"
+									value={registerForm.password}
+									onChange={handleRegisterChange}
 									placeholder="Password"
-									className="bg-gray-100 border-none p-3 pl-10 w-full"
+									className="bg-gray-100 border border-gray-300 rounded-lg p-3 pl-10 w-full"
 								/>
 								<button
 									type="button"
-									onClick={toggleLoginPassword}
+									onClick={toggleRegisterPassword}
 									className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
 								>
 									<FontAwesomeIcon
-										icon={showLoginPassword ? faEyeSlash : faEye}
+										icon={showRegisterPassword ? faEyeSlash : faEye}
 									/>
 								</button>
 							</div>
-							<a href="#" className="text-xs text-gray-600 mb-6">
-								Forgot your password?
-							</a>
-							<button className="bg-[#FF4B2B] text-white text-xs font-bold py-3 px-8 md:px-12 rounded-2xl border border-[#FF4B2B] uppercase tracking-wider mb-4">
-								Sign In
-							</button>
-						</form>
-					</div>
+						</div>
+						<div className="flex flex-col md:flex-row gap-4 w-full mb-4">
+							<div className="relative w-full">
+								<FontAwesomeIcon
+									icon={faCalendar}
+									className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+								/>
+								<input
+									type="date"
+									name="dateOfBirth"
+									value={registerForm.dateOfBirth}
+									onChange={handleRegisterChange}
+									placeholder="Date of Birth"
+									className="bg-gray-100 border border-gray-300 rounded-lg p-3 pl-10 w-full"
+								/>
+							</div>
+							<div className="relative w-full">
+								<FontAwesomeIcon
+									icon={faVenusMars}
+									className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+								/>
+								<select
+									name="gender"
+									value={registerForm.gender}
+									onChange={handleRegisterChange}
+									className="bg-gray-100 border border-gray-300 rounded-lg p-3 pl-10 w-full"
+									defaultValue=""
+								>
+									<option value="" disabled>
+										Select Gender
+									</option>
+									<option value="male">♂ Male</option>
+									<option value="female">♀ Female</option>
+									<option value="other">⚥ Other</option>
+								</select>
+							</div>
+							<div className="relative w-full">
+								<FontAwesomeIcon
+									icon={faPhone}
+									className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+								/>
+								<input
+									type="tel"
+									name="phoneNumber"
+									value={registerForm.phoneNumber}
+									onChange={handleRegisterChange}
+									placeholder="Phone Number"
+									className="bg-gray-100 border border-gray-300 rounded-lg p-3 pl-10 w-full"
+								/>
+							</div>
+						</div>
+						<button
+							type="submit"
+							className="bg-[#FF4B2B] text-white text-xs font-bold py-3 px-8 md:px-12 rounded-2xl border border-[#FF4B2B] uppercase tracking-wider mb-4"
+						>
+							Register
+						</button>
+					</form>
+				</div>
 
-					{/* Overlay Container */}
-					<div
-						className={`absolute top-0 left-0 md:left-1/2 w-full md:w-1/2 h-full overflow-hidden transition-transform duration-600 ease-in-out ${
-							isRightPanelActive ? "md:-translate-x-full" : ""
-						} hidden md:block`}
+				{/* Sign In Form */}
+				<div
+					className={`absolute top-0 left-0 h-full w-full md:w-1/2 transition-all duration-600 ease-in-out z-20 overflow-y-auto ${
+						isRightPanelActive ? "md:translate-x-full" : ""
+					}`}
+				>
+					<form
+						onSubmit={handleLoginSubmit}
+						className="bg-white flex flex-col items-center justify-center min-h-full px-4 md:px-12 text-center py-8"
 					>
+						<h1 className="font-bold text-xl md:text-2xl mb-4">Sign in</h1>
+						<div className="flex space-x-4 mb-6">
+							<a
+								href="#"
+								className="border border-gray-300 rounded-full w-8 h-8 md:w-10 md:h-10 flex items-center justify-center"
+							>
+								<FontAwesomeIcon
+									icon={faFacebookF}
+									className="text-sm md:text-base"
+								/>
+							</a>
+							<a
+								href="#"
+								className="border border-gray-300 rounded-full w-8 h-8 md:w-10 md:h-10 flex items-center justify-center"
+							>
+								<FontAwesomeIcon
+									icon={faGooglePlusG}
+									className="text-sm md:text-base"
+								/>
+							</a>
+							<a
+								href="#"
+								className="border border-gray-300 rounded-full w-8 h-8 md:w-10 md:h-10 flex items-center justify-center"
+							>
+								<FontAwesomeIcon
+									icon={faLinkedinIn}
+									className="text-sm md:text-base"
+								/>
+							</a>
+						</div>
+						<span className="text-xs mb-4">or use your account</span>
+						<div className="relative w-full mb-4">
+							<FontAwesomeIcon
+								icon={faEnvelope}
+								className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+							/>
+							<input
+								type="email"
+								name="email"
+								placeholder="Email"
+								value={loginForm.email}
+								onChange={handleLoginChange}
+								className="bg-gray-100 border-none p-3 pl-10 w-full"
+							/>
+						</div>
+						<div className="relative w-full mb-4">
+							<FontAwesomeIcon
+								icon={faLock}
+								className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+							/>
+							<input
+								type={showLoginPassword ? "text" : "password"}
+								name="password"
+								placeholder="Password"
+								value={loginForm.password}
+								onChange={handleLoginChange}
+								className="bg-gray-100 border-none p-3 pl-10 w-full"
+							/>
+							<button
+								type="button"
+								onClick={toggleLoginPassword}
+								className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+							>
+								<FontAwesomeIcon
+									icon={showLoginPassword ? faEyeSlash : faEye}
+								/>
+							</button>
+						</div>
+						<a href="#" className="text-xs text-gray-600 mb-6">
+							Forgot your password?
+						</a>
+						<button
+							type="submit"
+							className="bg-[#FF4B2B] text-white text-xs font-bold py-3 px-8 md:px-12 rounded-2xl border border-[#FF4B2B] uppercase tracking-wider mb-4"
+						>
+							Sign In
+						</button>
+					</form>
+				</div>
+
+				{/* Overlay Container */}
+				<div
+					className={`absolute top-0 left-0 md:left-1/2 w-full md:w-1/2 h-full overflow-hidden transition-transform duration-600 ease-in-out ${
+						isRightPanelActive ? "md:-translate-x-full" : ""
+					} hidden md:block`}
+				>
+					<div
+						className={`relative -left-full h-full w-[200%] bg-gradient-to-r from-[#FF4B2B] to-[#FF416C] text-white transition-transform duration-600 ease-in-out ${
+							isRightPanelActive ? "translate-x-1/2" : ""
+						}`}
+					>
+						{/* Overlay Left Panel */}
 						<div
-							className={`relative -left-full h-full w-[200%] bg-gradient-to-r from-[#FF4B2B] to-[#FF416C] text-white transition-transform duration-600 ease-in-out ${
-								isRightPanelActive ? "translate-x-1/2" : ""
+							className={`absolute top-0 h-full w-1/2 flex flex-col items-center justify-center px-4 md:px-12 text-center transition-transform duration-600 ease-in-out ${
+								isRightPanelActive ? "translate-x-0" : "-translate-x-20"
 							}`}
 						>
-							{/* Overlay Left Panel */}
-							<div
-								className={`absolute top-0 h-full w-1/2 flex flex-col items-center justify-center px-4 md:px-12 text-center transition-transform duration-600 ease-in-out ${
-									isRightPanelActive ? "translate-x-0" : "-translate-x-20"
-								}`}
+							<h1 className="font-bold text-xl md:text-2xl mb-4">
+								Welcome Back!
+							</h1>
+							<p className="text-xs md:text-sm mb-6">
+								To keep connected with us please login with your personal info
+							</p>
+							<button
+								onClick={handleSignInClick}
+								className="bg-transparent border border-white text-white text-xs font-bold py-3 px-8 md:px-12 rounded-2xl uppercase tracking-wider"
 							>
-								<h1 className="font-bold text-xl md:text-2xl mb-4">
-									Welcome Back!
-								</h1>
-								<p className="text-xs md:text-sm mb-6">
-									To keep connected with us please login with your personal info
-								</p>
-								<button
-									onClick={handleSignInClick}
-									className="bg-transparent border border-white text-white text-xs font-bold py-3 px-8 md:px-12 rounded-2xl uppercase tracking-wider"
-								>
-									Sign In
-								</button>
-							</div>
+								Sign In
+							</button>
+						</div>
 
-							{/* Overlay Right Panel */}
-							<div
-								className={`absolute top-0 right-0 h-full w-1/2 flex flex-col items-center justify-center px-4 md:px-12 text-center transition-transform duration-600 ease-in-out ${
-									isRightPanelActive ? "translate-x-20" : "translate-x-0"
-								}`}
+						{/* Overlay Right Panel */}
+						<div
+							className={`absolute top-0 right-0 h-full w-1/2 flex flex-col items-center justify-center px-4 md:px-12 text-center transition-transform duration-600 ease-in-out ${
+								isRightPanelActive ? "translate-x-20" : "translate-x-0"
+							}`}
+						>
+							<h1 className="font-bold text-xl md:text-2xl mb-4">
+								Hello, Friend!
+							</h1>
+							<p className="text-xs md:text-sm mb-6">
+								Enter your personal details and start your journey with us
+							</p>
+							<button
+								onClick={handleRegisterClick}
+								className="bg-transparent border border-white text-white text-xs font-bold py-3 px-8 md:px-12 rounded-2xl uppercase tracking-wider"
 							>
-								<h1 className="font-bold text-xl md:text-2xl mb-4">
-									Hello, Friend!
-								</h1>
-								<p className="text-xs md:text-sm mb-6">
-									Enter your personal details and start your journey with us
-								</p>
-								<button
-									onClick={handleSignUpClick}
-									className="bg-transparent border border-white text-white text-xs font-bold py-3 px-8 md:px-12 rounded-2xl uppercase tracking-wider"
-								>
-									Sign Up
-								</button>
-							</div>
+								Register
+							</button>
 						</div>
 					</div>
 				</div>
 			</div>
-		</Layout>
+		</div>
 	);
 };
 

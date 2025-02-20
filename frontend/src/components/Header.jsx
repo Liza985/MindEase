@@ -56,7 +56,7 @@ const Header = () => {
 								Corporates
 							</NavLink>
 							<NavLink
-								to="/signup"
+								to="/register"
 								className="text-white bg-orange-500 hover:bg-orange-600 px-4 xl:px-7 py-2 xl:py-3 rounded-full font-normal text-sm xl:text-base transition duration-300"
 							>
 								Sign Up

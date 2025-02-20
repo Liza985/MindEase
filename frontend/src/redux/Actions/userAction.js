@@ -1,4 +1,5 @@
 import axios from "axios";
+import { BACKEND_URL } from "../../constants/url";
 
 ///backend_url imported from constants
 const URL = BACKEND_URL + "api/v1/user";
