@@ -112,6 +112,7 @@ const Auth = () => {
 		e.preventDefault();
 
 		// Dispatch register action
+		console.log("working1")
 		dispatch(registerUser(registerForm));
 	};
 

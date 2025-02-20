@@ -10,6 +10,7 @@ export const loginUser = (email, password) => async (dispatch) => {
 		dispatch({
 			type: "USER_LOGIN_REQUEST",
 		});
+		
 		const { data } = await axios.post(
 			`${URL}/login`,
 			{ email, password },
@@ -42,11 +43,13 @@ export const registerUser = (details) => async (dispatch) => {
 		dispatch({
 			type: "USER_REGISTER_REQUEST",
 		});
-		const { data } = await axios.post(`${URL}/register`, details, {
+		console.log("working2");
+		console.log(details)
+		const { data } = await axios.post(`${URL}/register`, (details), {
 			headers: {
 				"Content-Type": "application/json",
 			},
-			// withCredentials: true,
+			withCredentials: true,
 		});
 		// console.log(data);
 		dispatch({
@@ -57,6 +60,7 @@ export const registerUser = (details) => async (dispatch) => {
 			},
 		});
 	} catch (error) {
+		console.log(error?.response?.data?.message);
 		dispatch({
 			type: "USER_REGISTER_FAILURE",
 			payload: error?.response?.data?.message,

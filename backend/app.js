@@ -3,10 +3,12 @@ import dotenv  from 'dotenv'
 import cookieParser from "cookie-parser";
 import userRouter from "./routes/userRoute.js";
 import volunteerRouter from "./routes/volunteerRoute.js"
-import cors from "cors";
+import  cors  from 'cors';
+
 
 dotenv.config({path:"./config/.env"});
 const app = express();
+
 
 app.use(
 	cors({

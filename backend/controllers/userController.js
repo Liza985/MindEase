@@ -19,12 +19,11 @@ export const registerUser = async (req,res) => {
             password,
             dateOfBirth,
             gender,
-            PhoneNumber,
+            phoneNumber,
             isVolunteer, 
         } = req.body;
 
-        //check body data 
-        console.log("working");
+		//check body data
         if(
             !firstName ||
             !lastName ||
@@ -32,18 +31,17 @@ export const registerUser = async (req,res) => {
             !password ||
             !dateOfBirth ||
             !gender ||
-            !PhoneNumber 
+            !phoneNumber 
         ) {
             return Response(res, 400, false, message.missingFieldMessage);
         }
-
+		
         //checking user
         let user = await User.findOne({email});
         if(user){
             return Response(res, 400, false, message.userAlreadyExist)
         }
 
-        
         user = await User.create({ ...req.body })
 
         //generating otp
@@ -73,7 +71,8 @@ export const registerUser = async (req,res) => {
         //create user
 		return Response(res, 200, true, message.userCreatedMessage,user)
         //send response
-    } catch(error){
+	} catch (error) {
+		
 		Response(res, 500, false, error?.message);
     }
 };
