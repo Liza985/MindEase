@@ -37,35 +37,35 @@ const clearMessage = createAction("CLEAR_MESSAGE");
 
 export const userReducer=createReducer(initialState,(builder)=>{
     builder
-			.addCase("USER_LOGIN_REQUEST", (state) => {
+			.addCase(userLoginRequest, (state) => {
 				state.loading = true;
 			})
-			.addCase("USER_LOGIN_SUCCESS", (state, action) => {
+			.addCase(userLoginSuccess, (state, action) => {
 				state.loading = false;
 				state.isAuthenticated = true;
 				state.message = action.payload.message;
 				state.id = action.payload.id;
 			})
-			.addCase("USER_LOGIN_FAILURE", (state, action) => {
+			.addCase(userLoginFailure, (state, action) => {
 				state.loading = false;
 				state.error = action.payload;
 			})
-			.addCase("USER_REGISTER_REQUEST", (state) => {
+			.addCase(userRegisterRequest, (state) => {
 				state.loading = true;
 			})
-			.addCase("USER_REGISTER_SUCCESS", (state, action) => {
+			.addCase(userRegisterSuccess, (state, action) => {
 				state.loading = false;
 				state.message = action.payload.message;
 				state.id = action.payload.id;
 			})
-			.addCase("USER_REGISTER_FAILURE", (state, action) => {
+			.addCase(userRegisterFailure, (state, action) => {
 				state.loading = false;
 				state.error = action.payload;
 			})
-			.addCase("CLEAR_ERROR", (state) => {
+			.addCase(clearError, (state) => {
 				state.error = null;
 			})
-			.addCase("CLEAR_MESSAGE", (state) => {
+			.addCase(clearMessage, (state) => {
 				state.message = null;
 			});
     
