@@ -19,3 +19,6 @@ userRouter.post("/changePassword/:id",changePassword);
 
 
 export default userRouter
+
+
+//// 
