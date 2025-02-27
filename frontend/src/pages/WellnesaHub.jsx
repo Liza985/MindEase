@@ -1,7 +1,7 @@
-
 import React, { useState, useEffect } from 'react';
 import { Heart, BookOpen, Calendar, Music, Moon, Activity, Users, Star, Coffee, Play, PlayCircle, X, Bell, ArrowRight, Search, Filter, ChevronDown, Clock } from 'lucide-react';
 import Header from '../components/Header';
+import { StarIcon } from 'lucide-react';
 
 const WellnessHub = () => {
   const [activeTab, setActiveTab] = useState('all');
@@ -46,7 +46,7 @@ const WellnessHub = () => {
       description: "Find inner peace with our expert-led sessions",
       icon: <Moon className="w-6 h-6 text-purple-500" />,
       category: "mindfulness",
-      imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBZ9S5Z_DjMu7MqnO5zdqj5n_Y-euHMBiWxA&s"
+      imageUrl: "https://img.freepik.com/premium-vector/middleaged-man-sits-quiet-room-eyes-closed-while-listening-customized-playlist-songs_216520-113520.jpg"
     },
     {
       title: "Mood Tracking",
@@ -67,7 +67,7 @@ const WellnessHub = () => {
       description: "Holistic workouts for mental clarity",
       icon: <Activity className="w-6 h-6 text-orange-500" />,
       category: "physical",
-      imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsB7boaXz1rTVC9fN94MlzlhzagWTA9LazVg&s"
+      imageUrl: "https://img.freepik.com/premium-vector/retired-individual-maintaining-their-health-mobility-by-participating-virtual-workout_216520-81394.jpg"
     }
   ];
 
@@ -95,28 +95,55 @@ const WellnessHub = () => {
     }
   ];
 
-  const testimonials = [
-    {
-      name: "Sarah J.",
-      text: "This wellness hub transformed my daily routine. The meditation guides are exceptional!",
-      rating: 5
-    },
-    {
-      name: "Michael R.",
-      text: "The mood tracking feature helped me understand my emotional patterns better.",
-      rating: 5
+  const [formData, setFormData] = useState({
+    name: '',
+    text: '',
+    rating: 5
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState('');
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+  };
+
+  const handleRatingChange = (newRating) => {
+    setFormData({
+      ...formData,
+      rating: newRating
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    try {
+      const response = await fetch('/api/testimonials', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      
+      if (response.ok) {
+        setSubmitMessage('Thank you for your testimonial!');
+        setFormData({ name: '', text: '', rating: 5 });
+      } else {
+        setSubmitMessage('There was an error submitting your testimonial. Please try again.');
+      }
+    } catch (error) {
+      setSubmitMessage('There was an error submitting your testimonial. Please try again.');
+      console.error('Error submitting testimonial:', error);
+    } finally {
+      setIsSubmitting(false);
     }
-  ];
-
-  useEffect(() => {
-    // Simulate loading data
-    const timer = setTimeout(() => {
-      // Any initialization code can go here
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, []);
-
-
+  };
   // Header title for the section
   const SectionTitle = ({ title, subtitle }) => (
     <div className="text-center mb-8">
@@ -250,166 +277,20 @@ const WellnessHub = () => {
     );
   };
 
-  // New subscription component
   
-const NewsletterSubscription = () => {
-  const [email, setEmail] = useState('');
-  const [status, setStatus] = useState({ message: '', type: '' });
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    
-    // Basic email validation
-    if (!email || !email.includes('@') || !email.includes('.')) {
-      setStatus({ 
-        message: 'Please enter a valid email address', 
-        type: 'error' 
-      });
-      return;
-    }
-    
-    // Simulate API call
-    setStatus({ message: 'Submitting...', type: 'loading' });
-    
-    // Simulate success after delay
-    setTimeout(() => {
-      setStatus({ 
-        message: 'Thank you for subscribing!', 
-        type: 'success' 
-      });
-      setEmail('');
-    }, 1500);
+  const scrollToResources = () => {
+    document.getElementById('resources-section')?.scrollIntoView({ 
+      behavior: 'smooth',
+      block: 'start'
+    });
   };
 
-  return (
-    <div className="w-full max-w-lg mx-auto bg-white rounded-lg shadow-md p-6 mb-8">
-      <div className="text-center mb-6">
-        <h3 className="text-2xl font-bold text-gray-800 mb-2">Subscribe to Our Newsletter</h3>
-        <p className="text-gray-600">Get weekly wellness tips and updates on new content</p>
-      </div>
-      
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="flex flex-col sm:flex-row gap-2">
-          <input
-            type="email"
-            placeholder="Your email address"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            required
-          />
-          <button 
-            type="submit"
-            className="px-6 py-2 bg-orange-600 text-white font-medium rounded-md hover:bg-blue-300 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-          >
-            Subscribe
-          </button>
-        </div>
-        
-        {status.message && (
-          <div className={`text-center py-2 rounded-md ${
-            status.type === 'success' ? 'text-green-600 bg-green-50' : 
-            status.type === 'error' ? 'text-red-600 bg-red-50' : 
-            'text-gray-600 bg-gray-50'
-          }`}>
-            {status.message}
-          </div>
-        )}
-        
-        <div className="text-xs text-gray-500 text-center mt-4">
-          By subscribing, you agree to our <a href="#" className="underline hover:text-purple-600">Privacy Policy</a>. 
-          We'll never share your email address.
-        </div>
-      </form>
-    </div>
-  );
-};
-const UpcomingEvents = () => {
-  // Sample upcoming events data with meeting links
-  const upcomingEvents = [
-    {
-      id: 1,
-      title: "Guided Meditation Session",
-      date: "February 26, 2025",
-      time: "7:00 PM - 8:00 PM EST",
-      host: "Sarah Johnson",
-      participants: 24,
-      meetingLink: "https://zoom.us/j/1234567890"
-    },
-    {
-      id: 2,
-      title: "Stress Management Workshop",
-      date: "February 28, 2025",
-      time: "6:30 PM - 8:00 PM EST",
-      host: "Dr. Michael Chen",
-      participants: 42,
-      meetingLink: "https://meet.google.com/abc-defg-hij"
-    },
-    {
-      id: 3,
-      title: "Mindful Movement Class",
-      date: "March 2, 2025",
-      time: "10:00 AM - 11:00 AM EST",
-      host: "Emma Rodriguez",
-      participants: 18,
-      meetingLink: "https://teams.microsoft.com/meeting/123456"
-    }
-  ];
 
-  // Function to handle joining an event
-  const handleJoinEvent = (meetingLink) => {
-    // Open the meeting link in a new tab
-    window.open(meetingLink, '_blank');
-  };
-
-  return (
-    <div className="bg-white rounded-lg shadow-lg p-6 mb-16">
-      <div className="flex justify-between items-center mb-6">
-        <h3 className="text-2xl font-semibold">Upcoming Live Events</h3>
-        <button className="text-orange-500 font-medium flex items-center">
-          View All <ArrowRight className="w-4 h-4 ml-1" />
-        </button>
-      </div>
-      
-      <div className="space-y-4">
-        {upcomingEvents.map(event => (
-          <div key={event.id} className="border-l-4 border-orange-500 pl-4 py-2">
-            <div className="flex justify-between items-start">
-              <div>
-                <h4 className="font-semibold text-lg">{event.title}</h4>
-                <p className="text-gray-600 flex items-center mt-1">
-                  <Calendar className="w-4 h-4 mr-1" />
-                  {event.date}
-                </p>
-                <p className="text-gray-600 flex items-center mt-1">
-                  <Clock className="w-4 h-4 mr-1" />
-                  {event.time}
-                </p>
-                <p className="text-gray-600 mt-1">Host: {event.host}</p>
-              </div>
-              <div className="text-right">
-                <span className="bg-purple-100 text-black text-sm font-medium px-2.5 py-0.5 rounded-full">
-                  {event.participants} joined
-                </span>
-                <button 
-                  className="block mt-2 bg-orange-500 text-white px-3 py-1.5 rounded-md hover:bg-blue-300 transition text-sm"
-                  onClick={() => handleJoinEvent(event.meetingLink)}
-                >
-                  Join Event
-                </button>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
-
+  
  return (
     <>
      <Header/>
-          <div className="min-h-screen bg-gradient-to-b from-blue-50 to-purple-50 pt-16">
+          <div className="min-h-screen bg-gradient-to-b from-white-50 to-orange-50 pt-16">
             {/* Hero Section */}
             <div className="relative h-96 mb-16 overflow-hidden">
               <WaveBackground />
@@ -420,45 +301,52 @@ const UpcomingEvents = () => {
                     Discover peace, balance, and inner harmony through our curated wellness experiences
                   </p>
                   <div className="flex flex-col sm:flex-row justify-center gap-4">
-                    <button onClick={"/register"} className="bg-blue-400 hover:bg-purple-700 text-white px-8 py-3 rounded-lg font-medium transition shadow-lg hover:shadow-xl transform hover:-translate-y-1">
-                      Start Your Journey
-                    </button>
-                    <button className="bg-white hover:bg-gray-100 text-black-600 px-8 py-3 rounded-lg font-medium transition shadow hover:shadow-md">
-                      Explore Resources
-                    </button>
+                    
+                  <button 
+                    onClick={scrollToResources}
+                    className="bg-white hover:bg-gray-100 text-black-600 px-8 py-3 rounded-lg font-medium transition shadow hover:shadow-md"
+                  >
+                    Explore Resources
+                  </button>
+
                   </div>
                 </div>
               </div>
           </div>
           
        {/* Tabs and Resources */}
-       <div className="max-w-6xl mx-auto px-6 mb-16">
-         <div className="flex space-x-4 mb-8 bg-white rounded-lg p-2"> 
-           {['all', 'mindfulness', 'self-care', 'relaxation'].map((tab) => (
+       <section id="resources-section" className="py-16 bg-gradient-to-b from-white to-orange-50">
+      <div className="max-w-6xl mx-auto px-6 mb-16">
+        <h2 className="text-3xl font-bold  text-orange-900 text-center mb-10">Explore Wellness Resources</h2>
+        
+        {/* Tabs Navigation */}
+        <div className="flex space-x-4 mb-8 bg-white rounded-lg p-2 shadow-md">
+          {['all', 'mindfulness', 'self-care', 'relaxation'].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`px-4 py-2 rounded-md flex-1 capitalize transition-colors ${
-                activeTab === tab 
-                ? 'bg-orange-500 text-white' 
-                : 'hover:bg-purple-50'
+                activeTab === tab
+                  ? 'bg-orange-500 text-white'
+                  : 'hover:bg-orange-50'
               }`}
             >
               {tab}
             </button>
           ))}
         </div>
-
+        
+        {/* Resources Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {wellnessResources
             .filter(resource => activeTab === 'all' || resource.category === activeTab)
             .map((resource, index) => (
-              <div 
+              <div
                 key={index}
                 className="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
               >
-                <img 
-                  src={resource.imageUrl} 
+                <img
+                  src={resource.imageUrl}
                   alt={resource.title}
                   className="w-full h-48 object-cover"
                 />
@@ -472,7 +360,8 @@ const UpcomingEvents = () => {
               </div>
             ))}
         </div>
-      </div> 
+      </div>
+    </section>
 
         
 
@@ -550,52 +439,119 @@ const UpcomingEvents = () => {
          </div>
        </div>
 
-        {/* Search and Filters */}
-        <div className="max-w-6xl mx-auto px-6 mb-8 bg-white rounded-lg shadow p-4 flex flex-col md:flex-row gap-4">
-          <div className="relative flex-1">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Search className="h-5 w-5 text-gray-400" />
-            </div>
-            <input type="text" className="block w-full pl-10 pr-3 py-2 border rounded-md placeholder-gray-500 focus:ring-1 focus:ring-purple-500" placeholder="Search wellness resources..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+       
+        {/* Testimonials */}
+        <div className="max-w-xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+      <div className="px-8 pt-8 pb-6 bg-gradient-to-r from-blue-50 to-purple-50">
+        <h2 className="text-2xl font-bold text-gray-800">Share Your Experience</h2>
+        <p className="text-gray-600 mt-2">We value your feedback and would love to hear about your wellness journey.</p>
+      </div>
+      
+      {submitMessage && (
+        <div className="mx-8 mt-4 p-4 bg-green-50 border border-green-200 text-green-700 rounded-lg flex items-center">
+          <svg className="w-5 h-5 mr-2" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
+            <path d="M5 13l4 4L19 7"></path>
+          </svg>
+          {submitMessage}
+        </div>
+      )}
+      
+      <form onSubmit={handleSubmit} className="p-8 pt-6">
+        <div className="space-y-6">
+          <div>
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+              Your Name
+            </label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="John Doe"
+            />
           </div>
-          <button onClick={() => setShowFilters(!showFilters)} className="flex items-center px-4 py-2 border rounded-md bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:ring-1 focus:ring-purple-500">
-            <Filter className="h-5 w-5 mr-2" /> Filters <ChevronDown className="h-4 w-4 ml-2" />
+          
+          <div>
+            <label htmlFor="text" className="block text-sm font-medium text-gray-700 mb-1">
+              Your Testimonial
+            </label>
+            <textarea
+              id="text"
+              name="text"
+              value={formData.text}
+              onChange={handleChange}
+              required
+              rows="4"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Share how our wellness resources have helped you..."
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Your Rating
+            </label>
+            <div className="flex items-center">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  key={star}
+                  type="button"
+                  onClick={() => handleRatingChange(star)}
+                  className="mr-1 focus:outline-none p-1"
+                >
+                  <Star
+                    size={28}
+                    className={
+                      star <= formData.rating
+                        ? "text-yellow-400 fill-yellow-400"
+                        : "text-gray-300"
+                    }
+                  />
+                </button>
+              ))}
+              <span className="ml-2 text-sm text-gray-500">
+                {formData.rating ? `${formData.rating} out of 5` : 'Select a rating'}
+              </span>
+            </div>
+          </div>
+        </div>
+        
+        <div className="mt-8">
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+          >
+            {isSubmitting ? (
+              <span className="flex items-center justify-center">
+                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Submitting...
+              </span>
+            ) : (
+              'Submit Your Testimonial'
+            )}
           </button>
         </div>
-
-        {/* Upcoming Events Section */}
-        <div className="max-w-6xl mx-auto px-6">
-          <UpcomingEvents />
-        </div>
-        {/* Testimonials */}
-        <div className="bg-white py-16 mb-16">
-              <div className="max-w-6xl mx-auto px-6">
-                <h2 className="text-3xl font-bold text-center mb-12">What Our Community Says</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  {testimonials.map((testimonial, index) => (
-                    <div key={index} className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-lg p-6">
-                      <div className="flex items-center mb-4">
-                        {[...Array(testimonial.rating)].map((_, i) => (
-                          <Star key={i} className="w-5 h-5 text-yellow-500 fill-current" />
-                        ))}
-                      </div>
-                      <p className="text-gray-700 italic mb-4">{testimonial.text}</p>
-                      <p className="font-semibold text-gray-900">{testimonial.name}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-            {/* Video Modal */}
-            <VideoModal 
+      </form>
+    </div>  
+     
+    
+     {/* Video Modal */}
+      <VideoModal 
             video={selectedVideo} 
             isOpen={!!selectedVideo} 
             onClose={() => setSelectedVideo(null)} 
-            />
+      />
 
-          <div className="max-w-6xl mx-auto px-6 mb-16">
-            <NewsletterSubscription />
-          </div>
+      
+
+
         
       </div>
     </>
