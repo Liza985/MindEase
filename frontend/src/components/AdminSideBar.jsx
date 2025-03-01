@@ -24,7 +24,7 @@ const AdminSidebar = () => {
 	];
 
 	return (
-		<div className="w-64 bg-orange-600 text-white min-h-screen flex flex-col">
+		<div className="fixed top-0 left-0 w-64 bg-orange-600 text-white h-screen flex flex-col overflow-y-auto z-10">
 			<div className="p-4 border-b border-orange-500">
 				<h1 className="text-xl font-bold">Admin Panel</h1>
 			</div>

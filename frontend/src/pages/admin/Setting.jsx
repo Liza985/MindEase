@@ -1,8 +1,9 @@
 import React from 'react'
+import AdminSidebar from '../../components/AdminSideBar'
 
 const Setting = () => {
   return (
-    <div>Setting</div>
+    <><AdminSidebar/></>
   )
 }
 
