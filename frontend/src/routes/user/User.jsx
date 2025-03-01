@@ -1,13 +1,11 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import ProtectedRoute from "./ProtectedRoute";
-import AuthRoute from "./AuthRoute";
 import Auth from "../../pages/Auth";
+import Blogs from "../../pages/user/Blogs";
+import CounselingPage from "../../pages/user/Counsellors";
+import Home from "../../pages/user/Home";
 import HowItWorks from "../../pages/user/HowItWorks";
 import WellnessHub from "../../pages/user/WellnesaHub";
-import Blogs from "../../pages/user/Blogs";
-import Home from "../../pages/user/Home";
-import CounselingPage from "../../pages/user/Counsellors";
 
 const User = () => {
 	return (
@@ -17,7 +15,7 @@ const User = () => {
 					path="/login"
 					element={
 						//<AuthRoute>
-							<Auth />
+						<Auth />
 						///</AuthRoute>
 					}
 				/>
@@ -26,7 +24,7 @@ const User = () => {
 					path="/register"
 					element={
 						//<AuthRoute>
-							<Auth />
+						<Auth />
 						//</AuthRoute>
 					}
 				/>
@@ -35,7 +33,7 @@ const User = () => {
 					path="/how-it-works"
 					element={
 						// <ProtectedRoute>
-							<HowItWorks />
+						<HowItWorks />
 						// </ProtectedRoute>
 					}
 				/>
@@ -43,7 +41,7 @@ const User = () => {
 					path="/wellness-hub"
 					element={
 						// <ProtectedRoute>
-							<WellnessHub />
+						<WellnessHub />
 						// </ProtectedRoute>
 					}
 				/>
@@ -51,7 +49,7 @@ const User = () => {
 					path="/counselling"
 					element={
 						// <ProtectedRoute>
-							<CounselingPage />
+						<CounselingPage />
 						// </ProtectedRoute>
 					}
 				/>
@@ -59,11 +57,10 @@ const User = () => {
 					path="/blogs"
 					element={
 						// <ProtectedRoute>
-							<Blogs />
+						<Blogs />
 						// </ProtectedRoute>
 					}
 				/>
-				
 			</Routes>
 		</>
 	);

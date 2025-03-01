@@ -1,25 +1,25 @@
-import { useState, useEffect } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
 	faFacebookF,
 	faGooglePlusG,
 	faLinkedinIn,
 } from "@fortawesome/free-brands-svg-icons";
-import { useLocation, useNavigate } from "react-router-dom";
 import {
-	faUser,
-	faEnvelope,
-	faLock,
 	faCalendar,
-	faVenusMars,
-	faPhone,
+	faEnvelope,
 	faEye,
 	faEyeSlash,
+	faLock,
+	faPhone,
+	faUser,
+	faVenusMars,
 } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import toastOptions from "../constants/toast";
+import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { registerUser, loginUser } from "../redux/Actions/userAction";
+import toastOptions from "../constants/toast";
+import { loginUser, registerUser } from "../redux/Actions/userAction";
 
 const Auth = () => {
 	const [isRightPanelActive, setIsRightPanelActive] = useState(false);
@@ -30,7 +30,7 @@ const Auth = () => {
 	const navigate = useNavigate();
 
 	const { loading, message, error, id, isAuthenticated } = useSelector(
-		(state) => state.user
+		(state) => state.user,
 	);
 
 	const [loginForm, setLoginForm] = useState({
@@ -76,7 +76,6 @@ const Auth = () => {
 		}
 	}, [message, error, dispatch]);
 
-
 	const handleRegisterClick = () => {
 		setIsRightPanelActive(true);
 		navigate("/register");
@@ -113,7 +112,7 @@ const Auth = () => {
 		e.preventDefault();
 
 		// Dispatch register action
-		console.log("working1")
+		console.log("working1");
 		dispatch(registerUser(registerForm));
 	};
 

@@ -1,12 +1,11 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import AuthRoute from "./AuthRoute";
 
-import Request from "../../pages/volunteer/Request";
-import Chat from "../../pages/volunteer/Chat";
 import Blog from "../../pages/volunteer/Blog";
+import Chat from "../../pages/volunteer/Chat";
 import Dashboard from "../../pages/volunteer/Dashboard";
 import LandingPage from "../../pages/volunteer/LandingPage";
+import Request from "../../pages/volunteer/Request";
 
 const Volunteer = () => {
 	return (
@@ -16,7 +15,7 @@ const Volunteer = () => {
 					path="/connect"
 					element={
 						// <AuthRoute>
-							<LandingPage />
+						<LandingPage />
 						//</AuthRoute>
 					}
 				/>
@@ -24,7 +23,7 @@ const Volunteer = () => {
 					path="volunteerDashboard"
 					element={
 						//<AuthRoute>
-							<Dashboard />
+						<Dashboard />
 						//</AuthRoute>
 					}
 				/>
@@ -32,7 +31,7 @@ const Volunteer = () => {
 					path="/requests"
 					element={
 						//<AuthRoute>
-							<Request />
+						<Request />
 						//</AuthRoute>
 					}
 				/>
@@ -40,7 +39,7 @@ const Volunteer = () => {
 					path="/chat"
 					element={
 						//<AuthRoute>
-							<Chat />
+						<Chat />
 						//</AuthRoute>
 					}
 				/>
@@ -48,11 +47,10 @@ const Volunteer = () => {
 					path="/article"
 					element={
 						//<AuthRoute>
-							<Blog />
+						<Blog />
 						//</AuthRoute>
 					}
 				/>
-               
 			</Routes>
 		</>
 	);

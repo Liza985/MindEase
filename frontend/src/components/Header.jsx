@@ -1,6 +1,5 @@
-import { NavLink, Link } from "react-router-dom";
 import { useState } from "react";
-
+import { Link, NavLink } from "react-router-dom";
 
 const Header = () => {
 	const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -77,7 +76,7 @@ const Header = () => {
 							>
 								Get Started
 							</NavLink>
-							<button 
+							<button
 								onClick={toggleSidebar}
 								className="mobile-menu-button p-2 rounded-md text-orange-500 hover:text-orange-600 hover:bg-gray-100 focus:outline-none"
 							>
@@ -101,14 +100,28 @@ const Header = () => {
 				</div>
 
 				{/* Right Sidebar */}
-				<div className={`fixed top-0 right-0 h-full w-64 sm:w-80 bg-white shadow-2xl transform transition-transform duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full'} lg:hidden rounded-l-3xl`}>
+				<div
+					className={`fixed top-0 right-0 h-full w-64 sm:w-80 bg-white shadow-2xl transform transition-transform duration-300 ease-in-out ${
+						isSidebarOpen ? "translate-x-0" : "translate-x-full"
+					} lg:hidden rounded-l-3xl`}
+				>
 					<div className="flex justify-end p-4 border-b">
-						<button 
+						<button
 							onClick={toggleSidebar}
 							className="text-gray-500 hover:text-gray-600 transition duration-300"
 						>
-							<svg className="h-6 w-6 sm:h-8 sm:w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+							<svg
+								className="h-6 w-6 sm:h-8 sm:w-8"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									strokeWidth={2}
+									d="M6 18L18 6M6 6l12 12"
+								/>
 							</svg>
 						</button>
 					</div>

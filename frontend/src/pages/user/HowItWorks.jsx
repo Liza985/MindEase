@@ -1,5 +1,5 @@
-import Layout from "../../components/Layout";
 import { Link } from "react-router-dom";
+import Layout from "../../components/Layout";
 const HowItWorks = () => {
 	const steps = [
 		{
@@ -9,7 +9,7 @@ const HowItWorks = () => {
 			icon: "🤔",
 		},
 		{
-			title: "Choose The Right Plan", 
+			title: "Choose The Right Plan",
 			description:
 				"Decide on the number of sessions you would like to opt for.",
 			icon: "📋",
@@ -107,8 +107,8 @@ const HowItWorks = () => {
 				</div>
 			</div>
 			<footer className="bg-white text-black text-center py-4 mt-8">
-        <p>&copy; 2025 MindEase. All rights reserved.</p>
-      </footer>
+				<p>&copy; 2025 MindEase. All rights reserved.</p>
+			</footer>
 		</Layout>
 	);
 };
