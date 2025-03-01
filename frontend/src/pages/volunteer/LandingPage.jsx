@@ -62,7 +62,7 @@ const LandingPage = () => {
           
           <footer className="bg-orange-600 text-white py-6">
             <div className="container mx-auto px-4 text-center">
-              <p>© 2025 VolunteerConnect. All rights reserved.</p>
+              <p>© 2025 MindEaseConnect. All rights reserved.</p>
             </div>
           </footer>
         </div>

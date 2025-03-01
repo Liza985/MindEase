@@ -106,6 +106,9 @@ const HowItWorks = () => {
 					</Link>
 				</div>
 			</div>
+			<footer className="bg-white text-black text-center py-4 mt-8">
+        <p>&copy; 2025 MindEase. All rights reserved.</p>
+      </footer>
 		</Layout>
 	);
 };

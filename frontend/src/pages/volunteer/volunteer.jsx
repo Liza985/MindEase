@@ -13,7 +13,7 @@ export const LandingPage = () => {
     <div className="flex flex-col min-h-screen">
       <header className="bg-orange-500 text-white shadow-md">
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-          <h1 className="text-2xl font-bold">VolunteerConnect</h1>
+          <h1 className="text-2xl font-bold">MindEaseConnect</h1>
           <div className="space-x-4">
             <button 
               onClick={() => navigate('/dashboard')} 
@@ -70,7 +70,7 @@ export const LandingPage = () => {
       
       <footer className="bg-orange-600 text-white py-6">
         <div className="container mx-auto px-4 text-center">
-          <p>© 2025 VolunteerConnect. All rights reserved.</p>
+          <p>© 2025 MindEaseConnect. All rights reserved.</p>
         </div>
       </footer>
     </div>
