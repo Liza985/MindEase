@@ -5,7 +5,7 @@ import {
 	faGooglePlusG,
 	faLinkedinIn,
 } from "@fortawesome/free-brands-svg-icons";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
 	faUser,
 	faEnvelope,
@@ -17,7 +17,6 @@ import {
 	faEyeSlash,
 } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import toastOptions from "../constants/toast";
 import { toast } from "react-toastify";
 import { registerUser, loginUser } from "../redux/Actions/userAction";
@@ -80,10 +79,12 @@ const Auth = () => {
 
 	const handleRegisterClick = () => {
 		setIsRightPanelActive(true);
+		navigate("/register");
 	};
 
 	const handleSignInClick = () => {
 		setIsRightPanelActive(false);
+		navigate("/login");
 	};
 
 	const toggleRegisterPassword = () => {
@@ -125,8 +126,8 @@ const Auth = () => {
 
 	return (
 		<div className="flex justify-center items-center min-h-screen px-4">
-			{/* Mobile Navigation */}
-			<div className="md:hidden fixed left-0 right-0 flex justify-center z-[100] px-4">
+			{/* Navigation Buttons - Now fixed at the top */}
+			<div className="md:hidden fixed top-20 left-0 right-0 flex justify-center z-[100] px-4">
 				<div className="bg-white rounded-full shadow-lg p-1 flex gap-2">
 					<button
 						onClick={handleSignInClick}
@@ -439,12 +440,13 @@ const Auth = () => {
 					} hidden md:block`}
 				>
 					<div
-						className={`relative -left-full h-full w-[200%] bg-gradient-to-r from-[#FF4B2B] to-[#FF416C] text-white transition-transform duration-600 ease-in-out ${
+						className={`relative -left-full h-full w-[200%] bg-gradient-to-r from-[#FF1493] to-[#FF416C] text-white transition-transform duration-600 ease-in-out ${
 							isRightPanelActive ? "translate-x-1/2" : ""
 						}`}
 					>
 						{/* Overlay Left Panel */}
 						<div
+							// className={`relative -left-full h-full w-[200%] bg-gradient-to-r from-[#FF4B2B] to-[#FF416C] text-white transition-transform duration-600 ease-in-out ${
 							className={`absolute top-0 h-full w-1/2 flex flex-col items-center justify-center px-4 md:px-12 text-center transition-transform duration-600 ease-in-out ${
 								isRightPanelActive ? "translate-x-0" : "-translate-x-20"
 							}`}
