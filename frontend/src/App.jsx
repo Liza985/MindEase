@@ -1,20 +1,16 @@
 import { Route, Routes } from "react-router-dom";
-import Auth from "./pages/Auth";
-// import { path } from 'path';
-import Home from './pages/Home';
-import HowItWorks from "./pages/HowItWorks";
-import WellnessHub from "./pages/WellnesaHub";
+
+import AdminDashboard from "./pages/admin/admin";
+import User from "./routes/user/User";
+import Volunteer from "./routes/volunteer/Volunteer";
 
 function App() {
 	return (
 		<>
+			<User />
+			<Volunteer />
 			<Routes>
-				<Route path="/" element={<Home />} />
-				<Route path="/login" element={<Auth />} />
-				<Route path="/register" element={<Auth />} />
-				<Route path="/how-it-works" element={<HowItWorks/>} />
-				<Route path="/wellness-hub" element={<WellnessHub/>}/>
-				
+				<Route path="/admin" element={<AdminDashboard />} />
 			</Routes>
 		</>
 	);

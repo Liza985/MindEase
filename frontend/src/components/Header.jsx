@@ -38,10 +38,10 @@ const Header = () => {
 								Plans & Pricing
 							</NavLink>
 							<NavLink
-								to="/counselors"
+								to="/Counselling"
 								className="text-black hover:text-orange-600 px-2 xl:px-3 py-2 font-normal text-sm xl:text-base"
 							>
-								Our Counselors
+								Counselling
 							</NavLink>
 							<NavLink
 								to="/wellness-hub"
@@ -50,10 +50,10 @@ const Header = () => {
 								Wellness Hub
 							</NavLink>
 							<NavLink
-								to="/corporates"
+								to="/Blogs"
 								className="text-black hover:text-orange-600 px-2 xl:px-3 py-2 font-normal text-sm xl:text-base"
 							>
-								Corporates
+								Blogs
 							</NavLink>
 							<NavLink
 								to="/register"

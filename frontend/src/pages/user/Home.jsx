@@ -1,5 +1,5 @@
 import React from 'react';
-import Layout from "../components/Layout";
+import Layout from "../../components/Layout";
 import { ChevronRight, Heart, Brain, Smile, Clock, Calendar, Book, Shield, Star } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Heart, BookOpen, Calendar, Music, Moon, Activity, Users, Star, Coffee, Play, PlayCircle, X, Bell, ArrowRight, Search, Filter, ChevronDown, Clock } from 'lucide-react';
-import Header from '../components/Header';
+import Header from '../../components/Header';
 import { StarIcon } from 'lucide-react';
 
 const WellnessHub = () => {
