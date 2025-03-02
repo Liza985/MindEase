@@ -5,13 +5,13 @@ const LandingPage = () => {
 		<div className="flex flex-col min-h-screen">
 			<header className="bg-orange-500 text-white shadow-md">
 				<div className="container mx-auto px-4 py-3 flex justify-between items-center">
-					<h1 className="text-2xl font-bold">VolunteerConnect</h1>
+					<h1 className="text-2xl font-bold">MindEaseConnect</h1>
 					<div className="space-x-4">
 						<button
 							onClick={() => navigate("/dashboard")}
 							className="bg-white text-orange-600 px-4 py-2 rounded-md font-medium hover:bg-orange-100 transition"
 						>
-							Volunteer Login
+							MindEaseConnect Login
 						</button>
 					</div>
 				</div>
