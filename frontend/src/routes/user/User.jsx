@@ -8,6 +8,7 @@ import WellnessHub from "../../pages/user/WellnesaHub";
 import MindeaseForm from "../../pages/user/MindeaseForm";
 import VerifyOtp from "../../pages/VerifyOtp";
 import ForgotPassword from "../../pages/ForgotPassword";
+import ChatbotPage from "../../pages/user/ChatBot";
 
 const User = () => {
 	return (
@@ -84,13 +85,21 @@ const User = () => {
 					}
 				/>
 				<Route
-					path="/mind-ease"
+					path="/survey"
 					element={
 						// <ProtectedRoute>
 						<MindeaseForm />
 						// </ProtectedRoute>
 					}
-				/>				
+				/>		
+				<Route
+					path="/aichat"
+					element={
+						// <ProtectedRoute>
+						<ChatbotPage />
+						// </ProtectedRoute>
+					}
+				/>			
 			</Routes>
 		</>
 	);

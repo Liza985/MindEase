@@ -97,7 +97,7 @@ const MindeaseForm = () => {
               />
               <label
                 htmlFor={`${name}-${option.value}`}
-                className={`block py-2 px-4 text-sm rounded-full border-2 text-center cursor-pointer transition-all duration-300 transform hover:scale-105 shadow-sm ${formData[name] === option.value ? 'border-blue-500 bg-blue-500 text-white font-medium' : 'border-gray-300 bg-white text-gray-700 hover:border-blue-400 hover:bg-blue-100'}`}
+                className={`block py-2 px-4 text-sm rounded-full border-2 text-center cursor-pointer transition-all duration-300 transform hover:scale-105 shadow-sm ${formData[name] === option.value ? 'border-blue-400 bg-blue-400 text-white font-medium' : 'border-gray-300 bg-white text-gray-700 hover:border-blue-400 hover:bg-blue-100'}`}
               >
                 {option.label}
               </label>
@@ -113,7 +113,7 @@ const MindeaseForm = () => {
       <Header />
       <div className="bg-gradient-to-br from-orange-50 to-blue-50 min-h-screen py-12 px-4 sm:px-6 lg:px-8 mt-10">
         <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-md overflow-hidden">
-          <div className="bg-orange-400 px-6 py-4">
+          <div className="bg-orange-600 px-6 py-4">
             <h1 className="text-2xl font-bold text-white">MindEase Assessment</h1>
             <p className="text-orange-50 mt-1">Please answer all questions honestly.</p>
           </div>
@@ -125,7 +125,7 @@ const MindeaseForm = () => {
 
             <div className="mt-8 flex justify-between">
               {currentSection > 0 && (
-                <button type="button" onClick={prevSection} className="bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-lg transition-all duration-300 shadow-md">Previous</button>
+                <button type="button" onClick={prevSection} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-all duration-300 shadow-md">Previous</button>
               )}
               {currentSection < sections.length - 1 ? (
                 <button type="button" onClick={nextSection} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-all duration-300 shadow-md">Next</button>
