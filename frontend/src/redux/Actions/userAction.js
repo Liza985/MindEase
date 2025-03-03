@@ -99,6 +99,7 @@ export const resendRegisterOtp = (id) => async (dispatch) => {
 		dispatch({
 			type: "RESEND_REGISTER_OTP_REQUEST",
 		});
+		// console.log(id)
 		const { data } = await axios.get(`${URL}/resend/${id}`);
 		dispatch({
 			type: "RESEND_REGISTER_OTP_SUCCESS",

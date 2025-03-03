@@ -343,7 +343,7 @@ const Auth = () => {
 						</div>
 						<button
 							type="submit"
-							className="bg-[#FF4B2B] text-white text-xs font-bold py-3 px-8 md:px-12 rounded-2xl border border-[#FF4B2B] uppercase tracking-wider mb-4"
+							className="bg-orange-500 text-white text-xs font-bold py-3 px-8 md:px-12 rounded-2xl border border-orange-500 uppercase tracking-wider mb-4"
 						>
 							Register
 						</button>
@@ -432,14 +432,14 @@ const Auth = () => {
 							<button
 								type="button"
 								onClick={handleForgotPassword}
-								className="text-orange-500 hover:text-orange-600 cursor-pointer"
+								className="text-orange-00 hover:text-orange-600 cursor-pointer"
 							>
 								Forgot Password?
 							</button>
 						</div>
 						<button
 							type="submit"
-							className="bg-[#FF4B2B] text-white text-xs font-bold py-3 px-8 md:px-12 rounded-2xl border border-[#FF4B2B] uppercase tracking-wider mb-4 cursor-pointer"
+							className="bg-orange-500 text-white text-xs font-bold py-3 px-8 md:px-12 rounded-2xl border border-orange-500 uppercase tracking-wider mb-4 cursor-pointer"
 						>
 							Sign In
 						</button>
@@ -453,7 +453,7 @@ const Auth = () => {
 					} hidden md:block`}
 				>
 					<div
-						className={`relative -left-full h-full w-[200%] bg-gradient-to-r from-orange-400 to-orange-500 text-white transition-transform duration-600 ease-in-out ${
+						className={`relative -left-full h-full w-[200%] bg-gradient-to-r from-orange-500 to-orange-600 text-white transition-transform duration-600 ease-in-out ${
 							isRightPanelActive ? "translate-x-1/2" : ""
 						}`}
 					>

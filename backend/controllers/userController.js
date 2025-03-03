@@ -59,7 +59,7 @@ export const registerUser = async (req, res) => {
 		//verification email
 		let emailTemplate = fs.readFileSync(
 			path.join(__dirname, "../templates/mail.html"),
-			"utf-8"
+			"utf-8",
 		);
 		const subject = "Verify your account";
 		emailTemplate = emailTemplate.replace("{{OTP_CODE}}", otp);
@@ -80,7 +80,8 @@ export const verifyUser = async (req, res) => {
 	try {
 		//fetching id and otp
 		const { id } = req.params;
-		let otp = req.body;
+		let { otp } = req.body;
+		console.log(otp);
 
 		//checking id
 		if (!id) {
@@ -92,6 +93,7 @@ export const verifyUser = async (req, res) => {
 		if (!user) {
 			return Response(res, 404, false, message.userNotFound);
 		}
+		console.log("first");
 		// user already verified
 		if (user.isVerified) {
 			return Response(res, 400, false, message.userAlreadyVerified);
@@ -108,13 +110,13 @@ export const verifyUser = async (req, res) => {
 				400,
 				false,
 				`Try again after ${Math.floor(
-					(user.registerOtpLockUntil - Date.now()) % (60 * 1000)
+					(user.registerOtpLockUntil - Date.now()) % (60 * 1000),
 				)} minutes and ${Math.floor(
-					(user.registerOtpLockUntil - DESTRUCTION.now()) % 1000
-				)} seconds`
+					(user.registerOtpLockUntil - DESTRUCTION.now()) % 1000,
+				)} seconds`,
 			);
 		}
-
+		console.log("first1");
 		// checking otp attempts
 		if (user.registerOtpAttempts >= 3) {
 			user.registerOtp = undefined;
@@ -126,11 +128,14 @@ export const verifyUser = async (req, res) => {
 			return Response(res, 400, false, message.otpAttemptsExceed);
 		}
 		// check otp
+
+		otp = Number(otp);
 		if (!otp) {
 			user.registerOtpAttempts += 1;
 			await user.save();
 			return Response(res, 400, false, message.otpNotFound);
 		}
+		console.log("first2");
 		// check otp expire
 		if (user.registerOtpExpire < Date.now()) {
 			user.registerOtp = undefined;
@@ -147,15 +152,17 @@ export const verifyUser = async (req, res) => {
 		user.registerOtpLockUntil = undefined;
 		await user.save();
 		// authenticate user
+
 		const token = await user.generateToken();
 		const options = {
 			expires: new Date(
-				Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000
+				Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000,
 			),
 			httpOnly: true,
 			sameSite: "none",
 			secure: true,
 		};
+
 		// sending response
 		res.status(200).cookie("token", token, options).json({
 			success: true,
@@ -173,6 +180,7 @@ export const resendOtp = async (req, res) => {
 		//params and body
 		const { id } = req.params;
 		//checking id
+
 		if (!id) {
 			return Response(res, 400, false, message.idNotFoundMessage);
 		}
@@ -186,10 +194,11 @@ export const resendOtp = async (req, res) => {
 		if (user.isVerified) {
 			return Response(res, 400, false, message.userAlreadyVerified);
 		}
+
 		//generate new otp
 		const otp = Math.floor(100000 + Math.random() * 900000);
 		const otpExpire = new Date(
-			Date.now() + process.env.REGISTER_OTP_EXPIRE * 15 * 60 * 1000
+			Date.now() + process.env.REGISTER_OTP_EXPIRE * 15 * 60 * 1000,
 		);
 		//save otp
 		user.registerOtp = otp;
@@ -197,10 +206,10 @@ export const resendOtp = async (req, res) => {
 		user.registerOtpAttempts = 0;
 		await user.save();
 		//send otp
-
+		console.log("first");
 		let emailTemplate = fs.readFileSync(
 			path.join(__dirname, "../templates/mail.html"),
-			"utf-8"
+			"utf-8",
 		);
 		const subject = "Verify your account";
 
@@ -249,7 +258,7 @@ export const loginUser = async (req, res) => {
 		if (user.loginAttempts >= process.env.MAX_LOGIN_ATTEMPTS) {
 			user.loginAttempts = 0;
 			user.lockUntil = new Date(
-				Date.now() + process.env.MAX_LOGIN_ATTEMPTS_EXPIRE * 60 * 1000
+				Date.now() + process.env.MAX_LOGIN_ATTEMPTS_EXPIRE * 60 * 1000,
 			);
 			await user.save();
 			return Response(res, 400, false, message.loginLockedMessage);
@@ -269,7 +278,7 @@ export const loginUser = async (req, res) => {
 		const token = await user.generateToken();
 		const options = {
 			expires: new Date(
-				Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000
+				Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000,
 			),
 			httpOnly: true,
 			sameSite: "none",
@@ -306,12 +315,12 @@ export const forgetPassword = async (req, res) => {
 		//generate otp for reset
 		const otp = Math.floor(100000 + Math.random() * 900000);
 		const otpExpire = new Date(
-			Date.now() + process.env.OTP_EXPIRE * 15 * 60 * 1000
+			Date.now() + process.env.OTP_EXPIRE * 15 * 60 * 1000,
 		);
 
 		let emailTemplate = fs.readFileSync(
 			path.join(__dirname, "../templates/mail.html"),
-			"utf-8"
+			"utf-8",
 		);
 		const subject = "Reset your password";
 		//const body = `Your OTP is ${otp}`;
@@ -373,7 +382,7 @@ export const resetPassword = async (req, res) => {
 			user.resetPasswordExpire = undefined;
 			user.resetPasswordAttempts = 0;
 			user.resetPasswordLock = new Date(
-				Date.now() + process.env.MAX_RESET_LOCK * 60 * 1000
+				Date.now() + process.env.MAX_RESET_LOCK * 60 * 1000,
 			);
 			await user.save();
 			return Response(res, 400, false, message.otpAttemptsExceed);
