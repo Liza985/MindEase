@@ -1,6 +1,9 @@
 import React from "react";
+import { Clock, FileText, MessageSquare } from 'lucide-react';
+import { useNavigate } from "react-router-dom";
 
 const LandingPage = () => {
+	const navigate=useNavigate();
 	return (
 		<div className="flex flex-col min-h-screen">
 			<header className="bg-orange-500 text-white shadow-md">
@@ -8,7 +11,7 @@ const LandingPage = () => {
 					<h1 className="text-2xl font-bold">MindEaseConnect</h1>
 					<div className="space-x-4">
 						<button
-							onClick={() => navigate("/dashboard")}
+							onClick={() => navigate("/volunteerDashboard")}
 							className="bg-white text-orange-600 px-4 py-2 rounded-md font-medium hover:bg-orange-100 transition"
 						>
 							MindEaseConnect Login
@@ -66,7 +69,7 @@ const LandingPage = () => {
 					</div>
 
 					<button
-						onClick={() => navigate("/dashboard")}
+						onClick={() => navigate("/volunteerDashboard")}
 						className="bg-orange-600 text-white px-8 py-3 rounded-lg font-medium text-lg hover:bg-orange-700 transition shadow-md"
 					>
 						Start Volunteering

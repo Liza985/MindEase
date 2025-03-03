@@ -20,7 +20,7 @@ const Volunteer = () => {
 					}
 				/>
 				<Route
-					path="volunteerDashboard"
+					path="/volunteerDashboard"
 					element={
 						//<AuthRoute>
 						<Dashboard />
