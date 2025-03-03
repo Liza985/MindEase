@@ -1,4 +1,3 @@
-import React from "react";
 import { Route, Routes } from "react-router-dom";
 import Auth from "../../pages/Auth";
 import Blogs from "../../pages/user/Blogs";
@@ -7,6 +6,8 @@ import Home from "../../pages/user/Home";
 import HowItWorks from "../../pages/user/HowItWorks";
 import WellnessHub from "../../pages/user/WellnesaHub";
 import MindeaseForm from "../../pages/user/MindeaseForm";
+import VerifyOtp from "../../pages/VerifyOtp";
+import ForgotPassword from "../../pages/ForgotPassword";
 
 const User = () => {
 	return (
@@ -28,6 +29,26 @@ const User = () => {
 						<Auth />
 						//</AuthRoute>
 					}
+				/>
+				<Route
+					path="/verify/:id"
+					element={
+						//<AuthRoute>
+						<VerifyOtp />
+						//</AuthRoute>
+					}
+				/>
+				<Route
+					path="/forgot-password"
+					element={<ForgotPassword />}
+				/>
+				<Route
+					path="/forgot-password/:id"
+					element={<ForgotPassword />}
+				/>
+				<Route
+					path="/changepassword/:id"
+					element={<ForgotPassword />}
 				/>
 				<Route path="/" element={<Home />} />
 				<Route

@@ -16,7 +16,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import toastOptions from "../constants/toast";
 import { loginUser, registerUser } from "../redux/Actions/userAction";
@@ -30,7 +30,7 @@ const Auth = () => {
 	const navigate = useNavigate();
 
 	const { loading, message, error, id, isAuthenticated } = useSelector(
-		(state) => state.user,
+		(state) => state.user
 	);
 
 	const [loginForm, setLoginForm] = useState({
@@ -68,13 +68,17 @@ const Auth = () => {
 		if (message) {
 			toast.success(message, toastOptions);
 			dispatch({ type: "CLEAR_MESSAGE" });
+			if (message.includes("Login Successful")) {
+				navigate("/");
+			} else if (id?._id) {
+				navigate(`/verify/${id._id}`);
+			}
 		}
-
 		if (error) {
 			toast.error(error, toastOptions);
 			dispatch({ type: "CLEAR_ERROR" });
 		}
-	}, [message, error, dispatch]);
+	}, [message, error, dispatch, navigate, id]);
 
 	const handleRegisterClick = () => {
 		setIsRightPanelActive(true);
@@ -108,7 +112,7 @@ const Auth = () => {
 		});
 	};
 
-	const handleRegisterSubmit = (e) => {
+	const handleRegisterSubmit = async (e) => {
 		e.preventDefault();
 
 		// Dispatch register action
@@ -121,6 +125,10 @@ const Auth = () => {
 
 		// Dispatch login action
 		dispatch(loginUser(loginForm));
+	};
+
+	const handleForgotPassword = () => {
+		navigate("/forgot-password");
 	};
 
 	return (
@@ -420,12 +428,18 @@ const Auth = () => {
 								/>
 							</button>
 						</div>
-						<a href="#" className="text-xs text-gray-600 mb-6">
-							Forgot your password?
-						</a>
+						<div className="text-sm mb-4">
+							<button
+								type="button"
+								onClick={handleForgotPassword}
+								className="text-orange-500 hover:text-orange-600 cursor-pointer"
+							>
+								Forgot Password?
+							</button>
+						</div>
 						<button
 							type="submit"
-							className="bg-[#FF4B2B] text-white text-xs font-bold py-3 px-8 md:px-12 rounded-2xl border border-[#FF4B2B] uppercase tracking-wider mb-4"
+							className="bg-[#FF4B2B] text-white text-xs font-bold py-3 px-8 md:px-12 rounded-2xl border border-[#FF4B2B] uppercase tracking-wider mb-4 cursor-pointer"
 						>
 							Sign In
 						</button>
@@ -439,7 +453,7 @@ const Auth = () => {
 					} hidden md:block`}
 				>
 					<div
-						className={`relative -left-full h-full w-[200%] bg-gradient-to-r from-[#FF1493] to-[#FF416C] text-white transition-transform duration-600 ease-in-out ${
+						className={`relative -left-full h-full w-[200%] bg-gradient-to-r from-orange-400 to-orange-500 text-white transition-transform duration-600 ease-in-out ${
 							isRightPanelActive ? "translate-x-1/2" : ""
 						}`}
 					>

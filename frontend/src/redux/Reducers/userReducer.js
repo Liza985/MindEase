@@ -62,6 +62,63 @@ export const userReducer=createReducer(initialState,(builder)=>{
 				state.loading = false;
 				state.error = action.payload;
 			})
+			.addCase(RegisterOtpRequest, (state) => {
+				state.loading = true;
+			})
+			.addCase(RegisterOtpSuccess, (state, action) => {
+				state.loading = false;
+				state.message = action.payload;
+				state.isAuthenticated = true;
+			})
+			.addCase(RegisterOtpFailure, (state, action) => {
+				state.loading = false;
+				state.error = action.payload;
+			})
+			.addCase(ResendRegisterOtpRequest, (state) => {
+				state.loading = true;
+			})
+			.addCase(ResendRegisterOtpSuccess, (state, action) => {
+				state.loading = false;
+				state.message = action.payload;
+			})
+			.addCase(ResendRegisterOtpFailure, (state, action) => {
+				state.loading = false;
+				state.error = action.payload;
+			})
+			.addCase(forgotUserPasswordRequest, (state) => {
+				state.loading = true;
+			})
+			.addCase(forgotUserPasswordSuccess, (state, action) => {
+				state.loading = false;
+				state.message = action.payload.message;
+				state.id = action.payload.id;
+			})
+			.addCase(forgotUserPasswordFailure, (state, action) => {
+				state.loading = false;
+				state.error = action.payload;
+			})
+			.addCase(resetUserPasswordRequest, (state) => {
+				state.loading = true;
+			})
+			.addCase(resetUserPasswordSuccess, (state, action) => {
+				state.loading = false;
+				state.message = action.payload;
+			})
+			.addCase(resetUserPasswordFailure, (state, action) => {
+				state.loading = false;
+				state.error = action.payload;
+			})
+			.addCase(changeUserPasswordRequest, (state) => {
+				state.loading = true;
+			})
+			.addCase(changeUserPasswordSuccess, (state, action) => {
+				state.loading = false;
+				state.message = action.payload;
+			})
+			.addCase(changeUserPasswordFailure, (state, action) => {
+				state.loading = false;
+				state.error = action.payload;
+			})
 			.addCase(clearError, (state) => {
 				state.error = null;
 			})

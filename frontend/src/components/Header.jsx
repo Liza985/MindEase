@@ -71,7 +71,7 @@ const Header = () => {
 						{/* Mobile/Tablet menu button */}
 						<div className="lg:hidden flex items-center space-x-4">
 							<NavLink
-								to="/signup"
+								to="/register"
 								className="text-white bg-orange-500 hover:bg-orange-600 px-4 py-2 rounded-full font-normal text-sm sm:text-base transition duration-300"
 							>
 								Get Started
