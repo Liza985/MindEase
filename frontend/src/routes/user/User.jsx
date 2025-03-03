@@ -5,6 +5,7 @@ import CounselingPage from "../../pages/user/Counsellors";
 import Home from "../../pages/user/Home";
 import HowItWorks from "../../pages/user/HowItWorks";
 import WellnessHub from "../../pages/user/WellnesaHub";
+import MindeaseForm from "../../pages/user/MindeaseForm";
 import VerifyOtp from "../../pages/VerifyOtp";
 import ForgotPassword from "../../pages/ForgotPassword";
 
@@ -82,6 +83,14 @@ const User = () => {
 						// </ProtectedRoute>
 					}
 				/>
+				<Route
+					path="/mind-ease"
+					element={
+						// <ProtectedRoute>
+						<MindeaseForm />
+						// </ProtectedRoute>
+					}
+				/>				
 			</Routes>
 		</>
 	);
