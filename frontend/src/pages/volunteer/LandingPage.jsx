@@ -77,10 +77,10 @@ const LandingPage = () => {
 				</div>
 			</main>
 
-			<footer className="bg-orange-600 text-white py-6">
-				<div className="container mx-auto px-4 text-center">
-					<p>© 2025 MindEaseConnect. All rights reserved.</p>
-				</div>
+			<footer className="bg-white shadow-sm border-t border-gray-200 p-4 text-center text-black-800">
+				<p className="text-sm">
+					&copy; 2025 MindEaseConnect. All rights reserved.
+				</p>
 			</footer>
 		</div>
 	);

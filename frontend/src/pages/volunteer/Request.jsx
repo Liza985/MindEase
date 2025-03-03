@@ -131,6 +131,11 @@ export const Request = () => {
 					</main>
 				</div>
 			</div>
+			<footer className="bg-white shadow-sm border-t border-gray-200 p-4 text-center text-black-800">
+				<p className="text-sm">
+					&copy; 2025 MindEaseConnect. All rights reserved.
+				</p>
+			</footer>
 		</>
 	);
 };
