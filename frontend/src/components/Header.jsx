@@ -71,7 +71,7 @@ const Header = () => {
 									{/* Profile Section */}
 									<div className="flex items-center space-x-2">
 										<div className="bg-orange-300 w-8 h-8 rounded-full flex items-center justify-center text-orange-800 font-bold text-sm">
-											{user?.firstName?.charAt(0)}
+											<User size={18} />
 										</div>
 										<div className="hidden md:block">
 											<h3 className="text-sm font-medium">{user?.firstName}</h3>
