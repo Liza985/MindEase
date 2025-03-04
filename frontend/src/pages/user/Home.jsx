@@ -13,6 +13,8 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import Layout from "../../components/Layout";
 
+
+
 const WaveBackground = () => (
 	<div className="absolute inset-0 bg-white overflow-hidden">
 		{/* First Wave Layer */}
@@ -196,108 +198,113 @@ const LandingPage = () => {
 
 	return (
 		<Layout>
-			<div className="min-h-screen relative overflow-hidden">
-				<WaveBackground />
-				<div className="relative">
-					<header className="container mx-auto px-4 md:px-8 pt-20 pb-16 flex flex-col items-center text-center">
-						<h1 className="text-4xl md:text-5xl font-bold text-blue-900 mb-4 hover:scale-105 transition-transform">
-							Welcome to MindEase
-						</h1>
-						<p className="text-lg md:text-xl text-gray-600 max-w-2xl">
-							Your journey to mental wellness starts here.
-						</p>
-						<div className="inline-flex rounded-full shadow-lg hover:shadow-xl transition-shadow bg-white bg-opacity-50 backdrop-blur-sm p-1 mt-6 md:mt-8">
-							<NavLink to="/register">
-								<button className="bg-blue-500 text-white px-4 py-2 md:px-6 md:py-2 rounded-full font-semibold hover:bg-blue-600 transform hover:scale-105 transition-all flex items-center group">
-									Start Your Journey{" "}
-									<ChevronRight className="ml-2 h-4 w-4 md:h-5 md:w-5 group-hover:translate-x-1 transition-transform" />
-								</button>
-							</NavLink>
+		<div className="min-h-screen bg-gradient-to-b from-white-50 to-orange-50 ">
 
-							<button
-								onClick={scrollToFeatures}
-								className="text-blue-600 px-4 py-2 md:px-6 md:py-2 rounded-full font-semibold hover:bg-white transform hover:scale-105 transition-all"
-							>
-								Learn More
-							</button>
-						</div>
-					</header>
-
-					{/* Features Section */}
-					<section
-						id="features"
-						className="container mx-auto px-4 md:px-8 py-12 md:py-16 transform transition-transform scroll-mt-16"
-					>
-						<h2 className="text-2xl md:text-3xl font-bold text-center text-orange-900 mb-8 md:mb-12">
-							How We Support You
-						</h2>
-						<div className="grid md:grid-cols-3 gap-6 md:gap-8">
-							{features.map((feature, index) => (
-								<FeatureCard key={index} {...feature} />
-							))}
-						</div>
-					</section>
-
-					<section
-						id="programs"
-						className="container mx-auto px-4 md:px-8 py-12 md:py-16 bg-orange-50 transform  transition-transform scroll-mt-16"
-					>
-						<h2 className="text-2xl md:text-3xl font-bold text-center text-orange-900 mb-8 md:mb-12">
-							Our Wellness Programs
-						</h2>
-						<div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-							{programs.map((program, index) => (
-								<ProgramCard key={index} {...program} />
-							))}
-						</div>
-					</section>
-
-					<section
-						id="testimonials"
-						className="container mx-auto px-4 md:px-8 py-12 md:py-16 transform  transition-transform scroll-mt-16"
-					>
-						<h2 className="text-2xl md:text-3xl font-bold text-center text-orange-900 mb-3 md:mb-4">
-							Success Stories
-						</h2>
-						<p className="text-center text-gray-600 mb-8 md:mb-12">
-							Hear from our community members who have transformed their lives
-						</p>
-						<div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
-							{testimonials.map((testimonial, index) => (
-								<TestimonialCard key={index} {...testimonial} />
-							))}
-						</div>
-					</section>
-
-					<section
-						id="cta"
-						className="py-12 md:py-16 mt-6 md:mt-8 relative overflow-hidden scroll-mt-16"
-					>
-						{/* Gradient Background: White to Light Orange */}
-						<div className="absolute inset-0 bg-gradient-to-r from-orange-50 to-orange-100 opacity-90" />
-
-						{/* Content Section */}
-						<div className="relative container mx-auto px-4 md:px-6 text-center text-gray-900 transform transition-transform">
-							<h2 className="text-3xl md:text-4xl font-bold mb-4 md:mb-6 text-orange-900 drop-shadow-md">
-								Begin Your Wellness Journey Today
-							</h2>
-							<p className="text-base md:text-lg mb-6 md:mb-8 opacity-80 text-gray-700">
-								Take the first step towards lasting mental well-being.
+				<div className="min-h-screen relative overflow-hidden">
+					<WaveBackground />
+					<div className="relative">
+						<header className="container mx-auto px-4 md:px-8 pt-20 pb-16 flex flex-col items-center text-center">
+							<h1 className="text-4xl md:text-5xl font-bold text-blue-900 mb-4 hover:scale-105 transition-transform">
+								Welcome to MindEase
+							</h1>
+							<p className="text-lg md:text-xl text-gray-600 max-w-2xl">
+								Your journey to mental wellness starts here.
 							</p>
+							<div className="inline-flex rounded-full shadow-lg hover:shadow-xl transition-shadow bg-white bg-opacity-50 backdrop-blur-sm p-1 mt-6 md:mt-8">
+								<NavLink to="/register">
+									<button className="bg-blue-500 text-white px-4 py-2 md:px-6 md:py-2 rounded-full font-semibold hover:bg-blue-600 transform hover:scale-105 transition-all flex items-center group">
+										Start Your Journey{" "}
+										<ChevronRight className="ml-2 h-4 w-4 md:h-5 md:w-5 group-hover:translate-x-1 transition-transform" />
+									</button>
+								</NavLink>
 
-							{/* CTA Button */}
-							<button className="bg-orange-500 text-white px-8 py-3 md:px-10 md:py-4 rounded-full font-semibold text-base md:text-lg hover:bg-orange-600 transform hover:scale-110 hover:shadow-xl transition-all duration-300">
-								Get Started Now
-							</button>
-						</div>
-					</section>
+								<button
+									onClick={scrollToFeatures}
+									className="text-blue-600 px-4 py-2 md:px-6 md:py-2 rounded-full font-semibold hover:bg-white transform hover:scale-105 transition-all"
+								>
+									Learn More
+								</button>
+							</div>
+						</header>
 
-					{/* Footer */}
-					<footer className="container mx-auto px-4 py-6 md:py-8 text-center text-gray-600 border-t border-orange-100">
-						© 2025 MindEase. All rights reserved.
-					</footer>
+						{/* Features Section */}
+						<section
+							id="features"
+							className="container mx-auto px-4 md:px-8 py-12 md:py-16 transform transition-transform scroll-mt-16"
+						>
+							<h2 className="text-2xl md:text-3xl font-bold text-center text-orange-900 mb-8 md:mb-12">
+								How We Support You
+							</h2>
+							<div className="grid md:grid-cols-3 gap-6 md:gap-8">
+								{features.map((feature, index) => (
+									<FeatureCard key={index} {...feature} />
+								))}
+							</div>
+						</section>
+
+						<section
+							id="programs"
+							className="container mx-auto px-4 md:px-8 py-12 md:py-16 bg-orange-50 transform  transition-transform scroll-mt-16"
+						>
+							<h2 className="text-2xl md:text-3xl font-bold text-center text-orange-900 mb-8 md:mb-12">
+								Our Wellness Programs
+							</h2>
+							<div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+								{programs.map((program, index) => (
+									<ProgramCard key={index} {...program} />
+								))}
+							</div>
+						</section>
+
+						<section
+							id="testimonials"
+							className="container mx-auto px-4 md:px-8 py-12 md:py-16 transform  transition-transform scroll-mt-16"
+						>
+							<h2 className="text-2xl md:text-3xl font-bold text-center text-orange-900 mb-3 md:mb-4">
+								Success Stories
+							</h2>
+							<p className="text-center text-gray-600 mb-8 md:mb-12">
+								Hear from our community members who have transformed their lives
+							</p>
+							<div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
+								{testimonials.map((testimonial, index) => (
+									<TestimonialCard key={index} {...testimonial} />
+								))}
+							</div>
+						</section>
+
+						<section
+							id="cta"
+							className="py-12 md:py-16 mt-6 md:mt-8 relative overflow-hidden scroll-mt-16"
+						>
+							{/* Gradient Background: White to Light Orange */}
+							<div className="absolute inset-0 bg-gradient-to-r from-orange-50 to-orange-100 opacity-90" />
+
+							{/* Content Section */}
+							<div className="relative container mx-auto px-4 md:px-6 text-center text-gray-900 transform transition-transform">
+								<h2 className="text-3xl md:text-4xl font-bold mb-4 md:mb-6 text-orange-900 drop-shadow-md">
+									Begin Your Wellness Journey Today
+								</h2>
+								<p className="text-base md:text-lg mb-6 md:mb-8 opacity-80 text-gray-700">
+									Take the first step towards lasting mental well-being.
+								</p>
+
+								{/* CTA Button */}
+								<button className="bg-orange-500 text-white px-8 py-3 md:px-10 md:py-4 rounded-full font-semibold text-base md:text-lg hover:bg-orange-600 transform hover:scale-110 hover:shadow-xl transition-all duration-300">
+									Get Started Now
+								</button>
+							</div>
+						</section>
+
+						{/* Footer */}
+						<footer className="container mx-auto px-4 py-6 md:py-8 text-center text-gray-600 border-t border-orange-100">
+							© 2025 MindEase. All rights reserved.
+						</footer>
+					</div>
 				</div>
 			</div>
+
+
 		</Layout>
 	);
 };

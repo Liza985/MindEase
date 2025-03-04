@@ -13,8 +13,13 @@ import {
 } from "lucide-react";
 import React, { useState } from "react";
 import Header from "../../components/Header";
+import { useNavigate } from "react-router-dom";
+
+
 
 const WellnessHub = () => {
+	const navigate = useNavigate(); // ✅ Ensure this is inside the component
+
 	const [activeTab, setActiveTab] = useState("all");
 	const [selectedVideo, setSelectedVideo] = useState(null);
 	const [isSubscribed, setIsSubscribed] = useState(false);
@@ -74,7 +79,7 @@ const WellnessHub = () => {
 			icon: <Music className="w-6 h-6 text-green-500" />,
 			category: "relaxation",
 			imageUrl:
-				"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjexMSq3giVjO21j36L1wK9tFQNSCDYwbPiw&s",
+				"https://krisp.ai/blog/wp-content/uploads/2019/08/Top-relaxing-sounds-to-help-you-focus-1.jpg",
 		},
 		{
 			title: "Mind-Body Exercise",
@@ -163,13 +168,6 @@ const WellnessHub = () => {
 			setIsSubmitting(false);
 		}
 	};
-	// Header title for the section
-	const SectionTitle = ({ title, subtitle }) => (
-		<div className="text-center mb-8">
-			<h2 className="text-3xl font-bold">{title}</h2>
-			<p className="text-gray-600 mt-2">{subtitle}</p>
-		</div>
-	);
 
 	const VideoModal = ({ video, isOpen, onClose }) => {
 		if (!isOpen || !video) return null;
@@ -222,7 +220,7 @@ const WellnessHub = () => {
 	};
 
 	const WaveBackground = () => (
-		<div className="absolute inset-0 bg-gradient-to-b from-sky-50 to-white overflow-hidden">
+		<div className="absolute inset-0 bg-white overflow-hidden mt-10">
 			<div className="absolute w-full h-full">
 				<svg
 					className="absolute w-[200%] left-[-50%] animate-[wave_20s_linear_infinite]"
@@ -344,6 +342,11 @@ const WellnessHub = () => {
 			block: "start",
 		});
 	};
+	const filteredResources =
+		activeTab === "all"
+			? wellnessResources
+			: wellnessResources.filter((resource) => resource.category === activeTab);
+
 
 	return (
 		<>
@@ -352,9 +355,9 @@ const WellnessHub = () => {
 				{/* Hero Section */}
 				<div className="relative h-96 mb-16 overflow-hidden">
 					<WaveBackground />
-					<div className="relative z-10 h-full flex items-center justify-center">
+					<div className="relative z-10 h-full flex items-center justify-center mt-10">
 						<div className="text-center text-black p-8 max-w-4xl mx-auto">
-							<h1 className="text-5xl sm:text-6xl font-bold mb-6">
+							<h1 className="text-5xl sm:text-1xl font-bold mb-6">
 								Welcome to Your Wellness Journey
 							</h1>
 							<p className="text-xl max-w-2xl mx-auto mb-8">
@@ -373,65 +376,48 @@ const WellnessHub = () => {
 					</div>
 				</div>
 
-				{/* Tabs and Resources */}
-				<section
-					id="resources-section"
-					className="py-16 bg-gradient-to-b from-white to-orange-50"
-				>
-					<div className="max-w-6xl mx-auto px-6 mb-16">
-						<h2 className="text-3xl font-bold  text-orange-900 text-center mb-10">
-							Explore Wellness Resources
-						</h2>
+				<section id="resources-section" className="py-16 bg-gradient-to-b from-white to-orange-50">
+			<div className="max-w-6xl mx-auto px-6 mb-16">
+				<h2 className="text-3xl font-bold text-orange-900 text-center mb-10">
+					Explore Wellness Resources
+				</h2>
 
-						{/* Tabs Navigation */}
-						<div className="flex space-x-4 mb-8 bg-white rounded-lg p-2 shadow-md">
-							{["all", "mindfulness", "self-care", "relaxation"].map((tab) => (
-								<button
-									key={tab}
-									onClick={() => setActiveTab(tab)}
-									className={`px-4 py-2 rounded-md flex-1 capitalize transition-colors ${
-										activeTab === tab
-											? "bg-orange-500 text-white"
-											: "hover:bg-orange-50"
-									}`}
-								>
-									{tab}
-								</button>
-							))}
+				{/* Tabs Navigation */}
+				<div className="flex space-x-4 mb-8 bg-white rounded-lg p-2 shadow-md">
+					{["all", "mindfulness", "self-care", "relaxation", "physical"].map((tab) => (
+						<button
+							key={tab}
+							onClick={() => setActiveTab(tab)}
+							className={`px-4 py-2 rounded-md flex-1 capitalize transition-colors ${
+								activeTab === tab ? "bg-orange-500 text-white" : "hover:bg-orange-50"
+							}`}
+						>
+							{tab}
+						</button>
+					))}
+				</div>
+
+				{/* Display Filtered Resources */}
+				<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+					{filteredResources.map((resource, index) => (
+						<div
+							key={index}
+							className="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
+							onClick={() => navigate(`/resource/${encodeURIComponent(resource.title)}`)}
+						>
+							{/* Image */}
+							<img src={resource.imageUrl} alt={resource.title} className="w-full h-48 object-cover" />
+
+							{/* Text Content */}
+							<div className="p-6">
+								<h3 className="text-xl font-semibold">{resource.title}</h3>
+								<p className="text-gray-600">{resource.description}</p>
+							</div>
 						</div>
-
-						{/* Resources Grid */}
-						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-							{wellnessResources
-								.filter(
-									(resource) =>
-										activeTab === "all" || resource.category === activeTab,
-								)
-								.map((resource, index) => (
-									<div
-										key={index}
-										className="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
-									>
-										<img
-											src={resource.imageUrl}
-											alt={resource.title}
-											className="w-full h-48 object-cover"
-										/>
-										<div className="p-6">
-											<div className="flex items-center space-x-4 mb-4">
-												{resource.icon}
-												<h3 className="text-xl font-semibold">
-													{resource.title}
-												</h3>
-											</div>
-											<p className="text-gray-600">{resource.description}</p>
-										</div>
-									</div>
-								))}
-						</div>
-					</div>
-				</section>
-
+					))}
+				</div>
+			</div>
+		</section>
 				{/* Featured Section */}
 				<div className="max-w-6xl mx-auto px-6 mb-16 grid grid-cols-1 md:grid-cols-3 gap-8">
 					{[
@@ -526,144 +512,66 @@ const WellnessHub = () => {
 						))}
 					</div>
 				</div>
+				<div className="flex flex-col md:flex-row gap-6 justify-center items-center p-8">
+      {/* Testimonial 1 */}
+      <div className="p-6 bg-gradient-to-r from-white-100 to-orange-200 text-black shadow-xl rounded-2xl max-w-lg">
+        <div className="space-y-4">
+          <div>
+            <h3 className="text-xl font-bold">John Doe</h3>
+            <p className="text-sm opacity-90">
+              "MindEase has truly changed my life. The wellness resources helped
+              me manage stress and improve my daily routine. Highly recommend!"
+            </p>
+          </div>
 
-				{/* Testimonials */}
-				<div className="max-w-xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
-					<div className="px-8 pt-8 pb-6 bg-gradient-to-r from-blue-50 to-purple-50">
-						<h2 className="text-2xl font-bold text-gray-800">
-							Share Your Experience
-						</h2>
-						<p className="text-gray-600 mt-2">
-							We value your feedback and would love to hear about your wellness
-							journey.
-						</p>
-					</div>
+          <div className="flex items-center">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <svg
+                key={star}
+                className="h-6 w-6 text-yellow-300"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+              </svg>
+            ))}
+            <span className="ml-2 text-sm opacity-80">5 out of 5</span>
+          </div>
+        </div>
+      </div>
 
-					{submitMessage && (
-						<div className="mx-8 mt-4 p-4 bg-green-50 border border-green-200 text-green-700 rounded-lg flex items-center">
-							<svg
-								className="w-5 h-5 mr-2"
-								fill="none"
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								strokeWidth="2"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-							>
-								<path d="M5 13l4 4L19 7"></path>
-							</svg>
-							{submitMessage}
-						</div>
-					)}
+      {/* Testimonial 2 */}
+      <div className="p-6 bg-gradient-to-r from-white to-blue-100 text-black shadow-xl rounded-2xl max-w-lg">
+        <div className="space-y-4">
+          <div>
+            <h3 className="text-xl font-bold">Jane Smith</h3>
+            <p className="text-sm opacity-90">
+              "This platform has been a game-changer for my mental well-being.
+              The guided exercises and resources are invaluable!"
+            </p>
+          </div>
 
-					<form onSubmit={handleSubmit} className="p-8 pt-6">
-						<div className="space-y-6">
-							<div>
-								<label
-									htmlFor="name"
-									className="block text-sm font-medium text-gray-700 mb-1"
-								>
-									Your Name
-								</label>
-								<input
-									type="text"
-									id="name"
-									name="name"
-									value={formData.name}
-									onChange={handleChange}
-									required
-									className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-									placeholder="John Doe"
-								/>
-							</div>
+          <div className="flex items-center">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <svg
+                key={star}
+                className="h-6 w-6 text-yellow-300"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+              </svg>
+            ))}
+            <span className="ml-2 text-sm opacity-80">5 out of 5</span>
+          </div>
+        </div>
+      </div>
+    </div>
+	
 
-							<div>
-								<label
-									htmlFor="text"
-									className="block text-sm font-medium text-gray-700 mb-1"
-								>
-									Your Testimonial
-								</label>
-								<textarea
-									id="text"
-									name="text"
-									value={formData.text}
-									onChange={handleChange}
-									required
-									rows="4"
-									className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-									placeholder="Share how our wellness resources have helped you..."
-								/>
-							</div>
-
-							<div>
-								<label className="block text-sm font-medium text-gray-700 mb-2">
-									Your Rating
-								</label>
-								<div className="flex items-center">
-									{[1, 2, 3, 4, 5].map((star) => (
-										<button
-											key={star}
-											type="button"
-											onClick={() => handleRatingChange(star)}
-											className="mr-1 focus:outline-none p-1"
-										>
-											<Star
-												size={28}
-												className={
-													star <= formData.rating
-														? "text-yellow-400 fill-yellow-400"
-														: "text-gray-300"
-												}
-											/>
-										</button>
-									))}
-									<span className="ml-2 text-sm text-gray-500">
-										{formData.rating
-											? `${formData.rating} out of 5`
-											: "Select a rating"}
-									</span>
-								</div>
-							</div>
-						</div>
-
-						<div className="mt-8">
-							<button
-								type="submit"
-								disabled={isSubmitting}
-								className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
-							>
-								{isSubmitting ? (
-									<span className="flex items-center justify-center">
-										<svg
-											className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-											xmlns="http://www.w3.org/2000/svg"
-											fill="none"
-											viewBox="0 0 24 24"
-										>
-											<circle
-												className="opacity-25"
-												cx="12"
-												cy="12"
-												r="10"
-												stroke="currentColor"
-												strokeWidth="4"
-											></circle>
-											<path
-												className="opacity-75"
-												fill="currentColor"
-												d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-											></path>
-										</svg>
-										Submitting...
-									</span>
-								) : (
-									"Submit Your Testimonial"
-								)}
-							</button>
-						</div>
-					</form>
-				</div>
+				
 				<footer className="bg-white text-black text-center py-4 mt-8">
 					<p>&copy; 2025 MindEase. All rights reserved.</p>
 				</footer>
