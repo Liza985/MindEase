@@ -13,6 +13,8 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import Layout from "../../components/Layout";
 
+
+
 const WaveBackground = () => (
 	<div className="absolute inset-0 bg-white overflow-hidden">
 		{/* First Wave Layer */}

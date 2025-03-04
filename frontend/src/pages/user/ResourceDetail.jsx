@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 // import { AuthContext } from "../../context/AuthContext";
 import Header from "../../components/Header";
 
+
+
 const wellnessResources = [
   {
     title: "Guided Meditation",

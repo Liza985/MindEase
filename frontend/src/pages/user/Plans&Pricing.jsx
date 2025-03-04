@@ -2,6 +2,8 @@ import { CheckCircle, Star } from "lucide-react";
 import { useState } from "react";
 import Header from "../../components/Header.jsx";
 
+
+
 const plans = [
   {
     name: "Starter",

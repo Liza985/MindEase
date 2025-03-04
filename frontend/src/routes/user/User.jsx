@@ -9,6 +9,8 @@ import WellnessHub from "../../pages/user/WellnesaHub";
 import PricingPage from "../../pages/user/Plans&Pricing";
 import ResourceDetail from "../../pages/user/ResourceDetail";
 
+
+
 const User = () => {
 	return (
 		<>
@@ -78,5 +80,6 @@ const User = () => {
 		</>
 	);
 };
+
 
 export default User;
