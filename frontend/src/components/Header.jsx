@@ -1,11 +1,23 @@
 import { useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { LogOut, User } from "lucide-react";
+import { logoutUser } from "../redux/Actions/userAction";
 
 const Header = () => {
 	const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+	const navigate = useNavigate();
+	const dispatch = useDispatch();
+
+	const { isAuthenticated, user } = useSelector((state) => state.user);
 
 	const toggleSidebar = () => {
 		setIsSidebarOpen(!isSidebarOpen);
+	};
+
+	const handleLogout = () => {
+		dispatch(logoutUser());
+		navigate("/");
 	};
 
 	return (
@@ -31,10 +43,10 @@ const Header = () => {
 								How It Works
 							</NavLink>
 							<NavLink
-								to="/pricing"
+								to="/ai-chat"
 								className="text-black hover:text-orange-600 px-2 xl:px-3 py-2 font-normal text-sm xl:text-base"
 							>
-								Plans & Pricing
+								AI Chat
 							</NavLink>
 							<NavLink
 								to="/Counselling"
@@ -49,23 +61,49 @@ const Header = () => {
 								Wellness Hub
 							</NavLink>
 							<NavLink
-								to="/Blogs"
+								to="/blogs"
 								className="text-black hover:text-orange-600 px-2 xl:px-3 py-2 font-normal text-sm xl:text-base"
 							>
 								Blogs
 							</NavLink>
-							<NavLink
-								to="/register"
-								className="text-white bg-orange-500 hover:bg-orange-600 px-4 xl:px-7 py-2 xl:py-3 rounded-full font-normal text-sm xl:text-base transition duration-300"
-							>
-								Sign Up
-							</NavLink>
-							<NavLink
-								to="/login"
-								className="text-orange-500 hover:text-orange-600 bg-white border-2 border-orange-500 px-5 xl:px-8 py-2 xl:py-3 rounded-full font-normal text-sm xl:text-base transition duration-300"
-							>
-								Login
-							</NavLink>
+							{isAuthenticated ? (
+								<div className="flex items-center space-x-4">
+									{/* Profile Section */}
+									<div className="flex items-center space-x-2">
+										<div className="bg-orange-300 w-8 h-8 rounded-full flex items-center justify-center text-orange-800 font-bold text-sm">
+											{user?.firstName?.charAt(0)}
+										</div>
+										<div className="hidden md:block">
+											<h3 className="text-sm font-medium">{user?.firstName}</h3>
+											<p className="text-xs text-gray-500">User</p>
+										</div>
+									</div>
+
+									{/* Logout Button */}
+									<button
+										onClick={handleLogout}
+										className="text-gray-500 hover:text-orange-500 transition"
+										title="Sign Out"
+									>
+										<LogOut size={18} />
+									</button>
+								</div>
+							) : (
+								<div className="flex items-center space-x-4">
+									<NavLink
+										to="/register"
+										className="text-white bg-orange-500 hover:bg-orange-600 px-6 py-2 rounded-full transition"
+									>
+										Sign Up
+									</NavLink>
+									<NavLink
+										to="/login"
+										className="text-orange-500 hover:text-orange-600 border-2 border-orange-500 px-6 py-2 rounded-full transition"
+									>
+										Login
+									</NavLink>
+								</div>
+							)}
 						</div>
 
 						{/* Mobile/Tablet menu button */}
@@ -134,18 +172,18 @@ const Header = () => {
 							How It Works
 						</NavLink>
 						<NavLink
-							to="/pricing"
+							to="/ai-chat"
 							className="block text-black hover:text-orange-600 hover:bg-orange-50 py-3 px-4 rounded-lg text-base sm:text-lg transition duration-300 transform hover:translate-x-2"
 							onClick={toggleSidebar}
 						>
-							Plans & Pricing
+							AI Chat
 						</NavLink>
 						<NavLink
-							to="/counselors"
+							to="/counselling"
 							className="block text-black hover:text-orange-600 hover:bg-orange-50 py-3 px-4 rounded-lg text-base sm:text-lg transition duration-300 transform hover:translate-x-2"
 							onClick={toggleSidebar}
 						>
-							Our Counselors
+							Counselling
 						</NavLink>
 						<NavLink
 							to="/wellness-hub"
@@ -155,28 +193,48 @@ const Header = () => {
 							Wellness Hub
 						</NavLink>
 						<NavLink
-							to="/corporates"
+							to="/blogs"
 							className="block text-black hover:text-orange-600 hover:bg-orange-50 py-3 px-4 rounded-lg text-base sm:text-lg transition duration-300 transform hover:translate-x-2"
 							onClick={toggleSidebar}
 						>
-							Corporates
+							Blogs
 						</NavLink>
-						<div className="pt-6 space-y-3">
-							<NavLink
-								to="/signup"
-								className="block w-full text-center text-white bg-orange-500 hover:bg-orange-600 py-3 rounded-full text-base sm:text-lg transition duration-300 transform hover:scale-105"
-								onClick={toggleSidebar}
-							>
-								Sign Up
-							</NavLink>
-							<NavLink
-								to="/login"
-								className="block w-full text-center text-orange-500 hover:text-orange-600 border-2 border-orange-500 py-3 rounded-full text-base sm:text-lg transition duration-300 transform hover:scale-105"
-								onClick={toggleSidebar}
-							>
-								Login
-							</NavLink>
-						</div>
+						{isAuthenticated ? (
+							<div className="pt-6 space-y-3">
+								<div className="flex items-center space-x-2 py-2">
+									<div className="bg-orange-300 w-8 h-8 rounded-full flex items-center justify-center">
+										{user?.firstName?.charAt(0)}
+									</div>
+									<span>{user?.firstName}</span>
+								</div>
+								<button
+									onClick={() => {
+										handleLogout();
+										toggleSidebar();
+									}}
+									className="w-full text-left py-2 text-red-500"
+								>
+									Logout
+								</button>
+							</div>
+						) : (
+							<div className="pt-6 space-y-3">
+								<NavLink
+									to="/register"
+									className="block w-full text-center text-white bg-orange-500 hover:bg-orange-600 py-3 rounded-full"
+									onClick={toggleSidebar}
+								>
+									Sign Up
+								</NavLink>
+								<NavLink
+									to="/login"
+									className="block w-full text-center text-orange-500 hover:text-orange-600 border-2 border-orange-500 py-3 rounded-full"
+									onClick={toggleSidebar}
+								>
+									Login
+								</NavLink>
+							</div>
+						)}
 					</div>
 				</div>
 			</nav>

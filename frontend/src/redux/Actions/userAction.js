@@ -197,3 +197,23 @@ export const changeUserPassword = (id, password) => async (dispatch) => {
 		});
 	}
 };
+
+export const logoutUser = () => async (dispatch) => {
+	try {
+		dispatch({
+			type: "LOGOUT_USER_REQUEST",
+		});
+		const { data } = await axios.post(`${URL}/logout`, {
+			withCredentials: true,
+		});
+		dispatch({
+			type: "LOGOUT_USER_SUCCESS",
+			payload: data.message,
+		});
+	} catch (error) {
+		dispatch({
+			type: "LOGOUT_USER_FAILURE",
+			payload: error?.response?.data?.message,
+		});
+	}
+};
