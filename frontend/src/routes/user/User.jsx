@@ -9,6 +9,8 @@ import MindeaseForm from "../../pages/user/MindeaseForm";
 import VerifyOtp from "../../pages/VerifyOtp";
 import ForgotPassword from "../../pages/ForgotPassword";
 import ChatbotPage from "../../pages/user/ChatBot";
+import PricingPage from "../../pages/user/Plans&Pricing";
+import ResourceDetail from "../../pages/user/ResourceDetail";
 
 const User = () => {
 	return (
@@ -99,7 +101,17 @@ const User = () => {
 						<ChatbotPage />
 						// </ProtectedRoute>
 					}
-				/>			
+				/>
+				<Route
+					path="/pricing"
+					element={
+						// <ProtectedRoute>
+						<PricingPage />
+						// </ProtectedRoute>
+					}
+				/>
+				      <Route path="/resource/:title" element={<ResourceDetail />} />
+			
 			</Routes>
 		</>
 	);
