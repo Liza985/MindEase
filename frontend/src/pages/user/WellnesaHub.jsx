@@ -13,8 +13,11 @@ import {
 } from "lucide-react";
 import React, { useState } from "react";
 import Header from "../../components/Header";
+import { useNavigate } from "react-router-dom";
 
 const WellnessHub = () => {
+	const navigate = useNavigate(); // ✅ Ensure this is inside the component
+
 	const [activeTab, setActiveTab] = useState("all");
 	const [selectedVideo, setSelectedVideo] = useState(null);
 	const [isSubscribed, setIsSubscribed] = useState(false);
@@ -337,6 +340,11 @@ const WellnessHub = () => {
 			block: "start",
 		});
 	};
+	const filteredResources =
+		activeTab === "all"
+			? wellnessResources
+			: wellnessResources.filter((resource) => resource.category === activeTab);
+
 
 	return (
 		<>
@@ -366,65 +374,48 @@ const WellnessHub = () => {
 					</div>
 				</div>
 
-				{/* Tabs and Resources */}
-				<section
-					id="resources-section"
-					className="py-16 bg-gradient-to-b from-white to-orange-50"
-				>
-					<div className="max-w-6xl mx-auto px-6 mb-16">
-						<h2 className="text-3xl font-bold  text-orange-900 text-center mb-10">
-							Explore Wellness Resources
-						</h2>
+				<section id="resources-section" className="py-16 bg-gradient-to-b from-white to-orange-50">
+			<div className="max-w-6xl mx-auto px-6 mb-16">
+				<h2 className="text-3xl font-bold text-orange-900 text-center mb-10">
+					Explore Wellness Resources
+				</h2>
 
-						{/* Tabs Navigation */}
-						<div className="flex space-x-4 mb-8 bg-white rounded-lg p-2 shadow-md">
-							{["all", "mindfulness", "self-care", "relaxation"].map((tab) => (
-								<button
-									key={tab}
-									onClick={() => setActiveTab(tab)}
-									className={`px-4 py-2 rounded-md flex-1 capitalize transition-colors ${
-										activeTab === tab
-											? "bg-orange-500 text-white"
-											: "hover:bg-orange-50"
-									}`}
-								>
-									{tab}
-								</button>
-							))}
+				{/* Tabs Navigation */}
+				<div className="flex space-x-4 mb-8 bg-white rounded-lg p-2 shadow-md">
+					{["all", "mindfulness", "self-care", "relaxation", "physical"].map((tab) => (
+						<button
+							key={tab}
+							onClick={() => setActiveTab(tab)}
+							className={`px-4 py-2 rounded-md flex-1 capitalize transition-colors ${
+								activeTab === tab ? "bg-orange-500 text-white" : "hover:bg-orange-50"
+							}`}
+						>
+							{tab}
+						</button>
+					))}
+				</div>
+
+				{/* Display Filtered Resources */}
+				<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+					{filteredResources.map((resource, index) => (
+						<div
+							key={index}
+							className="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
+							onClick={() => navigate(`/resource/${encodeURIComponent(resource.title)}`)}
+						>
+							{/* Image */}
+							<img src={resource.imageUrl} alt={resource.title} className="w-full h-48 object-cover" />
+
+							{/* Text Content */}
+							<div className="p-6">
+								<h3 className="text-xl font-semibold">{resource.title}</h3>
+								<p className="text-gray-600">{resource.description}</p>
+							</div>
 						</div>
-
-						{/* Resources Grid */}
-						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-							{wellnessResources
-								.filter(
-									(resource) =>
-										activeTab === "all" || resource.category === activeTab,
-								)
-								.map((resource, index) => (
-									<div
-										key={index}
-										className="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
-									>
-										<img
-											src={resource.imageUrl}
-											alt={resource.title}
-											className="w-full h-48 object-cover"
-										/>
-										<div className="p-6">
-											<div className="flex items-center space-x-4 mb-4">
-												{resource.icon}
-												<h3 className="text-xl font-semibold">
-													{resource.title}
-												</h3>
-											</div>
-											<p className="text-gray-600">{resource.description}</p>
-										</div>
-									</div>
-								))}
-						</div>
-					</div>
-				</section>
-
+					))}
+				</div>
+			</div>
+		</section>
 				{/* Featured Section */}
 				<div className="max-w-6xl mx-auto px-6 mb-16 grid grid-cols-1 md:grid-cols-3 gap-8">
 					{[
