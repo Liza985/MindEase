@@ -1,17 +1,20 @@
 import React from "react";
+import { Clock, FileText, MessageSquare } from 'lucide-react';
+import { useNavigate } from "react-router-dom";
 
 const LandingPage = () => {
+	const navigate=useNavigate();
 	return (
 		<div className="flex flex-col min-h-screen">
 			<header className="bg-orange-500 text-white shadow-md">
 				<div className="container mx-auto px-4 py-3 flex justify-between items-center">
-					<h1 className="text-2xl font-bold">VolunteerConnect</h1>
+					<h1 className="text-2xl font-bold">MindEaseConnect</h1>
 					<div className="space-x-4">
 						<button
-							onClick={() => navigate("/dashboard")}
+							onClick={() => navigate("/volunteerDashboard")}
 							className="bg-white text-orange-600 px-4 py-2 rounded-md font-medium hover:bg-orange-100 transition"
 						>
-							Volunteer Login
+							MindEaseConnect Login
 						</button>
 					</div>
 				</div>
@@ -66,7 +69,7 @@ const LandingPage = () => {
 					</div>
 
 					<button
-						onClick={() => navigate("/dashboard")}
+						onClick={() => navigate("/volunteerDashboard")}
 						className="bg-orange-600 text-white px-8 py-3 rounded-lg font-medium text-lg hover:bg-orange-700 transition shadow-md"
 					>
 						Start Volunteering
@@ -74,10 +77,10 @@ const LandingPage = () => {
 				</div>
 			</main>
 
-			<footer className="bg-orange-600 text-white py-6">
-				<div className="container mx-auto px-4 text-center">
-					<p>© 2025 MindEaseConnect. All rights reserved.</p>
-				</div>
+			<footer className="bg-white shadow-sm border-t border-gray-200 p-4 text-center text-black-800">
+				<p className="text-sm">
+					&copy; 2025 MindEaseConnect. All rights reserved.
+				</p>
 			</footer>
 		</div>
 	);

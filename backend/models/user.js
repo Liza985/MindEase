@@ -90,6 +90,7 @@ const userSchema=mongoose.Schema({
     },
     registerOtpLockUntil: {
         type: Date,
+        default:undefined
     },
     loginAttempts: {
         type: Number,

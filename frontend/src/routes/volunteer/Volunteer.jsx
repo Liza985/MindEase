@@ -6,6 +6,7 @@ import Chat from "../../pages/volunteer/Chat";
 import Dashboard from "../../pages/volunteer/Dashboard";
 import LandingPage from "../../pages/volunteer/LandingPage";
 import Request from "../../pages/volunteer/Request";
+import ChatbotAssistant from "../../pages/volunteer/ChatAssistant";
 
 const Volunteer = () => {
 	return (
@@ -20,7 +21,7 @@ const Volunteer = () => {
 					}
 				/>
 				<Route
-					path="volunteerDashboard"
+					path="/volunteerDashboard"
 					element={
 						//<AuthRoute>
 						<Dashboard />
@@ -48,6 +49,14 @@ const Volunteer = () => {
 					element={
 						//<AuthRoute>
 						<Blog />
+						//</AuthRoute>
+					}
+				/>
+				<Route
+					path="/ai"
+					element={
+						//<AuthRoute>
+						<ChatbotAssistant/>
 						//</AuthRoute>
 					}
 				/>

@@ -1,4 +1,3 @@
-import React from "react";
 import { Route, Routes } from "react-router-dom";
 import Auth from "../../pages/Auth";
 import Blogs from "../../pages/user/Blogs";
@@ -6,10 +5,10 @@ import CounselingPage from "../../pages/user/Counsellors";
 import Home from "../../pages/user/Home";
 import HowItWorks from "../../pages/user/HowItWorks";
 import WellnessHub from "../../pages/user/WellnesaHub";
-import PricingPage from "../../pages/user/Plans&Pricing";
-import ResourceDetail from "../../pages/user/ResourceDetail";
-
-
+import MindeaseForm from "../../pages/user/MindeaseForm";
+import VerifyOtp from "../../pages/VerifyOtp";
+import ForgotPassword from "../../pages/ForgotPassword";
+import ChatbotPage from "../../pages/user/ChatBot";
 
 const User = () => {
 	return (
@@ -31,6 +30,26 @@ const User = () => {
 						<Auth />
 						//</AuthRoute>
 					}
+				/>
+				<Route
+					path="/verify/:id"
+					element={
+						//<AuthRoute>
+						<VerifyOtp />
+						//</AuthRoute>
+					}
+				/>
+				<Route
+					path="/forgot-password"
+					element={<ForgotPassword />}
+				/>
+				<Route
+					path="/forgot-password/:id"
+					element={<ForgotPassword />}
+				/>
+				<Route
+					path="/changepassword/:id"
+					element={<ForgotPassword />}
 				/>
 				<Route path="/" element={<Home />} />
 				<Route
@@ -65,17 +84,22 @@ const User = () => {
 						// </ProtectedRoute>
 					}
 				/>
-				
 				<Route
-					path="/pricing"
+					path="/survey"
 					element={
 						// <ProtectedRoute>
-						<PricingPage />
+						<MindeaseForm />
 						// </ProtectedRoute>
 					}
-				/>
-				      <Route path="/resource/:title" element={<ResourceDetail />} />
-
+				/>		
+				<Route
+					path="/aichat"
+					element={
+						// <ProtectedRoute>
+						<ChatbotPage />
+						// </ProtectedRoute>
+					}
+				/>			
 			</Routes>
 		</>
 	);

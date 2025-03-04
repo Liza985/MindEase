@@ -40,9 +40,9 @@ const Dashboard = () => {
 		<>
 			<VolHeader />
 			<div className="min-h-screen bg-gray-50">
-				<h1 className="text-2xl font-semibold p-6 pt-8 text-gray-800">
+				<h2 className="text-2xl font-semibold p-6 pt-8 text-gray-800">
 					Dashboard
-				</h1>
+				</h2>
 				<main className="p-6 max-w-7xl mx-auto">
 					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
 						<StatCard
@@ -102,11 +102,11 @@ const Dashboard = () => {
 						</div>
 					</div>
 				</main>
-				<footer className="bg-orange-600 text-white py-6">
-					<div className="container mx-auto px-4 text-center">
-						<p>© 2025 MindEaseConnect. All rights reserved.</p>
-					</div>
-				</footer>
+				<footer className="bg-white shadow-sm border-t border-gray-200 p-4 text-center text-black-800">
+				<p className="text-sm">
+					&copy; 2025 MindEaseConnect. All rights reserved.
+				</p>
+			</footer>
 			</div>
 		</>
 	);

@@ -1,7 +1,9 @@
 import React from "react";
 import Header from "../../components/Header";
+import { useNavigate } from "react-router-dom";
 
 const CounselingPage = () => {
+	const navigate=useNavigate();
 	return (
 		<>
 			<div className="min-h-screen flex flex-col bg-orange-50 pt-20">
@@ -31,7 +33,8 @@ const CounselingPage = () => {
 								Connect with our AI assistant for immediate guidance and
 								resources. Available 24/7 for your convenience.
 							</p>
-							<button className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-6 rounded-full transition-colors duration-300">
+							<button onClick={() => navigate("/aichat")} 
+							className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-6 rounded-full transition-colors duration-300">
 								Start AI Chat
 							</button>
 						</div>
@@ -61,3 +64,4 @@ const CounselingPage = () => {
 };
 
 export default CounselingPage;
+

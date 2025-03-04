@@ -4,16 +4,15 @@ import { BACKEND_URL } from "../../constants/url";
 ///backend_url imported from constants
 const URL = BACKEND_URL + "api/v1/user";
 
-
-export const loginUser = (email, password) => async (dispatch) => {
+export const loginUser = (details) => async (dispatch) => {
 	try {
 		dispatch({
 			type: "USER_LOGIN_REQUEST",
 		});
-		
+
 		const { data } = await axios.post(
 			`${URL}/login`,
-			{ email, password },
+			details,
 			{
 				headers: {
 					"content-Type": "application/json",
@@ -21,7 +20,7 @@ export const loginUser = (email, password) => async (dispatch) => {
 				withCredentials: true,
 			}
 		);
-		// console.log(data);
+		console.log(data);
 
 		dispatch({
 			type: "USER_LOGIN_SUCCESS",
@@ -44,19 +43,19 @@ export const registerUser = (details) => async (dispatch) => {
 			type: "USER_REGISTER_REQUEST",
 		});
 		console.log("working2");
-		console.log(details)
-		const { data } = await axios.post(`${URL}/register`, (details), {
+		console.log(details);
+		const { data } = await axios.post(`${URL}/register`, details, {
 			headers: {
 				"Content-Type": "application/json",
 			},
 			withCredentials: true,
 		});
-		// console.log(data);
+		console.log(data);
 		dispatch({
 			type: "USER_REGISTER_SUCCESS",
 			payload: {
 				message: data.message,
-				id: data.data,
+				id: data.data._id,
 			},
 		});
 	} catch (error) {
@@ -100,6 +99,7 @@ export const resendRegisterOtp = (id) => async (dispatch) => {
 		dispatch({
 			type: "RESEND_REGISTER_OTP_REQUEST",
 		});
+		// console.log(id)
 		const { data } = await axios.get(`${URL}/resend/${id}`);
 		dispatch({
 			type: "RESEND_REGISTER_OTP_SUCCESS",
@@ -119,7 +119,7 @@ export const forgotUserPassword = (email) => async (dispatch) => {
 			type: "FORGOT_USER_PASSWORD_REQUEST",
 		});
 		const { data } = await axios.post(
-			`${URL}/forgotPassword`,
+			`${URL}/forgetPassword`,
 			{ email },
 			{
 				headers: {
@@ -175,7 +175,7 @@ export const changeUserPassword = (id, password) => async (dispatch) => {
 		dispatch({
 			type: "CHANGE_USER_PASSWORD_REQUEST",
 		});
-		const { data } = await axios.put(
+		const { data } = await axios.post(
 			`${URL}/changePassword/${id}`,
 			{ password },
 			{
@@ -185,6 +185,7 @@ export const changeUserPassword = (id, password) => async (dispatch) => {
 				withCredentials: true,
 			}
 		);
+		console.log(data);
 		dispatch({
 			type: "CHANGE_USER_PASSWORD_SUCCESS",
 			payload: data.message,
@@ -192,6 +193,26 @@ export const changeUserPassword = (id, password) => async (dispatch) => {
 	} catch (error) {
 		dispatch({
 			type: "CHANGE_USER_PASSWORD_FAILURE",
+			payload: error?.response?.data?.message,
+		});
+	}
+};
+
+export const logoutUser = () => async (dispatch) => {
+	try {
+		dispatch({
+			type: "LOGOUT_USER_REQUEST",
+		});
+		const { data } = await axios.post(`${URL}/logout`, {
+			withCredentials: true,
+		});
+		dispatch({
+			type: "LOGOUT_USER_SUCCESS",
+			payload: data.message,
+		});
+	} catch (error) {
+		dispatch({
+			type: "LOGOUT_USER_FAILURE",
 			payload: error?.response?.data?.message,
 		});
 	}

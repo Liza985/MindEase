@@ -2,170 +2,177 @@ import { sendEMail } from "../middlewares/sendMail.js";
 import User from "../models/user.js";
 import { message } from "../utils/message.js";
 import { Response } from "../utils/response.js";
-import fs from "fs"
-import path from "path"
+import fs from "fs";
+import path from "path";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export const registerUser = async (req,res) => {
-    try{
-        const{
-            firstName,
-            middleName,
-            lastName,
-            email,
-            password,
-            dateOfBirth,
-            gender,
-            phoneNumber,
-            isVolunteer, 
-        } = req.body;
+export const registerUser = async (req, res) => {
+	try {
+		const {
+			firstName,
+			middleName,
+			lastName,
+			email,
+			password,
+			dateOfBirth,
+			gender,
+			phoneNumber,
+			isVolunteer,
+		} = req.body;
 
 		//check body data
-        if(
-            !firstName ||
-            !lastName ||
-            !email ||
-            !password ||
-            !dateOfBirth ||
-            !gender ||
-            !phoneNumber 
-        ) {
-            return Response(res, 400, false, message.missingFieldMessage);
-        }
-		
-        //checking user
-        let user = await User.findOne({email});
-        if(user){
-            return Response(res, 400, false, message.userAlreadyExist)
-        }
+		if (
+			!firstName ||
+			!lastName ||
+			!email ||
+			!password ||
+			!dateOfBirth ||
+			!gender ||
+			!phoneNumber
+		) {
+			return Response(res, 400, false, message.missingFieldMessage);
+		}
 
-        user = await User.create({ ...req.body })
+		//checking user
+		let user = await User.findOne({ email });
+		if (user) {
+			return Response(res, 400, false, message.userAlreadyExist);
+		}
 
-        //generating otp
-        const otp = Math.floor(100000 + Math.random() * 900000)
-        const otpExpire = new Date(Date.now() + 5 * 60 * 1000)
-        user.registerOtp = otp
-        user.registerOtpExpire = otpExpire
+		user = await User.create({ ...req.body });
 
-        //save user 
-        await user.save()
+		//generating otp
+		const otp = Math.floor(100000 + Math.random() * 900000);
+		const otpExpire = new Date(Date.now() + 5 * 60 * 1000);
+		user.registerOtp = otp;
+		user.registerOtpExpire = otpExpire;
+
+		//save user
+		await user.save();
 
 		//generate token
-		// const token = await user.generateToken(); 
+		// const token = await user.generateToken();
 
-        //verification email
-        let emailTemplate = fs.readFileSync(
-            path.join(__dirname, "../templates/mail.html"),
-            "utf-8"
-        );
-        const subject = "Verify your account";
-        emailTemplate = emailTemplate.replace("{{OTP_CODE}}",otp);
-        emailTemplate = emailTemplate.replaceAll("{{MAIL}}",process.env.SMTP_USER);
-        emailTemplate = emailTemplate.replace("{{PORT}}",process.env.PORT);
-        emailTemplate = emailTemplate.replace("{{USER_ID}}",user._id.toString());
-        await sendEMail({ email, subject, html: emailTemplate});
+		//verification email
+		let emailTemplate = fs.readFileSync(
+			path.join(__dirname, "../templates/mail.html"),
+			"utf-8",
+		);
+		const subject = "Verify your account";
+		emailTemplate = emailTemplate.replace("{{OTP_CODE}}", otp);
+		emailTemplate = emailTemplate.replaceAll("{{MAIL}}", process.env.SMTP_USER);
+		emailTemplate = emailTemplate.replace("{{PORT}}", process.env.PORT);
+		emailTemplate = emailTemplate.replace("{{USER_ID}}", user._id.toString());
+		await sendEMail({ email, subject, html: emailTemplate });
 
-        //create user
-		return Response(res, 200, true, message.userCreatedMessage,user)
-        //send response
+		//create user
+		return Response(res, 200, true, message.userCreatedMessage, user);
+		//send response
 	} catch (error) {
-		
 		Response(res, 500, false, error?.message);
-    }
+	}
 };
 
-export const verifyUser = async(req, res) => {
-    try{
-        //fetching id and otp 
-        const{ id } = req.params
-        let { otp } = req.body
+export const verifyUser = async (req, res) => {
+	try {
+		//fetching id and otp
+		const { id } = req.params;
+		let { otp } = req.body;
+		console.log(otp);
 
-        //checking id
-        if(!id){
-            return Response(res, 404, false, message.idNotFound);
-        }
-        //finding user
-        let user = await User.findById(id);
-        //if user exist or not
-        if(!user){
-            return Response(res, 404, false, message.userNotFound);
-        }
-        // user already verified 
-        if(user.isVerified){
-            return Response(res, 400, false, message.userAlreadyVerified);
-        }
+		//checking id
+		if (!id) {
+			return Response(res, 404, false, message.idNotFound);
+		}
+		//finding user
+		let user = await User.findById(id);
+		//if user exist or not
+		if (!user) {
+			return Response(res, 404, false, message.userNotFound);
+		}
+		console.log("first");
+		// user already verified
+		if (user.isVerified) {
+			return Response(res, 400, false, message.userAlreadyVerified);
+		}
 
-        // otp attempt lock or not 
-        if(user.registerOtpLockUntil > Date.now()) {
-            user.registerOtp = undefined;
-            user.registerOtpExpire = undefined;
-            user.registerOtpAttempts = 0;
-            await user.save()
-            return Response(
-                res,
-                400,
-                false,
-                `Try again after ${Math.floor(
-                    (user.registerOtpLockUntil -Date.now()) % (60 *1000)
-                )} minutes and ${Math.floor(
-                    (user.registerOtpLockUntil - DESTRUCTION.now()) % 1000
-                )} seconds`
-            );
-        }
+		// otp attempt lock or not
+		if (user.registerOtpLockUntil > Date.now()) {
+			user.registerOtp = undefined;
+			user.registerOtpExpire = undefined;
+			user.registerOtpAttempts = 0;
+			await user.save();
+			return Response(
+				res,
+				400,
+				false,
+				`Try again after ${Math.floor(
+					(user.registerOtpLockUntil - Date.now()) % (60 * 1000),
+				)} minutes and ${Math.floor(
+					(user.registerOtpLockUntil - DESTRUCTION.now()) % 1000,
+				)} seconds`,
+			);
+		}
+		console.log("first1");
+		// checking otp attempts
+		if (user.registerOtpAttempts >= 3) {
+			user.registerOtp = undefined;
+			user.registerOtpExpire = undefined;
+			user.registerOtpAttempts = 0;
+			user.registerOtpLockUntil =
+				Date.now() + process.env.REGISTER_OTP_LOCK * 60 * 1000;
+			await user.save();
+			return Response(res, 400, false, message.otpAttemptsExceed);
+		}
+		// check otp
 
-        // checking otp attempts
-        if (user.registerOtpAttempts >= 3) {
-            user.registerOtp = undefined;
-            user.registerOtpExpire = undefined;
-            user.registerOtpAttempts = 0;
-            user.registerOtpLockUntil = 
-                Date.now() + process.env.REGISTER_OTP_LOCK * 60 *1000;
-                await user.save();
-                return Response(res, 400, false, message.otpAttemptsExceed);
-        }
-        // check otp 
-        if(!otp){
-            user.registerOtpAttempts +=1;
-            await user.save();
-            return Response(res, 400, false, message.otpNotFound);
-        }
-        // check otp expire 
-        if (user.registerOtpExpire < Date.now()) {
+		otp = Number(otp);
+		if (!otp) {
+			user.registerOtpAttempts += 1;
+			await user.save();
+			return Response(res, 400, false, message.otpNotFound);
+		}
+		console.log("first2");
+		// check otp expire
+		if (user.registerOtpExpire < Date.now()) {
 			user.registerOtp = undefined;
 			user.registerOtpAttempts = 0;
 			user.registerOtpLockUntil = undefined;
 			await user.save();
 			return Response(res, 400, false, message.otpExpire);
 		}
-        // update user 
-        user.isVerified = true;
-        user.registerOtp = undefined;
+		// update user
+		user.isVerified = true;
+		user.registerOtp = undefined;
 		user.registerOtpExpire = undefined;
 		user.registerOtpAttempts = 0;
 		user.registerOtpLockUntil = undefined;
 		await user.save();
-        // authenticate user
-        const token = await user.generateToken();
+		// authenticate user
+
+		const token = await user.generateToken();
 		const options = {
 			expires: new Date(
-				Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000
+				Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000,
 			),
 			httpOnly: true,
 			sameSite: "none",
 			secure: true,
 		};
-        // sending response 
-        res.status(200).cookie("token", token, options).json({
-            success: true,
-            message: message.userVerified,
-            data: user,
-        });
-    } catch(error){
-        return Response(res, 500, false, error.message);
-    }
+
+		// sending response
+		res.status(200).cookie("token", token, options).json({
+			success: true,
+			message: message.userVerified,
+			data: user,
+		});
+	} catch (error) {
+		console.log(error);
+		return Response(res, 500, false, error.message);
+	}
 };
 
 export const resendOtp = async (req, res) => {
@@ -173,6 +180,7 @@ export const resendOtp = async (req, res) => {
 		//params and body
 		const { id } = req.params;
 		//checking id
+
 		if (!id) {
 			return Response(res, 400, false, message.idNotFoundMessage);
 		}
@@ -186,10 +194,11 @@ export const resendOtp = async (req, res) => {
 		if (user.isVerified) {
 			return Response(res, 400, false, message.userAlreadyVerified);
 		}
+
 		//generate new otp
 		const otp = Math.floor(100000 + Math.random() * 900000);
 		const otpExpire = new Date(
-			Date.now() + process.env.REGISTER_OTP_EXPIRE * 15 * 60 * 1000
+			Date.now() + process.env.REGISTER_OTP_EXPIRE * 15 * 60 * 1000,
 		);
 		//save otp
 		user.registerOtp = otp;
@@ -197,10 +206,10 @@ export const resendOtp = async (req, res) => {
 		user.registerOtpAttempts = 0;
 		await user.save();
 		//send otp
-
+		console.log("first");
 		let emailTemplate = fs.readFileSync(
 			path.join(__dirname, "../templates/mail.html"),
-			"utf-8"
+			"utf-8",
 		);
 		const subject = "Verify your account";
 
@@ -221,12 +230,15 @@ export const loginUser = async (req, res) => {
 	try {
 		//params and body
 		const { email, password } = req.body;
+		console.log(email);
+		console.log(password);
 		//checking data
 		if (!email || !password) {
 			return Response(res, 400, false, message.missingFieldMessage);
 		}
 		//find user
 		let user = await User.findOne({ email }).select("+password");
+		console.log(user);
 		//user exist aur not
 		if (!user) {
 			return Response(res, 400, false, message.userNotFoundMessage);
@@ -246,7 +258,7 @@ export const loginUser = async (req, res) => {
 		if (user.loginAttempts >= process.env.MAX_LOGIN_ATTEMPTS) {
 			user.loginAttempts = 0;
 			user.lockUntil = new Date(
-				Date.now() + process.env.MAX_LOGIN_ATTEMPTS_EXPIRE * 60 * 1000
+				Date.now() + process.env.MAX_LOGIN_ATTEMPTS_EXPIRE * 60 * 1000,
 			);
 			await user.save();
 			return Response(res, 400, false, message.loginLockedMessage);
@@ -266,7 +278,7 @@ export const loginUser = async (req, res) => {
 		const token = await user.generateToken();
 		const options = {
 			expires: new Date(
-				Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000
+				Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000,
 			),
 			httpOnly: true,
 			sameSite: "none",
@@ -283,52 +295,54 @@ export const loginUser = async (req, res) => {
 	}
 };
 
-export const forgetPassword = async(req, res) => {
-    try{
-        // parse data 
-        const { email } = req.body;
+export const forgetPassword = async (req, res) => {
+	try {
+		// parse data
+		const { email } = req.body;
+		console.log(email);
 
-        //checking data
-        if(!email){
-            return Response(res, 400, false, message.missingFieldMessage);
-        }
+		//checking data
+		if (!email) {
+			return Response(res, 400, false, message.missingFieldMessage);
+		}
 
-        //checking user
-        let user = await User.findOne({email});
-        if(!user){
-            return Response(res, 400, false, message.userNotFound);
-        }
+		//checking user
+		let user = await User.findOne({ email });
+		if (!user) {
+			return Response(res, 400, false, message.userNotFound);
+		}
 
-        //generate otp for reset 
-        const otp = Math.floor(100000 + Math.random() * 900000);
-        const otpExpire = new Date(
-            Date.now() + process.env.OTP_EXPIRE * 15 * 60 * 1000
-        );
+		//generate otp for reset
+		const otp = Math.floor(100000 + Math.random() * 900000);
+		const otpExpire = new Date(
+			Date.now() + process.env.OTP_EXPIRE * 15 * 60 * 1000,
+		);
 
-        let emailTemplate = fs.readFileSync(
-            path.join(__dirname, "../templates/mail.html"),
-        );
-        const subject = "Reset your password";
-        //const body = `Your OTP is ${otp}`;
+		let emailTemplate = fs.readFileSync(
+			path.join(__dirname, "../templates/mail.html"),
+			"utf-8",
+		);
+		const subject = "Reset your password";
+		//const body = `Your OTP is ${otp}`;
 
-        emailTemplate = emailTemplate.replace("{{OTP_CODE}}", otp);
-        emailTemplate = emailTemplate.replaceAll("{{MAIL}}", process.env.SMTP_USER);
+		emailTemplate = emailTemplate.replace("{{OTP_CODE}}", otp);
+		emailTemplate = emailTemplate.replaceAll("{{MAIL}}", process.env.SMTP_USER);
 		emailTemplate = emailTemplate.replace("{{PORT}}", process.env.PORT);
 		emailTemplate = emailTemplate.replace("{{USER_ID}}", user._id.toString());
 
-        await sendEMail({ email: user.email , subject, html: emailTemplate});
+		await sendEMail({ email: user.email, subject, html: emailTemplate });
 
-        //save values
-        user.resetPassword = otp;
-        user.resetPasswordExpire = otpExpire;
-        await user.save();
+		//save values
+		user.resetPassword = otp;
+		user.resetPasswordExpire = otpExpire;
+		await user.save();
 
-        //send response 
-        Response(res, 200, true, message.otpSendMessage, user._id);
-
-    } catch (error){
-        Response(res, 500, false, error.message);
-    }
+		//send response
+		Response(res, 200, true, message.otpSendMessage, user._id);
+	} catch (error) {
+		console.log(error);
+		Response(res, 500, false, error.message);
+	}
 };
 
 export const resetPassword = async (req, res) => {
@@ -368,7 +382,7 @@ export const resetPassword = async (req, res) => {
 			user.resetPasswordExpire = undefined;
 			user.resetPasswordAttempts = 0;
 			user.resetPasswordLock = new Date(
-				Date.now() + process.env.MAX_RESET_LOCK * 60 * 1000
+				Date.now() + process.env.MAX_RESET_LOCK * 60 * 1000,
 			);
 			await user.save();
 			return Response(res, 400, false, message.otpAttemptsExceed);
@@ -432,66 +446,61 @@ export const changePassword = async (req, res) => {
 	}
 };
 
-export const logoutUser = async(req, res) => {
-    try{
-        res.cookie("token", null, {
-            expires: new Date(Date.now()),
-            httpOnly: true,
-            sameSite: "none",
-            secure: true,
-        });
-        Response(res, 200, true, message.logoutMessage);
-    } catch(error){
-        Response(res, 500, false, error.message);
-    }
-}
-
-export const getUserProfile=async(req,res)=>{
+export const logoutUser = async (req, res) => {
 	try {
-		if(!req.user){
-			return Response(res,400,false.message.userNotFound);
-		}
-		const user=await User.findById(req.user._id);
-		Response(res,200,true,message.userProfileFoundMessage,user);
-
+		res.cookie("token", null, {
+			expires: new Date(Date.now()),
+			httpOnly: true,
+			sameSite: "none",
+			secure: true,
+		});
+		Response(res, 200, true, message.logoutMessage);
 	} catch (error) {
-		Response(res,500,false,error.message);
+		Response(res, 500, false, error.message);
 	}
-}
+};
 
-
-export const updateUserProfile=async(req,res)=>{
+export const getUserProfile = async (req, res) => {
 	try {
-		const user=await User.findIdAndUpdate(req.user._id,req.body,{
+		if (!req.user) {
+			return Response(res, 400, false.message.userNotFound);
+		}
+		const user = await User.findById(req.user._id);
+		Response(res, 200, true, message.userProfileFoundMessage, user);
+	} catch (error) {
+		Response(res, 500, false, error.message);
+	}
+};
+
+export const updateUserProfile = async (req, res) => {
+	try {
+		const user = await User.findIdAndUpdate(req.user._id, req.body, {
 			new: true,
 			runValidators: true,
 			timestamps: true,
 			upsert: true,
-		})
+		});
 
 		if (!user) {
 			return Response(res, 404, false, message.userNotFound);
 		}
-		
+
 		Response(res, 200, true, message.userProfileUpdatedMessage, user);
 	} catch (error) {
-		Response(res,500,false,error.message);
+		Response(res, 500, false, error.message);
 	}
-}
+};
 
-
-export const getUserActivityLog=async(req,res)=>{
+export const getUserActivityLog = async (req, res) => {
 	try {
-		
 	} catch (error) {
-		Response(res,500,false,error.message);
+		Response(res, 500, false, error.message);
 	}
-}
+};
 
-export const deleteUser=async(req,res)=>{
+export const deleteUser = async (req, res) => {
 	try {
-		
 	} catch (error) {
-		Response(res,500,false,error.message);
+		Response(res, 500, false, error.message);
 	}
-}
+};

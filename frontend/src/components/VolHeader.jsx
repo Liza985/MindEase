@@ -1,5 +1,7 @@
 import {
+	AsteriskSquareIcon,
 	Bell,
+	BotIcon,
 	Clock,
 	FileText,
 	Home,
@@ -12,7 +14,7 @@ import { Link, useNavigate } from "react-router-dom";
 export const VolHeader = ({ title }) => {
 	const navigate = useNavigate();
 	const links = [
-		{ name: "Dashboard", icon: <Home size={18} />, path: "/dashboard" },
+		{ name: "Dashboard", icon: <Home size={18} />, path: "/volunteerDashboard" },
 		{ name: "Requests", icon: <Clock size={18} />, path: "/requests" },
 		{ name: "Chats", icon: <MessageSquare size={18} />, path: "/chat" },
 		{ name: "Blogs", icon: <FileText size={18} />, path: "/article" },
@@ -33,7 +35,7 @@ export const VolHeader = ({ title }) => {
 							<Link
 								key={link.name}
 								to={link.path}
-								className="flex items-center space-x-1 text-gray-600 hover:text-orange-500 transition"
+								className="flex items-center space-x-1 text-black-800 hover:text-orange-500 transition"
 							>
 								{link.icon}
 								<span>{link.name}</span>
@@ -42,11 +44,9 @@ export const VolHeader = ({ title }) => {
 					</nav>
 
 					{/* Notification Bell */}
-					<button className="text-gray-500 hover:text-orange-500 transition relative">
-						<Bell size={20} />
-						<span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-							3
-						</span>
+					<button  onClick={()=>navigate("/ai")}
+					className="text-black-800 hover:text-orange-500 transition relative">
+						<BotIcon size={28} />
 					</button>
 
 					{/* User Profile */}

@@ -62,6 +62,10 @@ const volunteerSchema = mongoose.Schema(
 				feedback: { type: String },
 			},
 		],
+		Blogs:[{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Blog",
+		}],   
 		isVerified: {
 			type: Boolean,
 			default: false,
