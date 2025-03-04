@@ -6,7 +6,8 @@ import CounselingPage from "../../pages/user/Counsellors";
 import Home from "../../pages/user/Home";
 import HowItWorks from "../../pages/user/HowItWorks";
 import WellnessHub from "../../pages/user/WellnesaHub";
-
+import MentalStateForm from "../../pages/user/MentalStateForm";
+import PricingPage from "../../pages/user/Plans&Pricing";
 const User = () => {
 	return (
 		<>
@@ -58,6 +59,22 @@ const User = () => {
 					element={
 						// <ProtectedRoute>
 						<Blogs />
+						// </ProtectedRoute>
+					}
+				/>
+				<Route
+					path="/mind-ease"
+					element={
+						// <ProtectedRoute>
+						<MentalStateForm />
+						// </ProtectedRoute>
+					}
+				/>
+				<Route
+					path="/pricing"
+					element={
+						// <ProtectedRoute>
+						<PricingPage />
 						// </ProtectedRoute>
 					}
 				/>
