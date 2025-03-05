@@ -6,8 +6,8 @@ const surveySchema = mongoose.Schema({
 		required: true,
         default: () => new mongoose.Types.ObjectId(),
 	},
-    name:{
-        type:String,
+    userId:{
+        type:mongoose.Schema.Types.ObjectId,
         required:true,
     },
     questions:[{

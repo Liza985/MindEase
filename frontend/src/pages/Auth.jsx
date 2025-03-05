@@ -70,8 +70,8 @@ const Auth = () => {
 			dispatch({ type: "CLEAR_MESSAGE" });
 			if (message.includes("Login Successful")) {
 				navigate("/");
-			} else if (id?._id) {
-				navigate(`/verify/${id._id}`);
+			} else if (message.includes("User registered successfully")) {
+				navigate(`/verify/${id}`);
 			}
 		}
 		if (error) {

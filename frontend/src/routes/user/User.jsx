@@ -103,7 +103,7 @@ const User = () => {
 					}
 				/>
 				<Route
-					path="/pricing"
+					path="/plans&pricing"
 					element={
 						// <ProtectedRoute>
 						<PricingPage />

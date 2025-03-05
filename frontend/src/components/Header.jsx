@@ -70,10 +70,10 @@ const Header = () => {
 								How It Works
 							</NavLink>
 							<NavLink
-								to="/ai-chat"
+								to="/plans&pricing"
 								className="text-black hover:text-orange-600 px-2 xl:px-3 py-2 font-normal text-sm xl:text-base"
 							>
-								AI Chat
+								Plans&Pricing
 							</NavLink>
 							<NavLink
 								to="/Counselling"
@@ -199,11 +199,11 @@ const Header = () => {
 							How It Works
 						</NavLink>
 						<NavLink
-							to="/ai-chat"
+							to="/plans&pricing"
 							className="block text-black hover:text-orange-600 hover:bg-orange-50 py-3 px-4 rounded-lg text-base sm:text-lg transition duration-300 transform hover:translate-x-2"
 							onClick={toggleSidebar}
 						>
-							AI Chat
+							Plans&Pricing
 						</NavLink>
 						<NavLink
 							to="/counselling"

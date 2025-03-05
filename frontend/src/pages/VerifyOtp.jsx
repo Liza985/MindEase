@@ -38,7 +38,7 @@ const VerifyOtp = ({ type = "user" }) => {
 		if (message) {
 			toast.success(message, toastOptions);
 			dispatch({ type: "CLEAR_MESSAGE" });
-			navigate(`/`);
+			navigate("/survey");
 		}
 		if (error) {
 			toast.error(error, toastOptions);
