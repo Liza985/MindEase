@@ -1,4 +1,4 @@
-import React from "react";
+
 import { Clock, FileText, MessageSquare } from 'lucide-react';
 import { useNavigate } from "react-router-dom";
 
@@ -27,7 +27,7 @@ const LandingPage = () => {
 					</h2>
 					<p className="text-xl text-gray-700 mb-8">
 						Join our platform to connect with people who need your help and
-						expertise. As a volunteer, you'll have the ability to accept or
+						expertise. As a volunteer, you&apos;ll have the ability to accept or
 						decline conversation requests.
 					</p>
 

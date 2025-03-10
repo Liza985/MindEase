@@ -3,48 +3,46 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
-	verifyRegisterOtp,
-	resendRegisterOtp,
-} from "../redux/Actions/userAction";
-import {
-	verifyVolunteerRegister,
-	resendVerifyVolunteerRegister,
-} from "../redux/Actions/volunteerAction";
-import toastOptions from "../constants/toast";
+	volunteerLoginVerify,
+    volunteerLoginVerifyResend,
+} from "../../redux/Actions/volunteerAction"; 
+import toastOptions from "../../constants/toast";
 
-const VerifyOtp = ({ type = "user" }) => {
+const LoginOtp = () => {
 	const [otp, setOtp] = useState("");
 	const { id } = useParams();
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
-	const { loading, message, error, isAuthenticated } = useSelector(
-		(state) => state[type]
+	const { vLoading, message, error, isAuthenticated } = useSelector(
+		(state) => state.volunteer
 	);
 
 	useEffect(() => {
 		if (!id) {
-			navigate(`/${type}/register`);
+			navigate(`/volunteer/login`);
 		}
-	}, [id, navigate, type]);
+	}, [id, navigate]);
 
 	useEffect(() => {
 		if (isAuthenticated) {
-			navigate(`/${type}/dashboard`);
+			navigate(`/volunteer/dashboard`);
 		}
-	}, [isAuthenticated, navigate, type]);
+	}, [isAuthenticated, navigate]);
 
 	useEffect(() => {
 		if (message) {
 			toast.success(message, toastOptions);
 			dispatch({ type: "CLEAR_MESSAGE" });
-			navigate("/survey");
+			if (message.includes("Login Successful")) {
+				navigate("/volunteer/dashboard");
+			}
 		}
 		if (error) {
 			toast.error(error, toastOptions);
 			dispatch({ type: "CLEAR_ERROR" });
 		}
-	}, [message, error, dispatch, navigate, type]);
+	}, [message, error, dispatch, navigate]);
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -52,12 +50,7 @@ const VerifyOtp = ({ type = "user" }) => {
 			toast.error("Invalid verification link", toastOptions);
 			return;
 		}
-
-		if (type === "volunteer") {
-			dispatch(verifyVolunteerRegister(id, otp));
-		} else {
-			dispatch(verifyRegisterOtp(id, otp));
-		}
+		dispatch(volunteerLoginVerify(id, otp));
 	};
 
 	const handleResendOtp = () => {
@@ -65,12 +58,7 @@ const VerifyOtp = ({ type = "user" }) => {
 			toast.error("Invalid verification link", toastOptions);
 			return;
 		}
-
-		if (type === "volunteer") {
-			dispatch(resendVerifyVolunteerRegister(id));
-		} else {
-			dispatch(resendRegisterOtp(id));
-		}
+		dispatch(volunteerLoginVerifyResend(id));
 	};
 
 	return (
@@ -78,7 +66,7 @@ const VerifyOtp = ({ type = "user" }) => {
 			<div className="max-w-md w-full space-y-8">
 				<div>
 					<h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-						Verify Your Account
+						Verify Login OTP
 					</h2>
 					<p className="mt-2 text-center text-sm text-gray-600">
 						Please enter the OTP sent to your email
@@ -99,10 +87,10 @@ const VerifyOtp = ({ type = "user" }) => {
 					<div>
 						<button
 							type="submit"
-							disabled={loading}
+							disabled={vLoading}
 							className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-orange-500 hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
 						>
-							{loading ? "Verifying..." : "Verify OTP"}
+							{vLoading ? "Verifying..." : "Verify OTP"}
 						</button>
 					</div>
 
@@ -121,4 +109,4 @@ const VerifyOtp = ({ type = "user" }) => {
 	);
 };
 
-export default VerifyOtp;
+export default LoginOtp;

@@ -1,4 +1,3 @@
-import React from "react";
 import { Route, Routes } from "react-router-dom";
 
 import Blog from "../../pages/volunteer/Blog";
@@ -7,11 +6,18 @@ import Dashboard from "../../pages/volunteer/Dashboard";
 import LandingPage from "../../pages/volunteer/LandingPage";
 import Request from "../../pages/volunteer/Request";
 import ChatbotAssistant from "../../pages/volunteer/ChatAssistant";
+import Auth from "../../pages/volunteer/Auth";
+import VerifyOtp from "../../pages/volunteer/VerifyOtp";
+import LoginOtp from "../../pages/volunteer/LoginOtp";
 
 const Volunteer = () => {
 	return (
 		<>
 			<Routes>
+				<Route path="/volunteer/login" element={<Auth />} />
+				<Route path="/volunteer/register" element={<Auth />} />
+				<Route path="/volunteer/verify/:id" element={<VerifyOtp />} />
+				<Route path="/volunteer/login/:id" element={<LoginOtp />} />
 				<Route
 					path="/connect"
 					element={
@@ -56,7 +62,7 @@ const Volunteer = () => {
 					path="/ai"
 					element={
 						//<AuthRoute>
-						<ChatbotAssistant/>
+						<ChatbotAssistant />
 						//</AuthRoute>
 					}
 				/>

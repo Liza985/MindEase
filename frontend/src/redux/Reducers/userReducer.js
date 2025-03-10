@@ -34,7 +34,6 @@ const logoutUserSuccess = createAction("LOGOUT_USER_SUCCESS");
 const logoutUserFailure = createAction("LOGOUT_USER_FAILURE");
 
 const clearError = createAction("CLEAR_ERROR");
-const clearAuthError = createAction("CLEAR_AUTH_ERROR");
 const clearMessage = createAction("CLEAR_MESSAGE");
 
 export const userReducer = createReducer(initialState, (builder) => {

@@ -6,8 +6,8 @@ import {
 	forgotUserPassword,
 	resetUserPassword,
 	changeUserPassword,
-} from "../redux/Actions/userAction";
-import toastOptions from "../constants/toast";
+} from "../../redux/Actions/userAction";
+import toastOptions from "../../constants/toast";
 
 const ForgotPassword = () => {
 	const [step, setStep] = useState(1);

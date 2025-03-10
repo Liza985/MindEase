@@ -18,8 +18,8 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import toastOptions from "../constants/toast";
-import { loginUser, registerUser } from "../redux/Actions/userAction";
+import toastOptions from "../../constants/toast";
+import { loginUser, registerUser } from "../../redux/Actions/userAction";
 
 const Auth = () => {
 	const [isRightPanelActive, setIsRightPanelActive] = useState(false);
@@ -29,7 +29,7 @@ const Auth = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
-	const { loading, message, error, id, isAuthenticated } = useSelector(
+	const {message, error, id, isAuthenticated } = useSelector(
 		(state) => state.user
 	);
 
@@ -348,6 +348,27 @@ const Auth = () => {
 							Register
 						</button>
 					</form>
+					<div className="-mt-40 text-center">
+						<p className="text-gray-600">Want to help others as a volunteer?</p>
+						<Link
+							to="/volunteer/login"
+							className="text-orange-500 hover:text-orange-600 font-medium inline-flex items-center space-x-1 mt-2"
+						>
+							Continue as Volunteer
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								className="h-4 w-4 ml-1"
+								viewBox="0 0 20 20"
+								fill="currentColor"
+							>
+								<path
+									fillRule="evenodd"
+									d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+									clipRule="evenodd"
+								/>
+							</svg>
+						</Link>
+					</div>
 				</div>
 
 				{/* Sign In Form */}
@@ -444,6 +465,27 @@ const Auth = () => {
 							Sign In
 						</button>
 					</form>
+					<div className="-mt-40 text-center">
+						<p className="text-gray-600">Want to help others as a volunteer?</p>
+						<Link
+							to="/volunteer/login"
+							className="text-orange-500 hover:text-orange-600 font-medium inline-flex items-center space-x-1 mt-2"
+						>
+							Continue as Volunteer
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								className="h-4 w-4 ml-1"
+								viewBox="0 0 20 20"
+								fill="currentColor"
+							>
+								<path
+									fillRule="evenodd"
+									d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+									clipRule="evenodd"
+								/>
+							</svg>
+						</Link>
+					</div>
 				</div>
 
 				{/* Overlay Container */}
