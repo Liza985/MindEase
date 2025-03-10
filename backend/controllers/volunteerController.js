@@ -132,31 +132,31 @@ export const verifyVolunteer = async (req, res) => {
 		}
 
 		//otp attempt lock or not
-		if (user.registerOtpLockUntil > Date.now()) {
-			user.registerOtp = undefined;
-			user.registerOtpExpire = undefined;
-			user.registerOtpAttempts = 0;
-			await user.save();
+		if (volunteer.registerOtpLockUntil > Date.now()) {
+			volunteer.registerOtp = undefined;
+			volunteer.registerOtpExpire = undefined;
+			volunteer.registerOtpAttempts = 0;
+			await volunteer.save();
 			return Response(
 				res,
 				400,
 				false,
 				`Try again after ${Math.floor(
-					(user.registerOtpLockUntil - Date.now()) % (60 * 1000)
+					(volunteer.registerOtpLockUntil - Date.now()) % (60 * 1000)
 				)} minutes and ${Math.floor(
-					(user.registerOtpLockUntil - DESTRUCTION.now()) % 1000
+					(volunteer.registerOtpLockUntil - DESTRUCTION.now()) % 1000
 				)} seconds`
 			);
 		}
 
 		// checking otp attempts
-		if (user.registerOtpAttempts >= 3) {
-			user.registerOtp = undefined;
-			user.registerOtpExpire = undefined;
-			user.registerOtpAttempts = 0;
-			user.registerOtpLockUntil =
+		if (volunteer.registerOtpAttempts >= 3) {
+			volunteer.registerOtp = undefined;
+			volunteer.registerOtpExpire = undefined;
+			volunteer.registerOtpAttempts = 0;
+			volunteer.registerOtpLockUntil =
 				Date.now() + process.env.REGISTER_OTP_LOCK * 60 * 1000;
-			await user.save();
+			await volunteer.save();
 			return Response(res, 400, false, message.otpAttemptsExceed);
 		}
 		// check otp
@@ -166,11 +166,11 @@ export const verifyVolunteer = async (req, res) => {
 			return Response(res, 400, false, message.otpNotFound);
 		}
 		// check otp expire
-		if (user.registerOtpExpire < Date.now()) {
-			user.registerOtp = undefined;
-			user.registerOtpAttempts = 0;
-			user.registerOtpLockUntil = undefined;
-			await user.save();
+		if (volunteer.registerOtpExpire < Date.now()) {
+			volunteer.registerOtp = undefined;
+			volunteer.registerOtpAttempts = 0;
+			volunteer.registerOtpLockUntil = undefined;
+			await volunteer.save();
 			return Response(res, 400, false, message.otpExpire);
 		}
 		// update volunteer
@@ -300,7 +300,7 @@ export const loginVolunteer = async (req, res) => {
 		await volunteer.save();
 
 		//authenticate user
-		const token = await user.generateToken();
+		const token = await volunteer.generateToken();
 		const options = {
 			expires: new Date(
 				Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000

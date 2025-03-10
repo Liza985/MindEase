@@ -80,9 +80,10 @@ const Auth = () => {
 		if (message) {
 			toast.success(message, toastOptions);
 			dispatch({ type: "CLEAR_MESSAGE" });
-			if (id?._id) {
-				navigate(`/volunteer/verify/${id._id}`);
-			}
+			if(message=="Volunteer created")
+				navigate(`/volunteer/verify/${id}`);
+			if(message=="Login Successful")
+				navigate(`/volunteer/login/${id._id}`);
 		}
 		if (error) {
 			toast.error(error, toastOptions);

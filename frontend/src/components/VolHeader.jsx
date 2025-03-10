@@ -14,7 +14,7 @@ import { Link, useNavigate } from "react-router-dom";
 export const VolHeader = ({ title }) => {
 	const navigate = useNavigate();
 	const links = [
-		{ name: "Dashboard", icon: <Home size={18} />, path: "/volunteerDashboard" },
+		{ name: "Dashboard", icon: <Home size={18} />, path: "/volunteer/Dashboard" },
 		{ name: "Requests", icon: <Clock size={18} />, path: "/requests" },
 		{ name: "Chats", icon: <MessageSquare size={18} />, path: "/chat" },
 		{ name: "Blogs", icon: <FileText size={18} />, path: "/article" },

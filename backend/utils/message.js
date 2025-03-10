@@ -27,6 +27,20 @@ export const message={
     volunteerAlreadyExist: "Volunteer already exist",
     logoutMessage: "Logout successful",
     userProfileFoundMessage:"User profile fetched",
-    userProfileUpdatedMessage:"Profile updated successfully"
+    userProfileUpdatedMessage:"Profile updated successfully",
+    createBlogMessage:"Blog created successfully",
+    blogsFetchSuccessfulMessage:"Blogs fetched successfully",
+    blogNotFoundMessage:"Blog not found",
+    blogDeletedMessage:"Blog deleted successfully",
+    blogUpdatedMessage:"Blog updated successfully",
+    createReviewMessage:"Review created successfully",
+    reviewsFetchSuccessfulMessage:"Reviews fetched successfully",
+    createFeedBackMessage:"Feedback created successfully",
+    feedBackFetchSuccessfulMessage:"Feedback fetched successfully",
+    feedBackDeleteMessage:"Feedback deleted successfully",
+    feedBackNotFoundMessage:"Feedback not found",
+
+
+
 
 }
