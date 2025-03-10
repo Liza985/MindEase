@@ -5,34 +5,30 @@ import { toast } from "react-toastify";
 import {
 	verifyRegisterOtp,
 	resendRegisterOtp,
-} from "../redux/Actions/userAction";
-import {
-	verifyVolunteerRegister,
-	resendVerifyVolunteerRegister,
-} from "../redux/Actions/volunteerAction";
-import toastOptions from "../constants/toast";
+} from "../../redux/Actions/userAction";
+import toastOptions from "../../constants/toast";
 
-const VerifyOtp = ({ type = "user" }) => {
+const VerifyOtp = () => {
 	const [otp, setOtp] = useState("");
 	const { id } = useParams();
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
 	const { loading, message, error, isAuthenticated } = useSelector(
-		(state) => state[type]
+		(state) => state.user
 	);
 
 	useEffect(() => {
 		if (!id) {
-			navigate(`/${type}/register`);
+			navigate(`/register`);
 		}
-	}, [id, navigate, type]);
+	}, [id, navigate]);
 
 	useEffect(() => {
 		if (isAuthenticated) {
-			navigate(`/${type}/dashboard`);
+			navigate(`/dashboard`);
 		}
-	}, [isAuthenticated, navigate, type]);
+	}, [isAuthenticated, navigate]);
 
 	useEffect(() => {
 		if (message) {
@@ -44,7 +40,7 @@ const VerifyOtp = ({ type = "user" }) => {
 			toast.error(error, toastOptions);
 			dispatch({ type: "CLEAR_ERROR" });
 		}
-	}, [message, error, dispatch, navigate, type]);
+	}, [message, error, dispatch, navigate]);
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -52,12 +48,7 @@ const VerifyOtp = ({ type = "user" }) => {
 			toast.error("Invalid verification link", toastOptions);
 			return;
 		}
-
-		if (type === "volunteer") {
-			dispatch(verifyVolunteerRegister(id, otp));
-		} else {
-			dispatch(verifyRegisterOtp(id, otp));
-		}
+		dispatch(verifyRegisterOtp(id, otp));
 	};
 
 	const handleResendOtp = () => {
@@ -65,12 +56,7 @@ const VerifyOtp = ({ type = "user" }) => {
 			toast.error("Invalid verification link", toastOptions);
 			return;
 		}
-
-		if (type === "volunteer") {
-			dispatch(resendVerifyVolunteerRegister(id));
-		} else {
-			dispatch(resendRegisterOtp(id));
-		}
+		dispatch(resendRegisterOtp(id));
 	};
 
 	return (

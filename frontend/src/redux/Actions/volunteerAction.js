@@ -12,18 +12,24 @@ export const registerVolunteer=(details)=>async(dispatch)=>{
 		dispatch({
 			type: "VOLUNTEER_REGISTER_REQUEST",
 		});
+
+		console.log("details: ", details);
 		const { data } = await axios.post(`${URL}/register`, details, {
 			headers: {
 				"Content-Type": "application/json",
 			},
 			withCredentials: true,
 		});
-		// console.log(data);
+
+		console.log("Data: ", data);
+
+		console.log("Message: ", data.message);
+		console.log("Id: ", data.newVolunteer._id);
 		dispatch({
 			type: "VOLUNTEER_REGISTER_SUCCESS",
 			payload: {
 				message: data.message,
-				id: data.data,
+				id: data.newVolunteer._id,
 			},
 		});
 	} catch (error) {
