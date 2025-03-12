@@ -80,8 +80,10 @@ const Auth = () => {
 		if (message) {
 			toast.success(message, toastOptions);
 			dispatch({ type: "CLEAR_MESSAGE" });
-			if (id?._id) {
-				navigate(`/volunteer/verify/${id._id}`);
+			if (message.includes("Volunteer created")) {
+				navigate(`/volunteer/verify/${id}`);
+			} else if (message.includes("Login Successful")) {
+				navigate(`/volunteer/login/${id}`);
 			}
 		}
 		if (error) {
@@ -185,9 +187,9 @@ const Auth = () => {
 			>
 				{/* Register Form */}
 				<div
-					className={`absolute top-0 left-0 h-full w-full md:w-1/2 transition-all duration-600 ease-in-out overflow-y-auto ${
+					className={`absolute top-0 left-0 h-full w-full md:w-3/4 transition-all duration-600 ease-in-out overflow-y-auto ${
 						isRightPanelActive
-							? "md:translate-x-full opacity-100 z-50"
+							? "md:translate-x-1/3 opacity-100 z-50"
 							: "opacity-0 z-10"
 					}`}
 				>
@@ -640,7 +642,7 @@ const Auth = () => {
 						{/* Overlay Left Panel */}
 						<div
 							// className={`relative -left-full h-full w-[200%] bg-gradient-to-r from-[#FF4B2B] to-[#FF416C] text-white transition-transform duration-600 ease-in-out ${
-							className={`absolute top-0 h-full w-1/2 flex flex-col items-center justify-center px-4 md:px-12 text-center transition-transform duration-600 ease-in-out ${
+							className={`absolute top-0 h-full w-1/4 flex flex-col items-center justify-center px-4 md:px-12 text-center transition-transform duration-600 ease-in-out ${
 								isRightPanelActive ? "translate-x-0" : "-translate-x-20"
 							}`}
 						>

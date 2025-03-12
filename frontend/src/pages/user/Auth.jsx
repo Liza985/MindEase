@@ -29,7 +29,7 @@ const Auth = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
-	const {message, error, id, isAuthenticated } = useSelector(
+	const {loading, message, error, id, isAuthenticated } = useSelector(
 		(state) => state.user
 	);
 
@@ -163,9 +163,9 @@ const Auth = () => {
 			>
 				{/* Register Form */}
 				<div
-					className={`absolute top-0 left-0 h-full w-full md:w-1/2 transition-all duration-600 ease-in-out overflow-y-auto ${
+					className={`absolute top-0 left-0 h-full w-full md:w-3/4 transition-all duration-600 ease-in-out overflow-y-auto ${
 						isRightPanelActive
-							? "md:translate-x-full opacity-100 z-50"
+							? "md:translate-x-1/3 opacity-100 z-50"
 							: "opacity-0 z-10"
 					}`}
 				>
@@ -345,10 +345,10 @@ const Auth = () => {
 							type="submit"
 							className="bg-orange-500 text-white text-xs font-bold py-3 px-8 md:px-12 rounded-2xl border border-orange-500 uppercase tracking-wider mb-4"
 						>
-							Register
+							{loading? 'Loading...' : 'Register Now'}
 						</button>
 					</form>
-					<div className="-mt-40 text-center">
+					<div className="-mt-20 text-center">
 						<p className="text-gray-600">Want to help others as a volunteer?</p>
 						<Link
 							to="/volunteer/login"
@@ -462,10 +462,10 @@ const Auth = () => {
 							type="submit"
 							className="bg-orange-500 text-white text-xs font-bold py-3 px-8 md:px-12 rounded-2xl border border-orange-500 uppercase tracking-wider mb-4 cursor-pointer"
 						>
-							Sign In
+							{loading? "Loading..." : "Login"}
 						</button>
 					</form>
-					<div className="-mt-40 text-center">
+					<div className="-mt-20 text-center">
 						<p className="text-gray-600">Want to help others as a volunteer?</p>
 						<Link
 							to="/volunteer/login"
@@ -502,7 +502,7 @@ const Auth = () => {
 						{/* Overlay Left Panel */}
 						<div
 							// className={`relative -left-full h-full w-[200%] bg-gradient-to-r from-[#FF4B2B] to-[#FF416C] text-white transition-transform duration-600 ease-in-out ${
-							className={`absolute top-0 h-full w-1/2 flex flex-col items-center justify-center px-4 md:px-12 text-center transition-transform duration-600 ease-in-out ${
+							className={`absolute top-0 h-full w-1/4 flex flex-col items-center justify-center px-4 md:px-12 text-center transition-transform duration-600 ease-in-out ${
 								isRightPanelActive ? "translate-x-0" : "-translate-x-20"
 							}`}
 						>

@@ -27,7 +27,7 @@ const Volunteer = () => {
 					}
 				/>
 				<Route
-					path="/volunteerDashboard"
+					path="/volunteer/Dashboard"
 					element={
 						//<AuthRoute>
 						<Dashboard />
@@ -35,7 +35,7 @@ const Volunteer = () => {
 					}
 				/>
 				<Route
-					path="/requests"
+					path="/volunteer/requests"
 					element={
 						//<AuthRoute>
 						<Request />
@@ -43,7 +43,7 @@ const Volunteer = () => {
 					}
 				/>
 				<Route
-					path="/chat"
+					path="/volunteer/chat"
 					element={
 						//<AuthRoute>
 						<Chat />
@@ -51,7 +51,7 @@ const Volunteer = () => {
 					}
 				/>
 				<Route
-					path="/article"
+					path="/volunteer/article"
 					element={
 						//<AuthRoute>
 						<Blog />
@@ -59,7 +59,7 @@ const Volunteer = () => {
 					}
 				/>
 				<Route
-					path="/ai"
+					path="/volunteer/ai"
 					element={
 						//<AuthRoute>
 						<ChatbotAssistant />

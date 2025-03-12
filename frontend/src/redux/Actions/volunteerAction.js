@@ -13,7 +13,6 @@ export const registerVolunteer=(details)=>async(dispatch)=>{
 			type: "VOLUNTEER_REGISTER_REQUEST",
 		});
 
-		console.log("details: ", details);
 		const { data } = await axios.post(`${URL}/register`, details, {
 			headers: {
 				"Content-Type": "application/json",
@@ -21,10 +20,6 @@ export const registerVolunteer=(details)=>async(dispatch)=>{
 			withCredentials: true,
 		});
 
-		console.log("Data: ", data);
-
-		console.log("Message: ", data.message);
-		console.log("Id: ", data.newVolunteer._id);
 		dispatch({
 			type: "VOLUNTEER_REGISTER_SUCCESS",
 			payload: {
@@ -103,12 +98,13 @@ export const VolunteerLogin=(email,password)=>async(dispatch)=>{
 				withCredentials: true,
 			}
 		);
-		// console.log(data);
+
+		console.log("Id: ", data.data._id);
 		dispatch({
 			type: "VOLUNTEER_LOGIN_SUCCESS",
 			payload: {
 				message: data.message,
-				id: data.data,
+				id: data.data._id,
 			},
 		});
 	} catch (error) {
