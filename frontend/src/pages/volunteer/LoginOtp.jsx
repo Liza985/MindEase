@@ -4,8 +4,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
 	volunteerLoginVerify,
-    volunteerLoginVerifyResend,
-} from "../../redux/Actions/volunteerAction"; 
+	volunteerLoginVerifyResend,
+} from "../../redux/Actions/volunteerAction";
 import toastOptions from "../../constants/toast";
 
 const LoginOtp = () => {
@@ -26,7 +26,7 @@ const LoginOtp = () => {
 
 	useEffect(() => {
 		if (isAuthenticated) {
-			navigate(`/volunteer/dashboard`);
+			navigate(`/volunteer/Dashboard`);
 		}
 	}, [isAuthenticated, navigate]);
 
@@ -88,7 +88,7 @@ const LoginOtp = () => {
 						<button
 							type="submit"
 							disabled={vLoading}
-							className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-orange-500 hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
+							className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-orange-500 hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 cursor-pointer"
 						>
 							{vLoading ? "Verifying..." : "Verify OTP"}
 						</button>
@@ -98,7 +98,7 @@ const LoginOtp = () => {
 						<button
 							type="button"
 							onClick={handleResendOtp}
-							className="text-orange-500 hover:text-orange-600"
+							className="text-orange-500 hover:text-orange-600 cursor-pointer"
 						>
 							Resend OTP
 						</button>

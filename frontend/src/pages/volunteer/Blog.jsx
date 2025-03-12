@@ -1,4 +1,4 @@
-import React from "react";
+
 import VolHeader from "../../components/VolHeader";
 
 const Blog = () => {

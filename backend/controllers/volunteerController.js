@@ -137,6 +137,11 @@ export const verifyVolunteer = async (req, res) => {
 			volunteer.registerOtpExpire = undefined;
 			volunteer.registerOtpAttempts = 0;
 			await volunteer.save();
+		if (volunteer.registerOtpLockUntil > Date.now()) {
+			volunteer.registerOtp = undefined;
+			volunteer.registerOtpExpire = undefined;
+			volunteer.registerOtpAttempts = 0;
+			await volunteer.save();
 			return Response(
 				res,
 				400,
@@ -155,17 +160,30 @@ export const verifyVolunteer = async (req, res) => {
 			volunteer.registerOtpExpire = undefined;
 			volunteer.registerOtpAttempts = 0;
 			volunteer.registerOtpLockUntil =
+		if (volunteer.registerOtpAttempts >= 3) {
+			volunteer.registerOtp = undefined;
+			volunteer.registerOtpExpire = undefined;
+			volunteer.registerOtpAttempts = 0;
+			volunteer.registerOtpLockUntil =
 				Date.now() + process.env.REGISTER_OTP_LOCK * 60 * 1000;
+			await volunteer.save();
 			await volunteer.save();
 			return Response(res, 400, false, message.otpAttemptsExceed);
 		}
+
 		// check otp
 		if (!otp) {
 			volunteer.registerOtpAttempts += 1;
 			await volunteer.save();
 			return Response(res, 400, false, message.otpNotFound);
 		}
+
 		// check otp expire
+		if (volunteer.registerOtpExpire < Date.now()) {
+			volunteer.registerOtp = undefined;
+			volunteer.registerOtpAttempts = 0;
+			volunteer.registerOtpLockUntil = undefined;
+			await volunteer.save();
 		if (volunteer.registerOtpExpire < Date.now()) {
 			volunteer.registerOtp = undefined;
 			volunteer.registerOtpAttempts = 0;
@@ -173,6 +191,8 @@ export const verifyVolunteer = async (req, res) => {
 			await volunteer.save();
 			return Response(res, 400, false, message.otpExpire);
 		}
+
+		console.log("Working");
 		// update volunteer
 		volunteer.isVerified = true;
 		volunteer.registerOtp = undefined;
@@ -198,6 +218,7 @@ export const verifyVolunteer = async (req, res) => {
 			data: volunteer,
 		});
 	} catch (error) {
+		console.log(error.message);
 		return Response(res, 500, false, error.message);
 	}
 };
@@ -245,6 +266,7 @@ export const resendVolunteer = async (req, res) => {
 
 		Response(res, 200, true, message?.otpSendMessage);
 	} catch (error) {
+		console.log(error.message);
 		Response(res, 500, false, error.message);
 	}
 };
@@ -298,6 +320,35 @@ export const loginVolunteer = async (req, res) => {
 		volunteer.loginAttempts = 0;
 		volunteer.lockUntil = undefined;
 		await volunteer.save();
+		// console.log("Final working");
+
+		const otp = Math.floor(100000 + Math.random() * 900000);
+		const otpExpire = new Date(Date.now() + 5 * 6 * 1000);
+		volunteer.loginOtp = otp;
+		volunteer.loginOtpExpire = otpExpire;
+
+		await volunteer.save();
+
+		let emailTemplate = fs.readFileSync(
+			path.join(__dirname, "../templates/mail.html"),
+			"utf-8"
+		);
+
+		const subject = "Verify your volunteer account";
+		emailTemplate = emailTemplate.replace("{{OTP_CODE}}", otp);
+		emailTemplate = emailTemplate.replaceAll("{{MAIL}}", process.env.SMTP_USER);
+		emailTemplate = emailTemplate.replace("{{PORT}}", process.env.PORT);
+		emailTemplate = emailTemplate.replace(
+			"{{USER_ID}}",
+			volunteer._id.toString()
+		);
+
+		// Send verification email
+		try {
+			await sendEMail({ email, subject, html: emailTemplate });
+		} catch (emailError) {
+			console.error("Email sending failed:", emailError);
+		}
 
 		//authenticate user
 		const token = await volunteer.generateToken();
@@ -309,6 +360,7 @@ export const loginVolunteer = async (req, res) => {
 			sameSite: "none",
 			secure: true,
 		};
+
 		//sending response
 		res.status(200).cookie("token", token, options).json({
 			success: true,
@@ -316,6 +368,7 @@ export const loginVolunteer = async (req, res) => {
 			data: volunteer,
 		});
 	} catch (error) {
+		console.log(error.message);
 		Response(res, 500, false, error.message);
 	}
 };

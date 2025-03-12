@@ -15,9 +15,9 @@ export const VolHeader = ({ title }) => {
 	const navigate = useNavigate();
 	const links = [
 		{ name: "Dashboard", icon: <Home size={18} />, path: "/volunteer/Dashboard" },
-		{ name: "Requests", icon: <Clock size={18} />, path: "/requests" },
-		{ name: "Chats", icon: <MessageSquare size={18} />, path: "/chat" },
-		{ name: "Blogs", icon: <FileText size={18} />, path: "/article" },
+		{ name: "Requests", icon: <Clock size={18} />, path: "/volunteer/requests" },
+		{ name: "Chats", icon: <MessageSquare size={18} />, path: "/volunteer/chat" },
+		{ name: "Blogs", icon: <FileText size={18} />, path: "/volunteer/article" },
 	];
 
 	return (
@@ -44,8 +44,10 @@ export const VolHeader = ({ title }) => {
 					</nav>
 
 					{/* Notification Bell */}
-					<button  onClick={()=>navigate("/ai")}
-					className="text-black-800 hover:text-orange-500 transition relative">
+					<button
+						onClick={() => navigate("/volunteer/ai")}
+						className="text-black-800 hover:text-orange-500 transition relative"
+					>
 						<BotIcon size={28} />
 					</button>
 
