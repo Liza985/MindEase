@@ -17,7 +17,7 @@ app.use(
 );
 
 app.use(express.json());
-app.use(cookieParser({extended:false}));
+app.use(cookieParser({ extended: false }));
 
 app.get("/", (req, res) => {
 	res.send("server is working");

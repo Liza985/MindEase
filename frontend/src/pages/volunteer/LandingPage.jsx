@@ -11,7 +11,7 @@ const LandingPage = () => {
 					<h1 className="text-2xl font-bold">MindEaseConnect</h1>
 					<div className="space-x-4">
 						<button
-							onClick={() => navigate("/volunteerDashboard")}
+							onClick={() => navigate("/volunteer/login")}
 							className="bg-white text-orange-600 px-4 py-2 rounded-md font-medium hover:bg-orange-100 transition"
 						>
 							MindEaseConnect Login
@@ -69,7 +69,7 @@ const LandingPage = () => {
 					</div>
 
 					<button
-						onClick={() => navigate("/volunteerDashboard")}
+						onClick={() => navigate("/volunteer/register")}
 						className="bg-orange-600 text-white px-8 py-3 rounded-lg font-medium text-lg hover:bg-orange-700 transition shadow-md"
 					>
 						Start Volunteering

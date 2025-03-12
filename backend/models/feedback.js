@@ -1,4 +1,4 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose from "mongoose";
 
 
 const feedbackSchema=mongoose.Schema({
@@ -12,12 +12,10 @@ const feedbackSchema=mongoose.Schema({
         required:true,
         ref:"User"
     },
-    activityId:{
-        type:mongoose.Schema.Types.ObjectId,
-        required:true,
-        ref:"activity"
+    rating:{
+        type:Number,
+        required:true
     },
-    //this can be changed if we use different types of feedbacks
     feedback:{
         type:String,
         required:true

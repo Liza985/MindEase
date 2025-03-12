@@ -137,14 +137,19 @@ export const verifyVolunteer = async (req, res) => {
 			volunteer.registerOtpExpire = undefined;
 			volunteer.registerOtpAttempts = 0;
 			await volunteer.save();
+		if (volunteer.registerOtpLockUntil > Date.now()) {
+			volunteer.registerOtp = undefined;
+			volunteer.registerOtpExpire = undefined;
+			volunteer.registerOtpAttempts = 0;
+			await volunteer.save();
 			return Response(
 				res,
 				400,
 				false,
 				`Try again after ${Math.floor(
-					(user.registerOtpLockUntil - Date.now()) % (60 * 1000)
+					(volunteer.registerOtpLockUntil - Date.now()) % (60 * 1000)
 				)} minutes and ${Math.floor(
-					(user.registerOtpLockUntil - DESTRUCTION.now()) % 1000
+					(volunteer.registerOtpLockUntil - DESTRUCTION.now()) % 1000
 				)} seconds`
 			);
 		}
@@ -155,7 +160,13 @@ export const verifyVolunteer = async (req, res) => {
 			volunteer.registerOtpExpire = undefined;
 			volunteer.registerOtpAttempts = 0;
 			volunteer.registerOtpLockUntil =
+		if (volunteer.registerOtpAttempts >= 3) {
+			volunteer.registerOtp = undefined;
+			volunteer.registerOtpExpire = undefined;
+			volunteer.registerOtpAttempts = 0;
+			volunteer.registerOtpLockUntil =
 				Date.now() + process.env.REGISTER_OTP_LOCK * 60 * 1000;
+			await volunteer.save();
 			await volunteer.save();
 			return Response(res, 400, false, message.otpAttemptsExceed);
 		}
@@ -168,6 +179,11 @@ export const verifyVolunteer = async (req, res) => {
 		}
 
 		// check otp expire
+		if (volunteer.registerOtpExpire < Date.now()) {
+			volunteer.registerOtp = undefined;
+			volunteer.registerOtpAttempts = 0;
+			volunteer.registerOtpLockUntil = undefined;
+			await volunteer.save();
 		if (volunteer.registerOtpExpire < Date.now()) {
 			volunteer.registerOtp = undefined;
 			volunteer.registerOtpAttempts = 0;
@@ -336,7 +352,6 @@ export const loginVolunteer = async (req, res) => {
 
 		//authenticate user
 		const token = await volunteer.generateToken();
-
 		const options = {
 			expires: new Date(
 				Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000
