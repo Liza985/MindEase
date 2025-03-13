@@ -132,11 +132,7 @@ export const verifyVolunteer = async (req, res) => {
 		}
 
 		//otp attempt lock or not
-		if (volunteer.registerOtpLockUntil > Date.now()) {
-			volunteer.registerOtp = undefined;
-			volunteer.registerOtpExpire = undefined;
-			volunteer.registerOtpAttempts = 0;
-			await volunteer.save();
+
 		if (volunteer.registerOtpLockUntil > Date.now()) {
 			volunteer.registerOtp = undefined;
 			volunteer.registerOtpExpire = undefined;
@@ -160,11 +156,6 @@ export const verifyVolunteer = async (req, res) => {
 			volunteer.registerOtpExpire = undefined;
 			volunteer.registerOtpAttempts = 0;
 			volunteer.registerOtpLockUntil =
-		if (volunteer.registerOtpAttempts >= 3) {
-			volunteer.registerOtp = undefined;
-			volunteer.registerOtpExpire = undefined;
-			volunteer.registerOtpAttempts = 0;
-			volunteer.registerOtpLockUntil =
 				Date.now() + process.env.REGISTER_OTP_LOCK * 60 * 1000;
 			await volunteer.save();
 			await volunteer.save();
@@ -179,11 +170,7 @@ export const verifyVolunteer = async (req, res) => {
 		}
 
 		// check otp expire
-		if (volunteer.registerOtpExpire < Date.now()) {
-			volunteer.registerOtp = undefined;
-			volunteer.registerOtpAttempts = 0;
-			volunteer.registerOtpLockUntil = undefined;
-			await volunteer.save();
+
 		if (volunteer.registerOtpExpire < Date.now()) {
 			volunteer.registerOtp = undefined;
 			volunteer.registerOtpAttempts = 0;
