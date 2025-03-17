@@ -1,7 +1,9 @@
 
+import { useNavigate } from "react-router-dom";
 import VolHeader from "../../components/VolHeader";
 
 const Blog = () => {
+	const navigate=useNavigate();
 	const blogs = [
 		{
 			id: 1,
@@ -42,7 +44,7 @@ const Blog = () => {
 							<h2 className="text-2xl font-bold text-orange-700">
 								Latest Articles
 							</h2>
-							<button className="bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition">
+							<button className="bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition" onClick={(()=>navigate("/newPost"))}>
 								Create New Post
 							</button>
 						</div>

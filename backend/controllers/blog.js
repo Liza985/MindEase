@@ -1,6 +1,6 @@
-import Blog from "../models/Blog";
-import { Response } from "../utils/response";
-import { message } from "./../utils/message";
+import Blog from "../models/Blog.js";
+import { Response } from "../utils/response.js";
+import { message } from "./../utils/message.js";
 
 export const createBlog = async (req, res) => {
 	try {

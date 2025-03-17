@@ -9,6 +9,7 @@ import ChatbotAssistant from "../../pages/volunteer/ChatAssistant";
 import Auth from "../../pages/volunteer/Auth";
 import VerifyOtp from "../../pages/volunteer/VerifyOtp";
 import LoginOtp from "../../pages/volunteer/LoginOtp";
+import NewPost from "../../pages/volunteer/NewPost";
 
 const Volunteer = () => {
 	return (
@@ -41,6 +42,14 @@ const Volunteer = () => {
 						<Request />
 						//</AuthRoute>
 					}
+				/>
+				<Route 
+				path="/newPost"
+				element={
+					//<AuthRoute>
+					<NewPost />
+						//</AuthRoute>
+				}
 				/>
 				<Route
 					path="/volunteer/chat"
