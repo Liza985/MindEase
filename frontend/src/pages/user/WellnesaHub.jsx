@@ -517,7 +517,7 @@ const WellnessHub = () => {
       <div className="p-6 bg-gradient-to-r from-white-100 to-orange-200 text-black shadow-xl rounded-2xl max-w-lg">
         <div className="space-y-4">
           <div>
-            <h3 className="text-xl font-bold">John Doe</h3>
+            <h3 className="text-xl font-bold">Lalit Jindal</h3>
             <p className="text-sm opacity-90">
               "MindEase has truly changed my life. The wellness resources helped
               me manage stress and improve my daily routine. Highly recommend!"
@@ -545,7 +545,7 @@ const WellnessHub = () => {
       <div className="p-6 bg-gradient-to-r from-white to-blue-100 text-black shadow-xl rounded-2xl max-w-lg">
         <div className="space-y-4">
           <div>
-            <h3 className="text-xl font-bold">Jane Smith</h3>
+            <h3 className="text-xl font-bold">Lakshay Bhatia</h3>
             <p className="text-sm opacity-90">
               "This platform has been a game-changer for my mental well-being.
               The guided exercises and resources are invaluable!"
