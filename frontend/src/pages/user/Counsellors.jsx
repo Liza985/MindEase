@@ -41,14 +41,14 @@ const CounselingPage = () => {
 
 						<div className="bg-white rounded-lg p-8 w-72 text-center shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-2">
 							<div className="text-5xl mb-4">👤</div>
-							<h2 className="text-xl font-bold text-orange-300 mb-2">
+							<h2 className="text-xl font-bold text-orange-500 mb-2">
 								Human Counselor
 							</h2>
 							<p className="text-gray-600 mb-6">
 								Connect with a certified counselor for personalized support and
 								professional guidance.
 							</p>
-							<button className="bg-orange-300 hover:bg-orange-400 text-white font-semibold py-3 px-6 rounded-full transition-colors duration-300">
+							<button className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-6 rounded-full transition-colors duration-300">
 								Chat with Counselor
 							</button>
 						</div>
