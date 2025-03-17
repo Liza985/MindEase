@@ -47,12 +47,12 @@ export const blogReducer = createReducer(initialState, (builder) => {
         .addCase(createBlogRequest,(state)=>{
             state.loading=true;
         })
-        .addCase(createBlogSuccess,(state)=>{
+        .addCase(createBlogSuccess,(state,action)=>{
             state.loading=false;
             state.message = action.payload.message;
             state.blog=action.payload.data
         })
-        .addCase(createBlogFailure,(state)=>{
+        .addCase(createBlogFailure,(state,action)=>{
             state.loading=false;
             state.error = action.payload;
         })
@@ -62,12 +62,12 @@ export const blogReducer = createReducer(initialState, (builder) => {
         .addCase(getAllBlogsRequest,(state)=>{
             state.loading=true;
         })
-        .addCase(getAllBlogsSuccess,(state)=>{
+        .addCase(getAllBlogsSuccess,(state,action)=>{
             state.loading=false;
             state.message = action.payload.message;
             state.blogs=action.payload.data
         })
-        .addCase(getAllBlogsFailure,(state)=>{
+        .addCase(getAllBlogsFailure,(state,action)=>{
             state.loading=false;
             state.error = action.payload;
         })
@@ -76,12 +76,12 @@ export const blogReducer = createReducer(initialState, (builder) => {
         .addCase(getBlogsByIdRequest,(state)=>{
             state.loading=true;
         })
-        .addCase(getBlogsByIdSuccess,(state)=>{
+        .addCase(getBlogsByIdSuccess,(state,action)=>{
             state.loading=false;
             state.message = action.payload.message;
             state.blogById=action.payload.data
         })
-        .addCase(getBlogsByIdFailure,(state)=>{
+        .addCase(getBlogsByIdFailure,(state,action)=>{
             state.loading=false;
             state.error = action.payload;
         })
@@ -91,12 +91,12 @@ export const blogReducer = createReducer(initialState, (builder) => {
         .addCase(getBlogsByVolunteerRequest,(state)=>{
             state.loading=true;
         })
-        .addCase(getBlogsByVolunteerSuccess,(state)=>{
+        .addCase(getBlogsByVolunteerSuccess,(state,action)=>{
             state.loading=false;
             state.message = action.payload.message;
             state.volBlogs=action.payload.data
         })
-        .addCase(getBlogsByVolunteerFailure,(state)=>{
+        .addCase(getBlogsByVolunteerFailure,(state,action)=>{
             state.loading=false;
             state.error = action.payload;
         })
@@ -106,12 +106,12 @@ export const blogReducer = createReducer(initialState, (builder) => {
         .addCase(deleteBlogRequest,(state)=>{
             state.loading=true;
         })
-        .addCase(deleteBlogSuccess,(state)=>{
+        .addCase(deleteBlogSuccess,(state,action)=>{
             state.loading=false;
             state.message = action.payload;
             
         })
-        .addCase(deleteBlogFailure,(state)=>{
+        .addCase(deleteBlogFailure,(state,action)=>{
             state.loading=false;
             state.error = action.payload;
         })
@@ -120,13 +120,13 @@ export const blogReducer = createReducer(initialState, (builder) => {
         .addCase(getBlogByTopicRequest,(state)=>{
             state.loading=true;
         })
-        .addCase(getBlogByTopicSuccess,(state)=>{
+        .addCase(getBlogByTopicSuccess,(state,action)=>{
             state.loading=false;
             state.topicBlog=action.payload.data;
             state.message = action.payload.message;
             
         })
-        .addCase(getBlogByTopicFailure,(state)=>{
+        .addCase(getBlogByTopicFailure,(state,action)=>{
             state.loading=false;
             state.error = action.payload;
         })
@@ -137,13 +137,13 @@ export const blogReducer = createReducer(initialState, (builder) => {
         .addCase(updateBlogRequest,(state)=>{
             state.loading=true;
         })
-        .addCase(updateBlogSuccess,(state)=>{
+        .addCase(updateBlogSuccess,(state,action)=>{
             state.loading=false;
             state.updateBlog=action.payload.data;
             state.message = action.payload.message;
             
         })
-        .addCase(updateBlogFailure,(state)=>{
+        .addCase(updateBlogFailure,(state,action)=>{
             state.loading=false;
             state.error = action.payload;
         })

@@ -1,6 +1,6 @@
-import Review from "../models/review";
-import { message } from "../utils/message";
-import { Response } from "../utils/response"
+import Review from "../models/review.js";
+import { message } from "../utils/message.js";
+import { Response } from "../utils/response.js"
 
 export const createReview=async(req,res)=>{
     try {
@@ -38,7 +38,7 @@ export const getAllReviews=async(req,res)=>{
 
 export const getReviewsByVolId=async(req,res)=>{
     try {
-        const {id}=req.params;
+        const {id}=req.volunteer._id;
         if(!id){
             return Response(res,400,false,message.idNotFound);
         }
@@ -53,7 +53,7 @@ export const getReviewsByVolId=async(req,res)=>{
 
 export const getReviewsByUserId=async(req,res)=>{
     try {
-        const {id}=req.params;
+        const {id}=req.user._id;
         if(!id){
             return Response(res,400,false,message.idNotFound);
         }
