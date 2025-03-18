@@ -16,7 +16,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import toastOptions from "../../constants/toast";
 import {
@@ -47,6 +47,7 @@ const Auth = () => {
 		(state) => state.volunteer
 	);
 
+	console.log(message);
 	const [loginForm, setLoginForm] = useState({
 		email: "",
 		password: "",
@@ -81,9 +82,9 @@ const Auth = () => {
 			toast.success(message, toastOptions);
 			dispatch({ type: "CLEAR_MESSAGE" });
 			if (message.includes("Volunteer created")) {
-				navigate(`/volunteer/verify/${id}`);
+				navigate(`/volunteer/verify/${id._id}`);
 			} else if (message.includes("Login Successful")) {
-				navigate(`/volunteer/login/${id}`);
+				navigate(`/volunteer/login/${id._id}`);
 			}
 		}
 		if (error) {
@@ -157,6 +158,7 @@ const Auth = () => {
 
 	return (
 		<div className="flex justify-center items-center min-h-screen px-4">
+			<h1 className="absolute top-4 left-1/2 transform -translate-x-1/2 text-3xl font-bold text-orange-500">Volunteer</h1>
 			{/* Navigation Buttons - Now fixed at the top */}
 			<div className="md:hidden fixed top-20 left-0 right-0 flex justify-center z-[100] px-4">
 				<div className="bg-white rounded-full shadow-lg p-1 flex gap-2">
@@ -528,6 +530,27 @@ const Auth = () => {
 							{loading ? "Loading..." : "Register"}
 						</button>
 					</form>
+					<div className="-mt-20 text-center">
+						<p className="text-gray-600">Want any Help</p>
+						<Link
+							to="/login"
+							className="text-orange-500 hover:text-orange-600 font-medium inline-flex items-center space-x-1 mt-2"
+						>
+							Continue as User
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								className="h-4 w-4 ml-1"
+								viewBox="0 0 20 20"
+								fill="currentColor"
+							>
+								<path
+									fillRule="evenodd"
+									d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+									clipRule="evenodd"
+								/>
+							</svg>
+						</Link>
+					</div>
 				</div>
 
 				{/* Sign In Form */}
@@ -626,6 +649,27 @@ const Auth = () => {
 							{loading ? "Loading..." : "Login"}
 						</button>
 					</form>
+					<div className="-mt-20 text-center">
+						<p className="text-gray-600">Want any Help</p>
+						<Link
+							to="/login"
+							className="text-orange-500 hover:text-orange-600 font-medium inline-flex items-center space-x-1 mt-2"
+						>
+							Continue as User
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								className="h-4 w-4 ml-1"
+								viewBox="0 0 20 20"
+								fill="currentColor"
+							>
+								<path
+									fillRule="evenodd"
+									d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+									clipRule="evenodd"
+								/>
+							</svg>
+						</Link>
+					</div>
 				</div>
 
 				{/* Overlay Container */}

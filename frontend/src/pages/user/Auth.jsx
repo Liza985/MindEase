@@ -29,7 +29,7 @@ const Auth = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
-	const {loading, message, error, id, isAuthenticated } = useSelector(
+	const { loading, message, error, id, isAuthenticated } = useSelector(
 		(state) => state.user
 	);
 
@@ -133,6 +133,9 @@ const Auth = () => {
 
 	return (
 		<div className="flex justify-center items-center min-h-screen px-4">
+			<h1 className="absolute top-4 left-1/2 transform -translate-x-1/2 text-3xl font-bold text-orange-500">
+				User
+			</h1>
 			{/* Navigation Buttons - Now fixed at the top */}
 			<div className="md:hidden fixed top-20 left-0 right-0 flex justify-center z-[100] px-4">
 				<div className="bg-white rounded-full shadow-lg p-1 flex gap-2">
@@ -345,7 +348,7 @@ const Auth = () => {
 							type="submit"
 							className="bg-orange-500 text-white text-xs font-bold py-3 px-8 md:px-12 rounded-2xl border border-orange-500 uppercase tracking-wider mb-4"
 						>
-							{loading? 'Loading...' : 'Register Now'}
+							{loading ? "Loading..." : "Register Now"}
 						</button>
 					</form>
 					<div className="-mt-20 text-center">
@@ -462,7 +465,7 @@ const Auth = () => {
 							type="submit"
 							className="bg-orange-500 text-white text-xs font-bold py-3 px-8 md:px-12 rounded-2xl border border-orange-500 uppercase tracking-wider mb-4 cursor-pointer"
 						>
-							{loading? "Loading..." : "Login"}
+							{loading ? "Loading..." : "Login"}
 						</button>
 					</form>
 					<div className="-mt-20 text-center">

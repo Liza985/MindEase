@@ -9,16 +9,38 @@ import {
 	MessageSquare,
 } from "lucide-react";
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { volunteerLogout } from "../redux/Actions/volunteerAction";
 
 export const VolHeader = ({ title }) => {
 	const navigate = useNavigate();
+	const dispatch = useDispatch();
 	const links = [
-		{ name: "Dashboard", icon: <Home size={18} />, path: "/volunteer/Dashboard" },
-		{ name: "Requests", icon: <Clock size={18} />, path: "/volunteer/requests" },
-		{ name: "Chats", icon: <MessageSquare size={18} />, path: "/volunteer/chat" },
+		{
+			name: "Dashboard",
+			icon: <Home size={18} />,
+			path: "/volunteer/Dashboard",
+		},
+		{
+			name: "Requests",
+			icon: <Clock size={18} />,
+			path: "/volunteer/requests",
+		},
+		{
+			name: "Chats",
+			icon: <MessageSquare size={18} />,
+			path: "/volunteer/chat",
+		},
 		{ name: "Blogs", icon: <FileText size={18} />, path: "/volunteer/article" },
 	];
+
+	const { id } = useSelector(state => state.volunteer);
+	const handleLogout = () => {
+		dispatch(volunteerLogout());
+		dispatch({ type: "CLEAR_MESSAGE" });
+		navigate("/connect");
+	};
 
 	return (
 		<header className="bg-white shadow-sm border-b border-gray-200 p-4">
@@ -57,14 +79,14 @@ export const VolHeader = ({ title }) => {
 							JD
 						</div>
 						<div className="hidden md:block">
-							<h3 className="text-sm font-medium">John Doe</h3>
+							<h3 className="text-sm font-medium"> {id.firstName} </h3>
 							<p className="text-xs text-gray-500">Volunteer</p>
 						</div>
 					</div>
 
 					{/* Sign Out Button */}
 					<button
-						onClick={() => navigate("/")}
+						onClick={handleLogout}
 						className="text-gray-500 hover:text-orange-500 transition"
 						title="Sign Out"
 					>

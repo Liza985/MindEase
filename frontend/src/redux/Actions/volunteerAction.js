@@ -99,12 +99,11 @@ export const VolunteerLogin=(email,password)=>async(dispatch)=>{
 			}
 		);
 
-		console.log("Id: ", data.data._id);
 		dispatch({
 			type: "VOLUNTEER_LOGIN_SUCCESS",
 			payload: {
 				message: data.message,
-				id: data.data._id,
+				id: data.data,
 			},
 		});
 	} catch (error) {
@@ -133,7 +132,10 @@ export const volunteerLoginVerify=(id,otp)=>async(dispatch)=>{
 		);
 		dispatch({
 			type: "VOLUNTEER_LOGIN_OTP_SUCCESS",
-			payload: data.message,
+			payload: {
+				message: data.message,
+				id: data.data,
+			}
 		});
 	} catch (error) {
 		dispatch({
@@ -241,6 +243,26 @@ export const volunteerChangePassword=(id,password)=>async(dispatch)=>{
 	} catch (error) {
 		dispatch({
 			type: "CHANGE_VOLUNTEER_PASSWORD_FAILURE",
+			payload: error?.response?.data?.message,
+		});
+	}
+}
+
+export const volunteerLogout = () => async (dispatch) => {
+	try {
+		dispatch({
+			type: "LOGOUT_VOLUNTEER_REQUEST",
+		});
+		const { data } = await axios.post(`${URL}/logout`, {
+			withCredentials: true,
+		});
+		dispatch({
+			type: "LOGOUT_VOLUNTEER_SUCCESS",
+			payload: data.message,
+		});
+	} catch (error) {
+		dispatch({
+			type: "LOGOUT_VOLUNTEER_FAILURE",
 			payload: error?.response?.data?.message,
 		});
 	}
