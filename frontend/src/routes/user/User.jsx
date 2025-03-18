@@ -12,6 +12,7 @@ import ForgotPassword from "../../pages/user/ForgotPassword";
 import ChatbotPage from "../../pages/user/ChatBot";
 import PricingPage from "../../pages/user/Plans&Pricing";
 import ResourceDetail from "../../pages/user/ResourceDetail";
+import AnalysisPage from "../../pages/user/AnalysisPage";
 
 const User = () => {
 	return (
@@ -112,6 +113,14 @@ const User = () => {
 					}
 				/>
 				      <Route path="/resource/:title" element={<ResourceDetail />} />
+				<Route
+					path="/analysis"
+					element={
+						// <ProtectedRoute>
+						<AnalysisPage />
+						// </ProtectedRoute>
+					}
+				/>
 			
 			</Routes>
 		</>

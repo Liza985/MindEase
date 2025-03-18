@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Header from '../../components/Header.jsx';
+import { useNavigate } from 'react-router-dom';
 
 const MindeaseForm = () => {
   const [formData, setFormData] = useState({
@@ -11,6 +12,7 @@ const MindeaseForm = () => {
 
   const [currentSection, setCurrentSection] = useState(0);
   const [validationError, setValidationError] = useState(false);
+  const navigate=useNavigate();
 
   const sections = [
     { title: "Sleep & Energy", fields: ["Sleep", "SleepDisturbance", "Fatigue", "LowEnergy"] },
@@ -59,7 +61,7 @@ const MindeaseForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateAllFields()) {
-      alert("Assessment submitted successfully!");
+      navigate('/analysis', { state: { formData } })
     } else {
       alert("Please complete all sections before submitting.");
     }
