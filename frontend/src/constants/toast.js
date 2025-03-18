@@ -1,12 +1,19 @@
 const toastOptions = {
-	positon: "bottom-center",
+	position: "bottom-center",
 	autoClose: 3000,
-	hideProgressBar: true,
+	hideProgressBar: false, 
 	closeOnClick: true,
 	pauseOnHover: true,
 	draggable: true,
-	progress: undefined,
-	theme: "dark",
+	theme: "light", 
+	style: { background: "white", color: "black" },
+};
+
+// Special styling for success
+export const successToastOptions = {
+	...toastOptions,
+	className: "custom-toast-success", 
+	progressStyle: { background: "orange !important" }, 
 };
 
 export default toastOptions;

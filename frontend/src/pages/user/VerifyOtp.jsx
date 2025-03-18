@@ -6,7 +6,7 @@ import {
 	verifyRegisterOtp,
 	resendRegisterOtp,
 } from "../../redux/Actions/userAction";
-import toastOptions from "../../constants/toast";
+import toastOptions, { successToastOptions } from "../../constants/toast";
 
 const VerifyOtp = () => {
 	const [otp, setOtp] = useState("");
@@ -32,7 +32,7 @@ const VerifyOtp = () => {
 
 	useEffect(() => {
 		if (message) {
-			toast.success(message, toastOptions);
+			toast.success(message, successToastOptions);
 			dispatch({ type: "CLEAR_MESSAGE" });
 			navigate("/survey");
 		}
