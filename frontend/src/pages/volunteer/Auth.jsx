@@ -158,7 +158,9 @@ const Auth = () => {
 
 	return (
 		<div className="flex justify-center items-center min-h-screen px-4">
-			<h1 className="absolute top-4 left-1/2 transform -translate-x-1/2 text-3xl font-bold text-orange-500">Volunteer</h1>
+			<h1 className="absolute top-4 left-1/2 transform -translate-x-1/2 text-3xl font-bold text-orange-500">
+				Volunteer
+			</h1>
 			{/* Navigation Buttons - Now fixed at the top */}
 			<div className="md:hidden fixed top-20 left-0 right-0 flex justify-center z-[100] px-4">
 				<div className="bg-white rounded-full shadow-lg p-1 flex gap-2">
@@ -182,7 +184,7 @@ const Auth = () => {
 			</div>
 
 			<div
-				className={`relative bg-white rounded-xl shadow-2xl overflow-y-auto overflow-x-hidden w-full max-w-[1024px] min-h-[600px] max-h-[90vh] md:max-h-none mt-16 md:mt-0 ${
+				className={`relative bg-white rounded-xl shadow-2xl overflow-y-auto overflow-x-hidden w-full max-w-[1024px] min-h-[640px] max-h-[90vh] md:max-h-none mt-16 md:mt-0 ${
 					isRightPanelActive ? "right-panel-active" : ""
 				}`}
 				id="container"
@@ -530,7 +532,7 @@ const Auth = () => {
 							{loading ? "Loading..." : "Register"}
 						</button>
 					</form>
-					<div className="-mt-20 text-center">
+					<div className="-mt-17 text-center">
 						<p className="text-gray-600">Want any Help</p>
 						<Link
 							to="/login"
@@ -637,7 +639,7 @@ const Auth = () => {
 							<button
 								type="button"
 								onClick={handleForgotPassword}
-								className="text-orange-00 hover:text-orange-600 cursor-pointer"
+								className="text-orange-500 hover:text-orange-600 cursor-pointer"
 							>
 								Forgot Password?
 							</button>
