@@ -34,9 +34,10 @@ const LoginOtp = () => {
 		if (message) {
 			toast.success(message, toastOptions);
 			dispatch({ type: "CLEAR_MESSAGE" });
-			if (message.includes("Login Successful")) {
+			if (typeof message === "string" && message.includes("Login Successful")) {
 				navigate("/volunteer/dashboard");
 			}
+
 		}
 		if (error) {
 			toast.error(error, toastOptions);
