@@ -18,7 +18,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import toastOptions from "../../constants/toast";
+import toastOptions, { successToastOptions } from "../../constants/toast";
 import {
 	registerVolunteer,
 	VolunteerLogin,
@@ -79,7 +79,7 @@ const Auth = () => {
 
 	useEffect(() => {
 		if (message) {
-			toast.success(message, toastOptions);
+			toast.success(message, successToastOptions);
 			dispatch({ type: "CLEAR_MESSAGE" });
 			if (message.includes("Volunteer created")) {
 				navigate(`/volunteer/verify/${id._id}`);

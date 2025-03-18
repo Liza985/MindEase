@@ -7,7 +7,7 @@ import {
 	resetUserPassword,
 	changeUserPassword,
 } from "../../redux/Actions/userAction";
-import toastOptions from "../../constants/toast";
+import toastOptions, { successToastOptions } from "../../constants/toast";
 
 const ForgotPassword = () => {
 	const [step, setStep] = useState(1);
@@ -23,7 +23,7 @@ const ForgotPassword = () => {
 
 	useEffect(() => {
 		if (message) {
-			toast.success(message, toastOptions);
+			toast.success(message, successToastOptions);
 			dispatch({ type: "CLEAR_MESSAGE" });
 
 			if (message.includes("OTP sent")) {

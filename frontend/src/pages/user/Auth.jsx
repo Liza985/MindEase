@@ -18,8 +18,8 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import toastOptions from "../../constants/toast";
 import { loginUser, registerUser } from "../../redux/Actions/userAction";
+import toastOptions, { successToastOptions } from './../../constants/toast';
 
 const Auth = () => {
 	const [isRightPanelActive, setIsRightPanelActive] = useState(false);
@@ -66,13 +66,16 @@ const Auth = () => {
 
 	useEffect(() => {
 		if (message) {
-			toast.success(message, toastOptions);
+			console.log(message)
+			toast.success(message,successToastOptions);
 			dispatch({ type: "CLEAR_MESSAGE" });
+			
 			if (message.includes("Login Successful")) {
 				navigate("/");
 			} else if (message.includes("User registered successfully")) {
 				navigate(`/verify/${id}`);
 			}
+			
 		}
 		if (error) {
 			toast.error(error, toastOptions);

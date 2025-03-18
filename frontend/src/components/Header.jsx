@@ -1,23 +1,33 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { LogOut, User } from "lucide-react";
 import { logoutUser } from "../redux/Actions/userAction";
+import { toast } from "react-toastify";
+import toastOptions from "../constants/toast";
 
 const Header = () => {
 	const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 
-	const { isAuthenticated, id } = useSelector((state) => state.user);
+	const { isAuthenticated,message, id } = useSelector((state) => state.user);
 	const toggleSidebar = () => {
 		setIsSidebarOpen(!isSidebarOpen);
 	};
 
 	const handleLogout = () => {
 		dispatch(logoutUser());
-		navigate("/");
+		
+		
 	};
+	useEffect(() => {
+		if (message) {
+			toast.success(message,toastOptions);
+			dispatch({ type: "CLEAR_MESSAGE" });
+			navigate("/login");
+		}
+	}, [message]);
 
 	return (
 		<>
