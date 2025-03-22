@@ -15,7 +15,7 @@ const LoginOtp = () => {
 	const navigate = useNavigate();
 
 	const { vLoading, message, error, isAuthenticated } = useSelector(
-		(state) => state.volunteer
+		(state) => state.volunteer,
 	);
 
 	useEffect(() => {
@@ -32,12 +32,14 @@ const LoginOtp = () => {
 
 	useEffect(() => {
 		if (message) {
-			toast.success(message, successToastOptions);
+			console.log(message?.message);
+			toast.success(message?.message, successToastOptions);
 			dispatch({ type: "CLEAR_MESSAGE" });
 			if (typeof message === "string" && message.includes("Login Successful")) {
+				toast.success(message, successToastOptions);
+				dispatch({ type: "CLEAR_MESSAGE" });
 				navigate("/volunteer/dashboard");
 			}
-
 		}
 		if (error) {
 			toast.error(error, toastOptions);

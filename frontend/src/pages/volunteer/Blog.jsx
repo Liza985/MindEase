@@ -68,7 +68,7 @@ const Blog = () => {
 											By {blog.author} | {blog.date}
 										</div>
 										<p className="text-gray-600 mb-4">{blog.excerpt}</p>
-										<button className="text-orange-500 font-medium hover:text-orange-600 transition">
+										<button className="text-orange-500 font-medium hover:text-orange-600 transition" onClick={(()=>navigate(`/volunteer/article/${blog.id}`))}>
 											Read More
 										</button>
 									</div>

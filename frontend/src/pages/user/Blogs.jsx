@@ -1,7 +1,9 @@
 import React from "react";
 import Header from "../../components/Header";
+import { useNavigate } from "react-router-dom";
 
 const Blogs = () => {
+	const navigate=useNavigate();
 	// Sample blog posts data
 	const blogPosts = [
 		{
@@ -113,7 +115,7 @@ const Blogs = () => {
 											<span className="mx-1">•</span>
 											<span>{post.date}</span>
 										</div>
-										<button className="text-orange-600 font-medium hover:text-orange-700 flex items-center">
+										<button className="text-orange-600 font-medium hover:text-orange-700 flex items-center" onClick={() => navigate(`/blog/${post.id}`)}>
 											Read More
 											<svg
 												xmlns="http://www.w3.org/2000/svg"

@@ -10,6 +10,9 @@ import Auth from "../../pages/volunteer/Auth";
 import VerifyOtp from "../../pages/volunteer/VerifyOtp";
 import LoginOtp from "../../pages/volunteer/LoginOtp";
 import NewPost from "../../pages/volunteer/NewPost";
+import BlogDetails from "../../pages/volunteer/BlogDetails";
+import UpdateBlog from "../../pages/volunteer/updateBlog";
+import CounselorRequests from "../../pages/user/counselorRequest";
 
 const Volunteer = () => {
 	return (
@@ -64,6 +67,23 @@ const Volunteer = () => {
 					element={
 						//<AuthRoute>
 						<Blog />
+						//</AuthRoute>
+					}
+				/>
+
+				<Route
+					path="/volunteer/article/:id"
+					element={
+						//<AuthRoute>
+						<BlogDetails />
+						//</AuthRoute>
+					}
+				/>
+				<Route
+					path="/volunteer/article/update/:id"
+					element={
+						//<AuthRoute>
+						<UpdateBlog />
 						//</AuthRoute>
 					}
 				/>

@@ -51,6 +51,8 @@ export const userReducer = createReducer(initialState, (builder) => {
 			state.loading = false;
 			state.error = action.payload;
 		})
+
+
 		.addCase(userRegisterRequest, (state) => {
 			state.loading = true;
 		})
@@ -63,6 +65,9 @@ export const userReducer = createReducer(initialState, (builder) => {
 			state.loading = false;
 			state.error = action.payload;
 		})
+
+
+
 		.addCase(RegisterOtpRequest, (state) => {
 			state.loading = true;
 		})
@@ -75,6 +80,10 @@ export const userReducer = createReducer(initialState, (builder) => {
 			state.loading = false;
 			state.error = action.payload;
 		})
+
+
+
+
 		.addCase(ResendRegisterOtpRequest, (state) => {
 			state.loading = true;
 		})
@@ -86,6 +95,9 @@ export const userReducer = createReducer(initialState, (builder) => {
 			state.loading = false;
 			state.error = action.payload;
 		})
+
+
+
 		.addCase(forgotUserPasswordRequest, (state) => {
 			state.loading = true;
 		})
@@ -98,6 +110,9 @@ export const userReducer = createReducer(initialState, (builder) => {
 			state.loading = false;
 			state.error = action.payload;
 		})
+
+
+
 		.addCase(resetUserPasswordRequest, (state) => {
 			state.loading = true;
 		})
@@ -109,6 +124,9 @@ export const userReducer = createReducer(initialState, (builder) => {
 			state.loading = false;
 			state.error = action.payload;
 		})
+
+
+
 		.addCase(changeUserPasswordRequest, (state) => {
 			state.loading = true;
 		})
@@ -120,6 +138,9 @@ export const userReducer = createReducer(initialState, (builder) => {
 			state.loading = false;
 			state.error = action.payload;
 		})
+
+
+
 		.addCase(logoutUserRequest, (state) => {
 			state.loading = true;
 		})
@@ -133,6 +154,8 @@ export const userReducer = createReducer(initialState, (builder) => {
 			state.loading = false;
 			state.error = action.payload;
 		})
+
+		
 		.addCase(clearError, (state) => {
 			state.error = null;
 		})

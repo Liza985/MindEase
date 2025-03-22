@@ -35,7 +35,7 @@ export const VolHeader = ({ title }) => {
 		{ name: "Blogs", icon: <FileText size={18} />, path: "/volunteer/article" },
 	];
 
-	const { id } = useSelector(state => state.volunteer);
+	const { id } = useSelector((state) => state.volunteer);
 	const handleLogout = () => {
 		dispatch(volunteerLogout());
 		dispatch({ type: "CLEAR_MESSAGE" });
@@ -55,12 +55,12 @@ export const VolHeader = ({ title }) => {
 					<nav className="hidden md:flex items-center space-x-4">
 						{links.map((link) => (
 							<Link
-								key={link.name}
-								to={link.path}
+								key={link?.name}
+								to={link?.path}
 								className="flex items-center space-x-1 text-black-800 hover:text-orange-500 transition"
 							>
 								{link.icon}
-								<span>{link.name}</span>
+								<span>{link?.name}</span>
 							</Link>
 						))}
 					</nav>
@@ -76,10 +76,12 @@ export const VolHeader = ({ title }) => {
 					{/* User Profile */}
 					<div className="flex items-center space-x-2">
 						<div className="bg-orange-300 w-8 h-8 rounded-full flex items-center justify-center text-orange-800 font-bold text-sm">
-							JD
+							{id?.firstName?.charAt(0) && id?.lastName?.charAt(0)
+								? `${id.firstName.charAt(0)}${id.lastName.charAt(0)}`
+								: "V"}
 						</div>
 						<div className="hidden md:block">
-							<h3 className="text-sm font-medium"> {id.firstName} </h3>
+							<h3 className="text-sm font-medium"> {id?.firstName} </h3>
 							<p className="text-xs text-gray-500">Volunteer</p>
 						</div>
 					</div>

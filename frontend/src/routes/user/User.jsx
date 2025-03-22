@@ -1,18 +1,21 @@
 import { Route, Routes } from "react-router-dom";
 
+import AnalysisPage from "../../pages/user/AnalysisPage";
+import Auth from "../../pages/user/Auth";
 import Blogs from "../../pages/user/Blogs";
-import Auth from "../../pages/user/Auth"
+import ChatbotPage from "../../pages/user/ChatBot";
 import CounselingPage from "../../pages/user/Counsellors";
+import ForgotPassword from "../../pages/user/ForgotPassword";
 import Home from "../../pages/user/Home";
 import HowItWorks from "../../pages/user/HowItWorks";
-import WellnessHub from "../../pages/user/WellnesaHub";
 import MindeaseForm from "../../pages/user/MindeaseForm";
-import VerifyOtp from "../../pages/user/VerifyOtp";
-import ForgotPassword from "../../pages/user/ForgotPassword";
-import ChatbotPage from "../../pages/user/ChatBot";
 import PricingPage from "../../pages/user/Plans&Pricing";
 import ResourceDetail from "../../pages/user/ResourceDetail";
-import AnalysisPage from "../../pages/user/AnalysisPage";
+import VerifyOtp from "../../pages/user/VerifyOtp";
+import WellnessHub from "../../pages/user/WellnesaHub";
+import BlogDetail from "../../pages/user/BlogDetail";
+import CounselorRequests from "../../pages/user/counselorRequest";
+import CounselorChat from "../../pages/user/CounselorChat";
 
 const User = () => {
 	return (
@@ -31,7 +34,7 @@ const User = () => {
 					path="/register"
 					element={
 						//<AuthRoute>
-						<Auth/>
+						<Auth />
 						//</AuthRoute>
 					}
 				/>
@@ -43,18 +46,9 @@ const User = () => {
 						//</AuthRoute>
 					}
 				/>
-				<Route
-					path="/forgot-password"
-					element={<ForgotPassword />}
-				/>
-				<Route
-					path="/forgot-password/:id"
-					element={<ForgotPassword />}
-				/>
-				<Route
-					path="/changepassword/:id"
-					element={<ForgotPassword />}
-				/>
+				<Route path="/forgot-password" element={<ForgotPassword />} />
+				<Route path="/forgot-password/:id" element={<ForgotPassword />} />
+				<Route path="/changepassword/:id" element={<ForgotPassword />} />
 				<Route path="/" element={<Home />} />
 				<Route
 					path="/how-it-works"
@@ -95,7 +89,13 @@ const User = () => {
 						<MindeaseForm />
 						// </ProtectedRoute>
 					}
-				/>		
+				/>
+								<Route path="/counselor-requests" element={<CounselorRequests />} />
+								<Route path="/counselor-chat/:chatId" element={<CounselorChat />} />
+				<Route 
+				path="/blog/:id"
+				element={<BlogDetail />}
+				/>
 				<Route
 					path="/aichat"
 					element={
@@ -112,7 +112,7 @@ const User = () => {
 						// </ProtectedRoute>
 					}
 				/>
-				      <Route path="/resource/:title" element={<ResourceDetail />} />
+				<Route path="/resource/:title" element={<ResourceDetail />} />
 				<Route
 					path="/analysis"
 					element={
@@ -121,11 +121,9 @@ const User = () => {
 						// </ProtectedRoute>
 					}
 				/>
-			
 			</Routes>
 		</>
 	);
 };
-
 
 export default User;

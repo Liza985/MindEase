@@ -44,7 +44,7 @@ const Auth = () => {
 	];
 
 	const { loading, message, error, id } = useSelector(
-		(state) => state.volunteer
+		(state) => state.volunteer,
 	);
 
 	console.log(message);
@@ -79,12 +79,13 @@ const Auth = () => {
 
 	useEffect(() => {
 		if (message) {
-			toast.success(message, successToastOptions);
-			dispatch({ type: "CLEAR_MESSAGE" });
 			if (message.includes("Volunteer created")) {
-				navigate(`/volunteer/verify/${id._id}`);
+				toast.success(message, successToastOptions);
+				dispatch({ type: "CLEAR_MESSAGE" });
+				navigate(`/volunteer/verify/${id?._id}`);
 			} else if (message.includes("Login Successful")) {
-				navigate(`/volunteer/login/${id._id}`);
+				dispatch({ type: "CLEAR_MESSAGE" });
+				navigate(`/volunteer/login/${id?._id}`);
 			}
 		}
 		if (error) {
@@ -445,7 +446,7 @@ const Auth = () => {
 										setRegisterForm((prev) => ({
 											...prev,
 											daysAvailable: selectedOptions.map(
-												(option) => option.value
+												(option) => option.value,
 											),
 										}));
 									}}

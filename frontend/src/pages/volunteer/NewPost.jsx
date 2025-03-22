@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import VolHeader from '../../components/VolHeader';
 
 const NewPost = () => {
   const [formData, setFormData] = useState({
@@ -53,6 +54,8 @@ const NewPost = () => {
   };
 
   return (
+    <>
+    <VolHeader/>
     <div className="min-h-screen bg-gradient-to-r from-blue-50 to-orange-50 py-8">
       <div className="max-w-4xl mx-auto px-4">
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
@@ -157,7 +160,14 @@ const NewPost = () => {
           </form>
         </div>
       </div>
+     
     </div>
+    <footer className="bg-white shadow-sm border-t border-gray-200 p-4 text-center text-black-800">
+        <p className="text-sm">
+          &copy; 2025 MindEaseConnect. All rights reserved.
+        </p>
+      </footer>
+    </>
   );
 };
 
