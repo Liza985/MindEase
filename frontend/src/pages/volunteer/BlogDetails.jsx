@@ -193,7 +193,7 @@ const BlogDetails = () => {
                   </div>
                 </div>
                 <div className="text-sm text-gray-500 mb-4">
-                  By {blogById?.author} | {blogById?.date}
+                  By {blogById?.volunteerId?.firstName} {blogById?.volunteerId?.lastName} | {blogById?.createdAt?.split('T')[0]}
                 </div>
                 
                 {/* Tags */}

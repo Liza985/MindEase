@@ -39,7 +39,7 @@ export const createBlog = async (req, res) => {
 
 export const getAllBlogs = async (req, res) => {
 	try {
-		const blogs = await Blog.find();
+		const blogs = await Blog.find().populate("volunteerId", "firstName lastName");
 
 		Response(res, 200, true, message.blogsFetchSuccessfulMessage, blogs);
 	} catch (error) {
@@ -53,7 +53,7 @@ export const getBlogsById = async (req, res) => {
 		if (!id) {
 			return Response(res, 400, false, message.idNotFound);
 		}
-		const blog = await Blog.findById(id);
+		const blog = await Blog.findById(id).populate("volunteerId", "firstName lastName")
 		if (!blog) {
 			return Response(res, 404, false, message.blogNotFoundMessage);
 		}
@@ -66,7 +66,7 @@ export const getBlogsById = async (req, res) => {
 export const getBlogsByVolunteer = async (req, res) => {
 	try {
 		
-		const blogs = await Blog.find({ volunteerId: req.volunteer._id });
+		const blogs = await Blog.find({ volunteerId: req.volunteer._id }).populate("volunteerId", "firstName lastName")
 		if (!blogs) {
 			return Response(res, 404, false, message.blogNotFoundMessage);
 		}
@@ -109,7 +109,7 @@ export const getBlogByTopic = async (req, res) => {
 		if (!topic) {
 			return Response(res, 400, false, message.missingFieldMessage);
 		}
-		const blogs = await Blog.find({ topic: topic });
+		const blogs = await Blog.find({ topic: topic }).populate("volunteerId", "firstName lastName");
 		if (!blogs) {
 			return Response(res, 404, false, message.blogNotFoundMessage);
 		}
