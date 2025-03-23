@@ -16,6 +16,7 @@ import WellnessHub from "../../pages/user/WellnesaHub";
 import BlogDetail from "../../pages/user/BlogDetail";
 import CounselorRequests from "../../pages/user/counselorRequest";
 import CounselorChat from "../../pages/user/CounselorChat";
+import Review from "../../pages/user/Review";
 
 const User = () => {
 	return (
@@ -90,12 +91,9 @@ const User = () => {
 						// </ProtectedRoute>
 					}
 				/>
-								<Route path="/counselor-requests" element={<CounselorRequests />} />
-								<Route path="/counselor-chat/:chatId" element={<CounselorChat />} />
-				<Route 
-				path="/blog/:id"
-				element={<BlogDetail />}
-				/>
+				<Route path="/counselor-requests" element={<CounselorRequests />} />
+				<Route path="/counselor-chat/:chatId" element={<CounselorChat />} />
+				<Route path="/blog/:id" element={<BlogDetail />} />
 				<Route
 					path="/aichat"
 					element={
@@ -121,6 +119,7 @@ const User = () => {
 						// </ProtectedRoute>
 					}
 				/>
+				<Route path="/review" element={<Review />} />
 			</Routes>
 		</>
 	);
