@@ -11,19 +11,17 @@ const Header = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 
-	const { isAuthenticated,message, id } = useSelector((state) => state.user);
+	const { isAuthenticated, message, id } = useSelector((state) => state.user);
 	const toggleSidebar = () => {
 		setIsSidebarOpen(!isSidebarOpen);
 	};
 
 	const handleLogout = () => {
 		dispatch(logoutUser());
-		
-		
 	};
 	useEffect(() => {
 		if (message) {
-			toast.success(message,toastOptions);
+			toast.success(message, toastOptions);
 			dispatch({ type: "CLEAR_MESSAGE" });
 			navigate("/login");
 		}
@@ -96,7 +94,7 @@ const Header = () => {
 								to="/plans&pricing"
 								className="text-black hover:text-orange-600 px-2 xl:px-3 py-2 font-normal text-sm xl:text-base"
 							>
-								Plans&Pricing
+								Plans & Pricing
 							</NavLink>
 							<NavLink
 								to="/Counselling"
@@ -226,7 +224,7 @@ const Header = () => {
 							className="block text-black hover:text-orange-600 hover:bg-orange-50 py-3 px-4 rounded-lg text-base sm:text-lg transition duration-300 transform hover:translate-x-2"
 							onClick={toggleSidebar}
 						>
-							Plans&Pricing
+							Plans & Pricing
 						</NavLink>
 						<NavLink
 							to="/counselling"

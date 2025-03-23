@@ -16,7 +16,7 @@ import WellnessHub from "../../pages/user/WellnesaHub";
 import BlogDetail from "../../pages/user/BlogDetail";
 import CounselorRequests from "../../pages/user/counselorRequest";
 import CounselorChat from "../../pages/user/CounselorChat";
-import Review from "../../pages/user/Review";
+import Feedback from "../../pages/user/Feedback";
 
 const User = () => {
 	return (
@@ -119,7 +119,7 @@ const User = () => {
 						// </ProtectedRoute>
 					}
 				/>
-				<Route path="/review" element={<Review />} />
+				<Route path="/feedback" element={<Feedback />} />
 			</Routes>
 		</>
 	);

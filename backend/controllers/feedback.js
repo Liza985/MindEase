@@ -1,17 +1,17 @@
-import feedback from "../models/feedback";
-import { message } from "../utils/message";
-import { Response } from "../utils/response";
+import feedback from "../models/feedback.js";
+import { message } from "../utils/message.js";
+import { Response } from "../utils/response.js";
 
 export const CreateFeedBack = async (req, res) => {
 	try {
-		const { rating, feedback } = req.body;
-		if (!rating || !feedback) {
+		const { rating, feedback: feedbackText } = req.body;
+		if (!rating || !feedbackText) {
 			return Response(res, 400, false, message.missingFieldMessage);
 		}
 		const newFeedBack = await feedback.create({
 			userId: req.user._id,
 			rating,
-			feedback,
+			feedback: feedbackText,
 		});
 		Response(res, 201, true, message.createFeedBackMessage, newFeedBack);
 	} catch (error) {
@@ -21,7 +21,7 @@ export const CreateFeedBack = async (req, res) => {
 
 export const getAllFeedBacks = async (req, res) => {
 	try {
-		const feedbacks = await feedback.find();
+		const feedbacks = await feedback.find().populate("userId", "name avatar");
 		Response(res, 200, true, message.feedBackFetchSuccessfulMessage, feedbacks);
 	} catch (error) {
 		Response(res, 500, false, error.message);
