@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import VolHeader from "../../components/VolHeader";
+import { useDispatch, useSelector } from "react-redux";
 
 const UpdateBlog = () => {
   const navigate = useNavigate();
+  const dispatch=useDispatch();
   const { id } = useParams();
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -31,26 +33,12 @@ const UpdateBlog = () => {
       tags: ["Communication", "Volunteer Skills", "Mentoring"]
     }
   ];
+  const {message,error,blogById}=useSelector((blog)=>state.blog)
 
   useEffect(() => {
-    // Simulate API fetch
-    const fetchBlog = () => {
-      setIsLoading(true);
-      const blogPost = blogData.find(blog => blog.id === parseInt(id));
+    
 
-      if (blogPost) {
-        setFormData({
-          title: blogPost.title,
-          excerpt: blogPost.excerpt,
-          content: blogPost.content,
-          tags: blogPost.tags.join(", "),
-          image: blogPost.image
-        });
-      }
-      setTimeout(() => setIsLoading(false), 500);
-    };
-
-    fetchBlog();
+    
   }, [id]);
 
   const handleChange = (e) => {
