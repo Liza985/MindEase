@@ -310,7 +310,7 @@ export const loginVolunteer = async (req, res) => {
 		// console.log("Final working");
 
 		const otp = Math.floor(100000 + Math.random() * 900000);
-		const otpExpire = new Date(Date.now() + 5 * 6 * 1000);
+		const otpExpire = new Date(Date.now() + 5 * 60 * 1000);
 		volunteer.loginOtp = otp;
 		volunteer.loginOtpExpire = otpExpire;
 
