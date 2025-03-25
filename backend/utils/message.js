@@ -39,8 +39,10 @@ export const message={
     feedBackFetchSuccessfulMessage:"Feedback fetched successfully",
     feedBackDeleteMessage:"Feedback deleted successfully",
     feedBackNotFoundMessage:"Feedback not found",
-
-
-
-
+    contentCreated: "Content created successfullly",
+    contentDeletd: "Content Deleted successfully",
+    invalidId: "Invalid Id",
+    contentFetchSuccessfully: "Content Fetched Successfully",
+    contentNotFound: "Content not found",
+    contentUpdatedSuccessfully: "Content Updated Successfully"
 }
