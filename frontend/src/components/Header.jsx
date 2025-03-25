@@ -1,31 +1,34 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { LogOut, User } from "lucide-react";
+import { LogOut, User, MessageCircle } from "lucide-react";
 import { logoutUser } from "../redux/Actions/userAction";
-import { toast } from "react-toastify";
-import toastOptions from "../constants/toast";
 
 const Header = () => {
 	const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 
-	const { isAuthenticated, message, id } = useSelector((state) => state.user);
-	const toggleSidebar = () => {
-		setIsSidebarOpen(!isSidebarOpen);
-	};
+	const { isAuthenticated, id } = useSelector((state) => state.user);
 
-	const handleLogout = () => {
-		dispatch(logoutUser());
-	};
 	useEffect(() => {
-		if (message) {
-			toast.success(message, toastOptions);
-			dispatch({ type: "CLEAR_MESSAGE" });
-			navigate("/login");
-		}
-	}, [message]);
+		const handleClickOutside = (event) => {
+			if (!event.target.closest(".user-menu")) {
+				setIsDropdownOpen(false);
+			}
+		};
+
+		document.addEventListener("mousedown", handleClickOutside);
+		return () => {
+			document.removeEventListener("mousedown", handleClickOutside);
+		};
+	}, []);
+
+	const handleLogout = async () => {
+		await dispatch(logoutUser());
+		navigate("/");
+	};
 
 	return (
 		<>
@@ -117,24 +120,42 @@ const Header = () => {
 							{isAuthenticated ? (
 								<div className="flex items-center space-x-4">
 									{/* Profile Section */}
-									<div className="flex items-center space-x-2">
-										<div className="bg-orange-300 w-8 h-8 rounded-full flex items-center justify-center text-orange-800 font-bold text-sm">
-											<User size={18} />
-										</div>
-										<div className="hidden md:block">
-											<h3 className="text-sm font-medium">{id?.firstName}</h3>
-											<p className="text-xs text-gray-500">User</p>
-										</div>
-									</div>
+									<div className="relative user-menu">
+										<button
+											onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+											className="flex items-center space-x-2 text-gray-700 hover:text-orange-500 focus:outline-none"
+										>
+											<User className="h-5 w-5" />
+											<span>My Account</span>
+										</button>
 
-									{/* Logout Button */}
-									<button
-										onClick={handleLogout}
-										className="text-gray-500 hover:text-orange-500 transition"
-										title="Sign Out"
-									>
-										<LogOut size={18} />
-									</button>
+										{/* Dropdown Menu */}
+										{isDropdownOpen && (
+											<div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+												<Link
+													to="/counselor-requests"
+													className="block px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-500 flex items-center"
+												>
+													<MessageCircle className="h-4 w-4 mr-2" />
+													My Counsellings
+												</Link>
+												<Link
+													to="/profile"
+													className="block px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-500 flex items-center"
+												>
+													<User className="h-4 w-4 mr-2" />
+													My Profile
+												</Link>
+												<button
+													onClick={handleLogout}
+													className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-500 flex items-center"
+												>
+													<LogOut className="h-4 w-4 mr-2" />
+													Logout
+												</button>
+											</div>
+										)}
+									</div>
 								</div>
 							) : (
 								<div className="flex items-center space-x-4">
@@ -156,14 +177,16 @@ const Header = () => {
 
 						{/* Mobile/Tablet menu button */}
 						<div className="lg:hidden flex items-center space-x-4">
-							<NavLink
-								to="/register"
-								className="text-white bg-orange-500 hover:bg-orange-600 px-4 py-2 rounded-full font-normal text-sm sm:text-base transition duration-300"
-							>
-								Get Started
-							</NavLink>
+							{!isAuthenticated && (
+								<NavLink
+									to="/register"
+									className="text-white bg-orange-500 hover:bg-orange-600 px-4 py-2 rounded-full font-normal text-sm sm:text-base transition duration-300"
+								>
+									Get Started
+								</NavLink>
+							)}
 							<button
-								onClick={toggleSidebar}
+								onClick={() => setIsSidebarOpen(!isSidebarOpen)}
 								className="mobile-menu-button p-2 rounded-md text-orange-500 hover:text-orange-600 hover:bg-gray-100 focus:outline-none"
 							>
 								<svg
@@ -193,7 +216,7 @@ const Header = () => {
 				>
 					<div className="flex justify-end p-4 border-b">
 						<button
-							onClick={toggleSidebar}
+							onClick={() => setIsSidebarOpen(!isSidebarOpen)}
 							className="text-gray-500 hover:text-gray-600 transition duration-300"
 						>
 							<svg
@@ -215,35 +238,35 @@ const Header = () => {
 						<NavLink
 							to="/how-it-works"
 							className="block text-black hover:text-orange-600 hover:bg-orange-50 py-3 px-4 rounded-lg text-base sm:text-lg transition duration-300 transform hover:translate-x-2"
-							onClick={toggleSidebar}
+							onClick={() => setIsSidebarOpen(!isSidebarOpen)}
 						>
 							How It Works
 						</NavLink>
 						<NavLink
 							to="/plans&pricing"
 							className="block text-black hover:text-orange-600 hover:bg-orange-50 py-3 px-4 rounded-lg text-base sm:text-lg transition duration-300 transform hover:translate-x-2"
-							onClick={toggleSidebar}
+							onClick={() => setIsSidebarOpen(!isSidebarOpen)}
 						>
 							Plans & Pricing
 						</NavLink>
 						<NavLink
 							to="/counselling"
 							className="block text-black hover:text-orange-600 hover:bg-orange-50 py-3 px-4 rounded-lg text-base sm:text-lg transition duration-300 transform hover:translate-x-2"
-							onClick={toggleSidebar}
+							onClick={() => setIsSidebarOpen(!isSidebarOpen)}
 						>
 							Counselling
 						</NavLink>
 						<NavLink
 							to="/wellness-hub"
 							className="block text-black hover:text-orange-600 hover:bg-orange-50 py-3 px-4 rounded-lg text-base sm:text-lg transition duration-300 transform hover:translate-x-2"
-							onClick={toggleSidebar}
+							onClick={() => setIsSidebarOpen(!isSidebarOpen)}
 						>
 							Wellness Hub
 						</NavLink>
 						<NavLink
 							to="/blogs"
 							className="block text-black hover:text-orange-600 hover:bg-orange-50 py-3 px-4 rounded-lg text-base sm:text-lg transition duration-300 transform hover:translate-x-2"
-							onClick={toggleSidebar}
+							onClick={() => setIsSidebarOpen(!isSidebarOpen)}
 						>
 							Blogs
 						</NavLink>
@@ -255,13 +278,30 @@ const Header = () => {
 									</div>
 									<span>{id?.firstName}</span>
 								</div>
+								<NavLink
+									to="/counselor-requests"
+									className="block text-black hover:text-orange-600 hover:bg-orange-50 py-3 px-4 rounded-lg text-base transition duration-300 transform hover:translate-x-2 flex items-center"
+									onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+								>
+									<MessageCircle className="h-5 w-5 mr-2" />
+									My Counsellings
+								</NavLink>
+								<NavLink
+									to="/profile"
+									className="block text-black hover:text-orange-600 hover:bg-orange-50 py-3 px-4 rounded-lg text-base transition duration-300 transform hover:translate-x-2 flex items-center"
+									onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+								>
+									<User className="h-5 w-5 mr-2" />
+									My Profile
+								</NavLink>
 								<button
 									onClick={() => {
 										handleLogout();
-										toggleSidebar();
+										setIsSidebarOpen(!isSidebarOpen);
 									}}
-									className="w-full text-left py-2 text-red-500"
+									className="w-full text-left py-3 px-4 text-red-500 hover:text-red-600 hover:bg-red-50 rounded-lg flex items-center transition duration-300"
 								>
+									<LogOut className="h-5 w-5 mr-2" />
 									Logout
 								</button>
 							</div>
@@ -270,14 +310,14 @@ const Header = () => {
 								<NavLink
 									to="/register"
 									className="block w-full text-center text-white bg-orange-500 hover:bg-orange-600 py-3 rounded-full"
-									onClick={toggleSidebar}
+									onClick={() => setIsSidebarOpen(!isSidebarOpen)}
 								>
 									Sign Up
 								</NavLink>
 								<NavLink
 									to="/login"
 									className="block w-full text-center text-orange-500 hover:text-orange-600 border-2 border-orange-500 py-3 rounded-full"
-									onClick={toggleSidebar}
+									onClick={() => setIsSidebarOpen(!isSidebarOpen)}
 								>
 									Login
 								</NavLink>

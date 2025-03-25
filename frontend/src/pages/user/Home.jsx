@@ -9,11 +9,8 @@ import {
 	Smile,
 	Star,
 } from "lucide-react";
-import React from "react";
 import { NavLink } from "react-router-dom";
 import Layout from "../../components/Layout";
-
-
 
 const WaveBackground = () => (
 	<div className="absolute inset-0 bg-white overflow-hidden">
@@ -198,8 +195,7 @@ const LandingPage = () => {
 
 	return (
 		<Layout>
-		<div className="min-h-screen bg-gradient-to-b from-white-50 to-orange-50 ">
-
+			<div className="min-h-screen bg-gradient-to-b from-white-50 to-orange-50 ">
 				<div className="min-h-screen relative overflow-hidden">
 					<WaveBackground />
 					<div className="relative">
@@ -290,9 +286,12 @@ const LandingPage = () => {
 								</p>
 
 								{/* CTA Button */}
-								<button className="bg-orange-500 text-white px-8 py-3 md:px-10 md:py-4 rounded-full font-semibold text-base md:text-lg hover:bg-orange-600 transform hover:scale-110 hover:shadow-xl transition-all duration-300">
+								<NavLink
+									to="/login"
+									className="inline-block bg-orange-500 text-white px-8 py-3 md:px-10 md:py-4 rounded-full font-semibold text-base md:text-lg hover:bg-orange-600 transform hover:scale-110 hover:shadow-xl transition-all duration-300"
+								>
 									Get Started Now
-								</button>
+								</NavLink>
 							</div>
 						</section>
 
@@ -303,8 +302,6 @@ const LandingPage = () => {
 					</div>
 				</div>
 			</div>
-
-
 		</Layout>
 	);
 };

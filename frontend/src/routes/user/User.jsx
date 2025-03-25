@@ -17,6 +17,7 @@ import BlogDetail from "../../pages/user/BlogDetail";
 import CounselorRequests from "../../pages/user/counselorRequest";
 import CounselorChat from "../../pages/user/CounselorChat";
 import Feedback from "../../pages/user/Feedback";
+import Profile from "../../pages/user/Profile";
 
 const User = () => {
 	return (
@@ -120,6 +121,7 @@ const User = () => {
 					}
 				/>
 				<Route path="/feedback" element={<Feedback />} />
+				<Route path="/profile" element={<Profile />} />
 			</Routes>
 		</>
 	);

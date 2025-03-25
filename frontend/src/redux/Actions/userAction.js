@@ -10,16 +10,12 @@ export const loginUser = (details) => async (dispatch) => {
 			type: "USER_LOGIN_REQUEST",
 		});
 
-		const { data } = await axios.post(
-			`${URL}/login`,
-			details,
-			{
-				headers: {
-					"content-Type": "application/json",
-				},
-				withCredentials: true,
-			}
-		);
+		const { data } = await axios.post(`${URL}/login`, details, {
+			headers: {
+				"content-Type": "application/json",
+			},
+			withCredentials: true,
+		});
 		console.log(data);
 
 		dispatch({
@@ -214,6 +210,56 @@ export const logoutUser = () => async (dispatch) => {
 		dispatch({
 			type: "LOGOUT_USER_FAILURE",
 			payload: error?.response?.data?.message,
+		});
+	}
+};
+
+export const updateUserProfile = (userData) => async (dispatch) => {
+	try {
+		dispatch({ type: "UPDATE_PROFILE_REQUEST" });
+
+		const { data } = await axios.put(
+			`${BACKEND_URL}api/v1/user/profile/update`,
+			userData,
+			{
+				headers: {
+					"Content-Type": "application/json",
+				},
+				withCredentials: true,
+			}
+		);
+
+		dispatch({
+			type: "UPDATE_PROFILE_SUCCESS",
+			payload: {
+				message: data.message,
+				data: data.data,
+			},
+		});
+	} catch (error) {
+		dispatch({
+			type: "UPDATE_PROFILE_FAILURE",
+			payload: error.response?.data?.message || "Something went wrong",
+		});
+	}
+};
+
+export const deleteUserAccount = () => async (dispatch) => {
+	try {
+		dispatch({ type: "DELETE_USER_REQUEST" });
+
+		const { data } = await axios.delete(`${BACKEND_URL}api/v1/user/delete`, {
+			withCredentials: true,
+		});
+
+		dispatch({
+			type: "DELETE_USER_SUCCESS",
+			payload: data.message,
+		});
+	} catch (error) {
+		dispatch({
+			type: "DELETE_USER_FAILURE",
+			payload: error.response?.data?.message || "Something went wrong",
 		});
 	}
 };

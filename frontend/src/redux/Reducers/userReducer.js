@@ -52,7 +52,6 @@ export const userReducer = createReducer(initialState, (builder) => {
 			state.error = action.payload;
 		})
 
-
 		.addCase(userRegisterRequest, (state) => {
 			state.loading = true;
 		})
@@ -65,8 +64,6 @@ export const userReducer = createReducer(initialState, (builder) => {
 			state.loading = false;
 			state.error = action.payload;
 		})
-
-
 
 		.addCase(RegisterOtpRequest, (state) => {
 			state.loading = true;
@@ -81,9 +78,6 @@ export const userReducer = createReducer(initialState, (builder) => {
 			state.error = action.payload;
 		})
 
-
-
-
 		.addCase(ResendRegisterOtpRequest, (state) => {
 			state.loading = true;
 		})
@@ -95,8 +89,6 @@ export const userReducer = createReducer(initialState, (builder) => {
 			state.loading = false;
 			state.error = action.payload;
 		})
-
-
 
 		.addCase(forgotUserPasswordRequest, (state) => {
 			state.loading = true;
@@ -111,8 +103,6 @@ export const userReducer = createReducer(initialState, (builder) => {
 			state.error = action.payload;
 		})
 
-
-
 		.addCase(resetUserPasswordRequest, (state) => {
 			state.loading = true;
 		})
@@ -125,8 +115,6 @@ export const userReducer = createReducer(initialState, (builder) => {
 			state.error = action.payload;
 		})
 
-
-
 		.addCase(changeUserPasswordRequest, (state) => {
 			state.loading = true;
 		})
@@ -138,8 +126,6 @@ export const userReducer = createReducer(initialState, (builder) => {
 			state.loading = false;
 			state.error = action.payload;
 		})
-
-
 
 		.addCase(logoutUserRequest, (state) => {
 			state.loading = true;
@@ -155,11 +141,37 @@ export const userReducer = createReducer(initialState, (builder) => {
 			state.error = action.payload;
 		})
 
-		
 		.addCase(clearError, (state) => {
 			state.error = null;
 		})
 		.addCase(clearMessage, (state) => {
 			state.message = null;
+		})
+
+		.addCase("UPDATE_PROFILE_REQUEST", (state) => {
+			state.loading = true;
+		})
+		.addCase("UPDATE_PROFILE_SUCCESS", (state, action) => {
+			state.loading = false;
+			state.message = action.payload.message;
+			state.id = action.payload.data;
+		})
+		.addCase("UPDATE_PROFILE_FAILURE", (state, action) => {
+			state.loading = false;
+			state.error = action.payload;
+		})
+
+		.addCase("DELETE_USER_REQUEST", (state) => {
+			state.loading = true;
+		})
+		.addCase("DELETE_USER_SUCCESS", (state, action) => {
+			state.loading = false;
+			state.isAuthenticated = false;
+			state.user = null;
+			state.message = action.payload;
+		})
+		.addCase("DELETE_USER_FAILURE", (state, action) => {
+			state.loading = false;
+			state.error = action.payload;
 		});
 });
