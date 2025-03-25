@@ -5,7 +5,7 @@ import UploadModal from "../../components/AdminUploadModal";
 
 const Content = () => {
   // Mock content data
-  const [contentItems, setContentItems] = useState([
+const [contentItems, setContentItems] = useState([
     {
       id: "CNT001",
       title: "How to Apply for Assistance",
@@ -405,5 +405,7 @@ const Content = () => {
     </div>
   );
 };
+
+
 
 export default Content;
