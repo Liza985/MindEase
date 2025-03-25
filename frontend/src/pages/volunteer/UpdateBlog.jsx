@@ -1,9 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import VolHeader from "../../components/VolHeader";
-
+import { useDispatch, useSelector } from "react-redux";
+import { getBlogsById, updateBlog} from "../../redux/Actions/blogAction";
+import { toast } from "react-toastify";
+import { successToastOptions } from "../../constants/toast";
 const UpdateBlog = () => {
   const navigate = useNavigate();
+  const dispatch=useDispatch();
   const { id } = useParams();
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -12,10 +16,10 @@ const UpdateBlog = () => {
 
   const [formData, setFormData] = useState({
     title: "",
-    excerpt: "",
-    content: "",
-    tags: "",
-    image: ""
+    topic: "",
+    description: "",
+    body: "",
+    image: null
   });
 
   // Sample blog data - replace with API fetch in real implementation
@@ -31,27 +35,11 @@ const UpdateBlog = () => {
       tags: ["Communication", "Volunteer Skills", "Mentoring"]
     }
   ];
+  const {message,error,blogById,loading}=useSelector((state)=>state.blog)
 
   useEffect(() => {
-    // Simulate API fetch
-    const fetchBlog = () => {
-      setIsLoading(true);
-      const blogPost = blogData.find(blog => blog.id === parseInt(id));
-
-      if (blogPost) {
-        setFormData({
-          title: blogPost.title,
-          excerpt: blogPost.excerpt,
-          content: blogPost.content,
-          tags: blogPost.tags.join(", "),
-          image: blogPost.image
-        });
-      }
-      setTimeout(() => setIsLoading(false), 500);
-    };
-
-    fetchBlog();
-  }, [id]);
+    dispatch(getBlogsById(id));
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -78,14 +66,10 @@ const UpdateBlog = () => {
     setErrorMessage("");
 
     try {
-      if (!formData.title.trim() || !formData.excerpt.trim() || !formData.content.trim()) {
-        throw new Error("Please fill in all required fields");
+      dispatch(updateBlog(id,formData))
+      if(message){
+        toast.success(message,successToastOptions);
       }
-
-      console.log("Updating blog post with data:", formData);
-
-      // Simulate API upload (replace this with actual API logic)
-      await new Promise(resolve => setTimeout(resolve, 1000));
 
       navigate(`/volunteer/article/${id}`);
     } catch (error) {
@@ -98,7 +82,7 @@ const UpdateBlog = () => {
     navigate(`/volunteer/article/${id}`);
   };
 
-  if (isLoading) {
+  if (loading) {
     return (
       <>
         <VolHeader />
@@ -128,9 +112,9 @@ const UpdateBlog = () => {
               <form onSubmit={handleSubmit}>
                 
                 {/* Image Preview */}
-                {formData.image && (
+                {blogById?.image?.url && (
                   <div className="mb-4">
-                    <img src={formData.image} alt={formData.title} className="w-full rounded-md shadow-sm" />
+                    <img src={blogById?.image?.url} alt={blogById?.title} className="w-full rounded-md shadow-sm" />
                   </div>
                 )}
 
@@ -151,19 +135,19 @@ const UpdateBlog = () => {
                   <input
                     type="text"
                     name="title"
-                    value={formData.title}
+                    value={blogById?.title}
                     onChange={handleChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500"
                     required
                   />
                 </div>
 
-                {/* Excerpt */}
+                {/* Topic */}
                 <div className="mb-4">
-                  <label className="block text-gray-700 font-medium mb-2">Excerpt <span className="text-red-500">*</span></label>
+                  <label className="block text-gray-700 font-medium mb-2">Topic <span className="text-red-500">*</span></label>
                   <textarea
-                    name="excerpt"
-                    value={formData.excerpt}
+                    name="Topic"
+                    value={blogById?.Topic}
                     onChange={handleChange}
                     rows={2}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500"
@@ -171,12 +155,12 @@ const UpdateBlog = () => {
                   ></textarea>
                 </div>
 
-                {/* Content */}
+                {/* description */}
                 <div className="mb-4">
-                  <label className="block text-gray-700 font-medium mb-2">Content <span className="text-red-500">*</span></label>
+                  <label className="block text-gray-700 font-medium mb-2">description <span className="text-red-500">*</span></label>
                   <textarea
-                    name="content"
-                    value={formData.content}
+                    name="description"
+                    value={blogById?.description}
                     onChange={handleChange}
                     rows={6}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500"
@@ -184,13 +168,13 @@ const UpdateBlog = () => {
                   ></textarea>
                 </div>
 
-                {/* Tags */}
+                {/* body */}
                 <div className="mb-4">
-                  <label className="block text-gray-700 font-medium mb-2">Tags</label>
+                  <label className="block text-gray-700 font-medium mb-2">body</label>
                   <input
                     type="text"
-                    name="tags"
-                    value={formData.tags}
+                    name="body"
+                    value={blogById?.body}
                     onChange={handleChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500"
                   />

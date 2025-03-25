@@ -6,11 +6,17 @@ const activitySchema=mongoose.Schema({
             required:true,
             default: () => new mongoose.schema.Types.ObjectId()
         },
-        name:{
+        books:{
+        public_id:{
             type:String,
-            required:true,
+            default: "",
         },
-        typeOfActivity:{
+        url:{
+            type:String,
+            default: "",
+        }
+    },
+        title:{
             type:String,
             required:true,
         },
@@ -25,23 +31,20 @@ const activitySchema=mongoose.Schema({
         author: {
             type: String,
             required: true,
+            default:"admin"
+        },
+        link:{
+            type:String,
+            default:null
         },
         status: {
             type: String,
             enum: ['Published','Draft','Under Review'],
-            default: 'Draft',
+            default: 'Published',
         },
         views: {
             type: Number,
             default: 0,
-        },
-        createdAt: {
-            type: Date,
-            default: Date.now,
-        },
-        updatedAt: {
-            type: Date,
-            default: Date.now,
         },
 },{
     timestamps: true,

@@ -1,13 +1,16 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import VolHeader from "../../components/VolHeader";
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteBlog, getBlogsById } from "../../redux/Actions/blogAction";
+
 
 
 const BlogDetails = () => {
+  const dispatch=useDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
   const [blog, setBlog] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   // Sample blog data - in a real app, you would fetch this from an API based on the ID
@@ -82,21 +85,14 @@ const BlogDetails = () => {
       tags: ["Boundaries", "Self-Care", "Volunteer Wellbeing"]
     }
   ];
+  const {message,error,blogById,loading}=useSelector((state)=>state.blog)
 
   useEffect(() => {
     // Simulate API fetch
-    const fetchBlog = () => {
-      setIsLoading(true);
-      const foundBlog = blogData.find(blog => blog.id === parseInt(id));
-      
-      // Simulate network delay
-      setTimeout(() => {
-        setBlog(foundBlog);
-        setIsLoading(false);
-      }, 500);
-    };
+    dispatch(getBlogsById(id));
+    
 
-    fetchBlog();
+    
   }, [id]);
 
   const handleUpdateClick = () => {
@@ -109,7 +105,9 @@ const BlogDetails = () => {
 
   const confirmDelete = () => {
     // In a real app, you would make an API call to delete the blog
-    console.log(`Deleting blog with ID: ${id}`);
+
+    console.log(id)
+    dispatch(deleteBlog(id));
     setShowDeleteModal(false);
     // Redirect to blog listing page after deletion
     navigate("/volunteer/article");
@@ -119,7 +117,7 @@ const BlogDetails = () => {
     setShowDeleteModal(false);
   };
 
-  if (isLoading) {
+  if (loading) {
     return (
       <>
         <VolHeader />
@@ -130,7 +128,7 @@ const BlogDetails = () => {
     );
   }
 
-  if (!blog) {
+  if (!blogById) {
     return (
       <>
         <VolHeader />
@@ -169,10 +167,10 @@ const BlogDetails = () => {
 
             {/* Blog header with action buttons */}
             <div className="bg-white rounded-lg shadow-md overflow-hidden mb-6">
-              <img src={blog.image} alt={blog.title} className="w-full h-64 object-cover" />
+              <img src={blogById?.image?.url} alt={blogById?.title} className="w-full h-64 object-cover" />
               <div className="p-6">
                 <div className="flex justify-between items-start mb-4">
-                  <h1 className="text-3xl font-bold text-orange-700">{blog.title}</h1>
+                  <h1 className="text-3xl font-bold text-orange-700">{blogById?.title}</h1>
                   <div className="flex space-x-2">
                     <button 
                       onClick={handleUpdateClick}
@@ -195,12 +193,12 @@ const BlogDetails = () => {
                   </div>
                 </div>
                 <div className="text-sm text-gray-500 mb-4">
-                  By {blog.author} | {blog.date}
+                  By {blogById?.volunteerId?.firstName} {blogById?.volunteerId?.lastName} | {blogById?.createdAt?.split('T')[0]}
                 </div>
                 
                 {/* Tags */}
                 <div className="flex flex-wrap gap-2 mb-6">
-                  {blog.tags.map((tag, index) => (
+                  {blogById?.topic?.map((tag, index) => (
                     <span key={index} className="bg-orange-100 text-orange-700 px-2 py-1 rounded-full text-sm">
                       {tag}
                     </span>
@@ -210,7 +208,7 @@ const BlogDetails = () => {
                 {/* Blog content */}
                 <div 
                   className="prose max-w-none"
-                  dangerouslySetInnerHTML={{ __html: blog.content }}
+                  dangerouslySetInnerHTML={{ __html: blogById?.body }}
                 />
               </div>
             </div>
@@ -220,14 +218,14 @@ const BlogDetails = () => {
               <h2 className="text-xl font-semibold text-orange-700 mb-4">Related Articles</h2>
               <div className="grid md:grid-cols-2 gap-4">
                 {blogData
-                  .filter(relatedBlog => relatedBlog.id !== parseInt(id))
+                  .filter(relatedBlog => relatedBlog?.id !== parseInt(id))
                   .slice(0, 2)
                   .map(relatedBlog => (
                     <div key={relatedBlog.id} className="border border-gray-200 rounded-lg p-4 hover:border-orange-300 transition">
-                      <h3 className="text-lg font-medium text-orange-700 mb-2">{relatedBlog.title}</h3>
-                      <p className="text-sm text-gray-600 mb-2">{relatedBlog.excerpt}</p>
+                      <h3 className="text-lg font-medium text-orange-700 mb-2">{relatedBlog?.title}</h3>
+                      <p className="text-sm text-gray-600 mb-2">{relatedBlog?.excerpt}</p>
                       <button 
-                        onClick={() => navigate(`/volunteer/article/${relatedBlog.id}`)}
+                        onClick={() => navigate(`/volunteer/article/${relatedBlog?.id}`)}
                         className="text-orange-500 text-sm font-medium hover:text-orange-600 transition"
                       >
                         Read More
@@ -246,7 +244,7 @@ const BlogDetails = () => {
           <div className="bg-white rounded-lg p-6 max-w-md w-full">
             <h3 className="text-xl font-bold text-gray-900 mb-4">Confirm Deletion</h3>
             <p className="text-gray-600 mb-6">
-              Are you sure you want to delete "{blog.title}"? This action cannot be undone.
+              Are you sure you want to delete "{blogById?.title}"? This action cannot be undone.
             </p>
             <div className="flex justify-end space-x-3">
               <button

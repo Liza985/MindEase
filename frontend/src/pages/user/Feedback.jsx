@@ -8,6 +8,7 @@ import {
 	getAllUserFeedbacks,
 } from "../../redux/Actions/feedbackAction";
 import { toast } from "react-toastify";
+import toastOptions, { successToastOptions } from "../../constants/toast";
 
 const Feedback = () => {
 	const dispatch = useDispatch();
@@ -27,14 +28,14 @@ const Feedback = () => {
 	// Handle error and success messages
 	useEffect(() => {
 		if (feedbackError) {
-			toast.error(feedbackError);
+			toast.error(feedbackError,toastOptions);
 			dispatch({ type: "CLEAR_FEEDBACK_ERROR" });
 		}
 		if (
 			feedbackMessage &&
 			feedbackMessage !== "Feedback fetched successfully"
 		) {
-			toast.success(feedbackMessage);
+			toast.success(feedbackMessage,successToastOptions);
 			dispatch({ type: "CLEAR_FEEDBACK_MESSAGE" });
 			setIsModalOpen(false);
 			setRating(0);

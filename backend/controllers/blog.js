@@ -1,43 +1,47 @@
 import Blog from "../models/Blog.js";
+import Volunteer from "../models/volunteer.js";
 import { Response } from "../utils/response.js";
 import { message } from "./../utils/message.js";
+import cloudinary from "cloudinary";
 
 export const createBlog = async (req, res) => {
 	try {
 		const { image, title, topic, description, body } = req.body;
-		if (!image || !title || !topic || !description || !body) {
+		if (!title || !topic || !description || !body) {
 			return Response(res, 400, false, message.missingFieldMessage);
 		}
-		let res;
+		let result;
 		if (image) {
-			res = await cloudinary.v2.uploader.upload(image, {
+			result = await cloudinary.v2.uploader.upload(image, {
 				folder: "blog",
 			});
 		}
-
 		const newBlog = await Blog.create({
-            volunteerId:req.volunteer._id,
+			volunteerId: req.volunteer._id,
 			image: {
-				public_id: res?.public_id,
-				url: res?.secure_url,
+				public_id: result?.public_id,
+				url: result?.secure_url,
 			},
 			title,
 			topic,
 			description,
 			body,
 		});
-        Response(res,201,true,message.createBlogMessage,newBlog)
+		Volunteer.findByIdAndUpdate(req.volunteer._id, {
+			$push: { blogs: newBlog._id },
+		}).exec();
+		Response(res, 201, true, message.createBlogMessage, newBlog);
 	} catch (error) {
+		console.log(error)
 		Response(res, 500, false, error.message);
 	}
 };
 
 export const getAllBlogs = async (req, res) => {
 	try {
-        const blogs=await Blog.find();
+		const blogs = await Blog.find().populate("volunteerId", "firstName lastName");
 
-        Response(res,200,true,message.blogsFetchSuccessfulMessage,blogs)
-
+		Response(res, 200, true, message.blogsFetchSuccessfulMessage, blogs);
 	} catch (error) {
 		Response(res, 500, false, error.message);
 	}
@@ -45,16 +49,15 @@ export const getAllBlogs = async (req, res) => {
 
 export const getBlogsById = async (req, res) => {
 	try {
-
-        const {id}=req.params;
-        if(!id){
-            return Response(res,400,false,message.idNotFound)
-        }
-        const blog=await Blog.findById(id);
-        if(!blog){
-            return Response(res,404,false,message.blogNotFoundMessage)
-        }
-        Response(res,200,true,message.blogsFetchSuccessfulMessage,blog)
+		const { id } = req.params;
+		if (!id) {
+			return Response(res, 400, false, message.idNotFound);
+		}
+		const blog = await Blog.findById(id).populate("volunteerId", "firstName lastName")
+		if (!blog) {
+			return Response(res, 404, false, message.blogNotFoundMessage);
+		}
+		Response(res, 200, true, message.blogsFetchSuccessfulMessage, blog);
 	} catch (error) {
 		Response(res, 500, false, error.message);
 	}
@@ -62,34 +65,39 @@ export const getBlogsById = async (req, res) => {
 
 export const getBlogsByVolunteer = async (req, res) => {
 	try {
-        const {id}=req.volunteer._id;
-        const blogs=await Blog.find({volunteerId:id});
-        if(!blogs){
-            return Response(res,404,false,message.blogNotFoundMessage)
-        }
-        Response(res,200,true,message.blogsFetchSuccessfulMessage,blogs)
+		
+		const blogs = await Blog.find({ volunteerId: req.volunteer._id }).populate("volunteerId", "firstName lastName")
+		if (!blogs) {
+			return Response(res, 404, false, message.blogNotFoundMessage);
+		}
+		Response(res, 200, true, message.blogsFetchSuccessfulMessage, blogs);
 	} catch (error) {
+		console.log(error.message)
 		Response(res, 500, false, error.message);
 	}
 };
 
 export const deleteBlog = async (req, res) => {
 	try {
-        const {id}=req.params;
-        if(!id){
-            return Response(res,400,false,message.idNotFound);
-        }
-        const {volId} = req.volunteer._id;
-        
-        const blog =await Blog.findById(id);
-        if(!blog){
-            return Response(res,404,false,message.blogNotFoundMessage)
-        }
-        if(blog.volunteerId.toString()!==volId.toString()){
-            return Response(res,401,false,message.unAuthorized)
-        }
-        const deletedBlog=await Blog.findByIdAndDelete(id);
-        Response(res,200,true,message.blogDeletedMessage)
+		const { id } = req.params;
+		if (!id) {
+			return Response(res, 400, false, message.idNotFound);
+		}
+		
+		const  volId  = req.volunteer._id;
+
+		const blog = await Blog.findById(id);
+		if (!blog) {
+			return Response(res, 404, false, message.blogNotFoundMessage);
+		}
+		console.log(typeof(blog.volunteerId));
+		console.log(typeof(volId))
+		if (blog.volunteerId.toString() !== volId.toString()) {
+			return Response(res, 401, false, message.unAuthorized);
+		}
+
+		const deletedBlog = await Blog.findByIdAndDelete(id);
+		Response(res, 200, true, message.blogDeletedMessage);
 	} catch (error) {
 		Response(res, 500, false, error.message);
 	}
@@ -97,16 +105,16 @@ export const deleteBlog = async (req, res) => {
 
 export const getBlogByTopic = async (req, res) => {
 	try {
-        const {topic}=req.params;
-        if(!topic){
-            return Response(res,400,false,message.missingFieldMessage)
-        }
-        const blogs=await Blog.find({topic:topic});
-        if(!blogs){
-            return Response(res,404,false,message.blogNotFoundMessage)
-        }
+		const { topic } = req.params;
+		if (!topic) {
+			return Response(res, 400, false, message.missingFieldMessage);
+		}
+		const blogs = await Blog.find({ topic: topic }).populate("volunteerId", "firstName lastName");
+		if (!blogs) {
+			return Response(res, 404, false, message.blogNotFoundMessage);
+		}
 
-        Response(res,200,true,message.blogsFetchSuccessfulMessage,blogs)
+		Response(res, 200, true, message.blogsFetchSuccessfulMessage, blogs);
 	} catch (error) {
 		Response(res, 500, false, error.message);
 	}
@@ -114,11 +122,8 @@ export const getBlogByTopic = async (req, res) => {
 //yet to make
 export const updateBlog = async (req, res) => {
 	try {
-        const {id}=req.params;
-       
+		const { id } = req.params;
 	} catch (error) {
 		Response(res, 500, false, error.message);
 	}
 };
-
-

@@ -1,15 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Header from "../../components/Header";
 // import { useRouter } from "next/router";
 // import Link from "next/link";
 import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { getBlogsById } from "../../redux/Actions/blogAction";
 
 const BlogDetail = () => {
 	// const router = useRouter();
 
 	const { id } = useParams();
 	const navigate = useNavigate();
-
+	const dispatch = useDispatch();
+	const { blogById, loading, error, message } = useSelector(
+		(state) => state.blog,
+	);
 	// Sample blog post data - in a real application, you would fetch this based on the ID
 	const blogPost = {
 		id: 1,
@@ -94,6 +99,9 @@ const BlogDetail = () => {
 		},
 	];
 
+	useEffect(() => {
+		dispatch(getBlogsById(id));
+	});
 	return (
 		<>
 			<div className="min-h-screen flex flex-col bg-orange-50 pt-20">
@@ -131,41 +139,51 @@ const BlogDetail = () => {
 								className="hover:text-orange-600 cursor-pointer"
 								onClick={() =>
 									navigate(
-										`/blogs/categories/${blogPost.category
+										`/blogs/categories/${blogById?.category
 											.toLowerCase()
 											.replace(/\s+/g, "-")}`,
 									)
 								}
 							>
-								{blogPost.category}
+								{blogById?.category}
 							</span>
 						</div>
-
+						{/* Blog Image */}
+						{blogById?.image && (
+							<img
+								src={blogById?.image?.url}
+								alt={blogById?.title}
+								className="w-full h-64 object-contain rounded-lg mb-6"
+							/>
+						)}
 						{/* Category and Read Time */}
 						<div className="flex items-center text-sm text-orange-600 mb-4">
 							<span className="bg-orange-50 px-2 py-1 rounded">
-								{blogPost.category}
+								{blogById?.category}
 							</span>
 							<span className="mx-2">•</span>
-							<span>{blogPost.readTime}</span>
+							<span>{blogById?.readTime}</span>
 						</div>
 
 						{/* Title */}
 						<h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-							{blogPost.title}
+							{blogById?.title}
 						</h1>
 
 						{/* Meta info */}
 						<div className="flex items-center mb-8 text-gray-500 text-sm">
-							<span>By {blogPost.author}</span>
+							<span>
+								By {blogById?.volunteerId?.firstName}{" "}
+								{blogById?.volunteerId?.lastName}
+							</span>
 							<span className="mx-2">•</span>
-							<span>{blogPost.date}</span>
+							<span>{blogById?.createdAt?.split("T")[0]}</span>
 						</div>
 
 						{/* Article content */}
 						<div
 							className="prose prose-orange max-w-none"
-							dangerouslySetInnerHTML={{ __html: blogPost.content }}
+							dangerouslySetInnerHTML={{ __html: blogById?.content }}
 						/>
 
 						{/* Author bio */}
@@ -173,7 +191,7 @@ const BlogDetail = () => {
 							<h3 className="text-xl font-semibold text-gray-800 mb-2">
 								About the Author
 							</h3>
-							<p className="text-gray-600">{blogPost.authorBio}</p>
+							<p className="text-gray-600">{blogById?.authorBio}</p>
 						</div>
 
 						{/* Share buttons */}
@@ -248,7 +266,7 @@ const BlogDetail = () => {
 											</div>
 											<span
 												className="text-orange-600 font-medium hover:text-orange-700 flex items-center cursor-pointer"
-												onClick={() => navigate(`/blog/${post.id}`)}
+												onClick={() => navigate(`/blog/${post._id}`)}
 											>
 												Read More
 												<svg

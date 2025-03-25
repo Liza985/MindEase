@@ -8,8 +8,8 @@ const blogRouter = express.Router();
 
 blogRouter.post("/create",isVolAuthenticated,createBlog);
 blogRouter.get("/all",isAuthenticated,getAllBlogs);
+blogRouter.get("/volunteer",isVolAuthenticated,getBlogsByVolunteer);
 blogRouter.get("/:id",getBlogsById);
-blogRouter.get("/volunteer",getBlogsByVolunteer);
 blogRouter.delete("/delete/:id",isVolAuthenticated,deleteBlog);
 blogRouter.get("/:topic",isAuthenticated,getBlogByTopic);
 blogRouter.put("/update/:id",isVolAuthenticated,updateBlog);
