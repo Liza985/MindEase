@@ -7,6 +7,7 @@ import cors from "cors";
 import blogRouter from "./routes/blogRoute.js";
 import reviewRouter from "./routes/reviewRoute.js";
 import feedbackRouter from "./routes/feedbackRoute.js";
+import contentRouter from "./routes/ContentRoute.js";
 
 dotenv.config({ path: "./config/.env" });
 const app = express();
@@ -31,5 +32,6 @@ app.use("/api/v1/volunteer", volunteerRouter);
 app.use("/api/v1/blog", blogRouter);
 app.use("/api/v1/review", reviewRouter);
 app.use("/api/v1/feedback", feedbackRouter);
+app.use("/api/v1/content", contentRouter);
 
 export default app;
