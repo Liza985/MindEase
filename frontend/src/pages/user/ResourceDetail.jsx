@@ -14,10 +14,10 @@ const wellnessResources = [
     videoUrl: "https://www.youtube.com/watch?v=W19PdslW7iw",
     videoThumbnail: "https://youtu.be/W19PdslW7iw?si=R8p5JqTNf5y-c669",
     content: `
-      <h2>About Guided Meditation</h2>
+      <h1><b>About Guided Meditation</b></h1>
       <p>Guided meditation is a process where one or more participants meditate in response to the guidance provided by a trained practitioner or teacher, either in person or via a written text, sound recording, video, or audiovisual media.</p>
       
-      <h2>Benefits</h2>
+      <h2><b>Benefits</b></h2>
       <ul>
         <li>Reduces stress and anxiety</li>
         <li>Improves focus and concentration</li>
@@ -26,13 +26,13 @@ const wellnessResources = [
         <li>Increases emotional well-being</li>
       </ul>
       
-      <h2>How to Practice</h2>
+      <h2><b>How to Practice</b></h2>
       <p>Find a quiet, comfortable place where you won't be disturbed. Sit in a comfortable position, close your eyes, and take a few deep breaths to center yourself. Then, follow along with the guided meditation instructions, focusing on your breath and the visualization provided.</p>
       
-      <h2>Recommended Sessions</h2>
+      <h2><b>Recommended Sessions</b></h2>
       <p>For beginners, we recommend starting with our 5-minute "Morning Clarity" session, followed by the 10-minute "Stress Relief" session once you feel comfortable with the practice.</p>
       
-      <h2>Video Resources</h2>
+      <h2><b>Video Resources</b></h2>
       <p>Check out our video tutorials below to learn more about meditation techniques and get started with guided sessions led by our experts.</p>
     `,
     duration: "10-15 minutes",
@@ -63,10 +63,10 @@ const wellnessResources = [
     videoUrl: "https://example.com/videos/mood-tracking.mp4",
     videoThumbnail: "/api/placeholder/640/360",
     content: `
-      <h2>About Mood Tracking</h2>
+      <h2><b>About Mood Tracking</b></h2>
       <p>Mood tracking is the practice of recording your emotional state at regular intervals to identify patterns and triggers that affect your mental wellbeing.</p>
       
-      <h2>Benefits</h2>
+      <h2><b>Benefits</b></h2>
       <ul>
         <li>Identifies emotional patterns</li>
         <li>Recognizes triggers for mood changes</li>
@@ -75,13 +75,13 @@ const wellnessResources = [
         <li>Increases emotional self-awareness</li>
       </ul>
       
-      <h2>How to Track</h2>
+      <h2><b>How to Track</b></h2>
       <p>Use our digital mood tracker to record your emotional state 2-3 times daily. Note the intensity of your feelings on a scale of 1-10, add context about what might have triggered your mood, and over time, review your data to identify patterns.</p>
       
-      <h2>Getting Started</h2>
+      <h2><b>Getting Started</b></h2>
       <p>Begin by tracking basic emotions like happy, sad, anxious, and calm. As you become more comfortable with the practice, expand to more nuanced emotional states and add notes about potential triggers or situations.</p>
       
-      <h2>Video Resources</h2>
+      <h2><b>Video Resources</b></h2>
       <p>Watch our tutorials to learn effective mood tracking techniques and how to interpret your emotional data.</p>
     `,
     duration: "2 minutes per entry",
@@ -112,10 +112,10 @@ const wellnessResources = [
     videoUrl: "https://example.com/videos/calming-sounds.mp4",
     videoThumbnail: "/api/placeholder/640/360",
     content: `
-      <h2>About Calming Sounds</h2>
+      <h2><b>About Calming Sounds</b></h2>
       <p>Calming sounds therapy uses specific audio frequencies and natural soundscapes to promote relaxation, reduce stress, and improve focus.</p>
       
-      <h2>Benefits</h2>
+      <h2><b>Benefits</b></h2>
       <ul>
         <li>Reduces stress and anxiety</li>
         <li>Promotes relaxation and calmness</li>
@@ -124,13 +124,13 @@ const wellnessResources = [
         <li>Helps create a peaceful environment</li>
       </ul>
       
-      <h2>Our Sound Library</h2>
+      <h2><b>Our Sound Library</b></h2>
       <p>Our library features nature sounds (rainfall, ocean waves, forest ambience), white noise, binaural beats, and instrumental music specifically composed for relaxation and focus.</p>
       
-      <h2>Recommended Playlists</h2>
+      <h2><b>Recommended Playlists</b></h2>
       <p>For sleep improvement, try our "Deep Ocean" playlist. For focus and productivity, the "Focus Flow" playlist with gentle instrumental music works best for many users.</p>
       
-      <h2>Video Sessions</h2>
+      <h2><b>Video Sessions</b></h2>
       <p>Experience our calming sound sessions with beautiful visuals to enhance your relaxation experience.</p>
     `,
     duration: "Variable (5-60 minutes)",
@@ -161,10 +161,10 @@ const wellnessResources = [
     videoUrl: "https://example.com/videos/mind-body.mp4",
     videoThumbnail: "/api/placeholder/640/360",
     content: `
-      <h2>About Mind-Body Exercise</h2>
+      <h2><b>About Mind-Body Exercise></b></h2>
       <p>Mind-body exercises combine physical movement with mental focus and controlled breathing to improve both physical fitness and mental wellbeing.</p>
       
-      <h2>Benefits</h2>
+      <h2><b>Benefits</b></h2>
       <ul>
         <li>Reduces physical tension and stress</li>
         <li>Improves physical strength and flexibility</li>
@@ -173,13 +173,13 @@ const wellnessResources = [
         <li>Balances energy and improves mood</li>
       </ul>
       
-      <h2>Exercise Types</h2>
+      <h2><b>Exercise Types</b></h2>
       <p>Our program includes yoga, tai chi, qigong, and mindful walking sessions, each designed to combine physical movement with mental awareness.</p>
       
-      <h2>Getting Started</h2>
+      <h2><b>Getting Started</b></h2>
       <p>Begin with our "Gentle Morning Flow" for beginners. This 15-minute routine can be done upon waking to set a positive tone for your day and requires no special equipment.</p>
       
-      <h2>Video Tutorials</h2>
+      <h2><b>Video Tutorials</b></h2>
       <p>Follow along with our instructor-led video sessions to learn proper techniques and incorporate mind-body exercises into your routine.</p>
     `,
     duration: "15-45 minutes",
@@ -237,7 +237,7 @@ const VideoModal = ({ video, isOpen, onClose }) => {
             </div>
           )}
         </div>
-        <div className="p-6">
+        <div className="p-6 ">
           <h3 className="text-xl font-semibold">{video.title}</h3>
           <p className="text-gray-600">
             {video.duration && `Duration: ${video.duration}`}
@@ -453,53 +453,159 @@ const ResourceDetail = () => {
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 p-6 bg-gray-50 rounded-2xl shadow-lg">
       {/* Main content column */}
-      <div className="lg:col-span-2 space-y-8">
-        {/* Description */}
-        <p className="text-lg leading-8 text-gray-600 tracking-wide">
-          {resource.description}
-        </p>
-        
-        {/* Main content */}
-        <div 
-          className="prose prose-lg prose-orange max-w-none prose-headings:text-orange-900 prose-headings:font-semibold prose-p:text-gray-700 prose-li:text-gray-600 prose-strong:text-orange-900 prose-img:rounded-xl prose-img:shadow-md"
-          dangerouslySetInnerHTML={{ __html: resource.content }}
-        />     
-                {/* Video section */}
-                {resource.videos && resource.videos.length > 0 && (
-                  <div className="mt-8">
-                    <h3 className="text-2xl font-bold text-orange-900 mb-6">Video Resources</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      {resource.videos.map((video, index) => (
-                        <div 
-                          key={index} 
-                          className="group bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all cursor-pointer"
-                          onClick={() => openVideoModal(video)}
-                        >
-                          <div className="relative h-48 overflow-hidden">
-                            <img 
-                              src={video.thumbnail} 
-                              alt={video.title} 
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                            />
-                            <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                              <div className="bg-orange-500 rounded-full p-4">
-                                <FaPlay className="w-6 h-6 text-white" fill="white" />
+      {/* Main content column with improved Tailwind styling */}
+                <div className="lg:col-span-2 space-y-8">
+                  {/* Description with enhanced typography and readability */}
+                  <p className="
+                    text-lg 
+                    leading-relaxed 
+                    text-gray-700 
+                    tracking-wide 
+                    antialiased 
+                    border-l-4 
+                    border-orange-500 
+                    pl-4 
+                    italic 
+                    font-light
+                  ">
+                    {resource.description}
+                  </p>
+                  
+                  {/* Main content with advanced Tailwind prose styling */}
+                  <div 
+                    className="
+                      prose prose-lg prose-orange 
+                      max-w-none 
+                      prose-headings:text-orange-900 
+                      prose-headings:font-bold 
+                      prose-headings:border-b-2 
+                      prose-headings:border-orange-200 
+                      prose-headings:pb-1
+                      prose-headings:mt-8
+                      prose-p:text-gray-700 
+                      prose-p:leading-relaxed
+                      prose-p:mb-4
+                      prose-li:text-gray-600 
+                      prose-li:marker:text-orange-500
+                      prose-li:marker:font-bold
+                      prose-li:pl-2
+                      prose-strong:text-orange-900 
+                      prose-strong:font-extrabold
+                      prose-img:rounded-xl 
+                      prose-img:shadow-lg 
+                      prose-img:transition-transform 
+                      prose-img:hover:scale-105
+                      prose-a:text-orange-600 
+                      prose-a:underline 
+                      prose-a:decoration-orange-300
+                      prose-a:hover:text-orange-800
+                      prose-a:transition-colors
+                      prose-blockquote:border-l-orange-400
+                      prose-blockquote:text-gray-600
+                      prose-blockquote:italic
+                      space-y-6
+                    "
+                    dangerouslySetInnerHTML={{ __html: resource.content }}
+                  />     
+
+                  {/* Video section with enhanced styling */}
+                  {resource.videos && resource.videos.length > 0 && (
+                    <div className="mt-12">
+                      <h3 className="
+                        text-2xl 
+                        font-bold 
+                        text-orange-900 
+                        mb-6 
+                        pb-3 
+                        border-b-2 
+                        border-orange-200
+                      ">
+                        Video Resources
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {resource.videos.map((video, index) => (
+                          <div 
+                            key={index} 
+                            className="
+                              group 
+                              bg-white 
+                              rounded-xl 
+                              overflow-hidden 
+                              shadow-md 
+                              hover:shadow-lg 
+                              transition-all 
+                              cursor-pointer 
+                              border 
+                              border-transparent 
+                              hover:border-orange-200
+                            "
+                            onClick={() => openVideoModal(video)}
+                          >
+                            <div className="relative h-48 overflow-hidden">
+                              <img 
+                                src={video.thumbnail} 
+                                alt={video.title} 
+                                className="
+                                  w-full 
+                                  h-full 
+                                  object-cover 
+                                  group-hover:scale-105 
+                                  transition-transform 
+                                  duration-300
+                                "
+                              />
+                              <div className="
+                                absolute 
+                                inset-0 
+                                bg-black 
+                                bg-opacity-30 
+                                flex 
+                                items-center 
+                                justify-center 
+                                opacity-0 
+                                group-hover:opacity-100 
+                                transition-opacity
+                              ">
+                                <div className="
+                                  bg-orange-500 
+                                  rounded-full 
+                                  p-4 
+                                  group-hover:animate-pulse
+                                ">
+                                  <FaPlay className="w-6 h-6 text-white" fill="white" />
+                                </div>
+                              </div>
+                              <div className="
+                                absolute 
+                                bottom-2 
+                                right-2 
+                                bg-black 
+                                bg-opacity-70 
+                                px-2 
+                                py-1 
+                                rounded-md
+                              ">
+                                <span className="text-white text-xs font-medium">
+                                  {video.duration}
+                                </span>
                               </div>
                             </div>
-                            <div className="absolute bottom-2 right-2 bg-black bg-opacity-70 px-2 py-1 rounded-md">
-                              <span className="text-white text-xs font-medium">{video.duration}</span>
+                            <div className="p-4">
+                              <h4 className="
+                                font-medium 
+                                text-gray-800 
+                                group-hover:text-orange-600 
+                                transition-colors
+                              ">
+                                {video.title}
+                              </h4>
                             </div>
                           </div>
-                          <div className="p-4">
-                            <h4 className="font-medium text-gray-800 group-hover:text-orange-600 transition-colors">{video.title}</h4>
-                          </div>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )}
-              </div>
-              
+                  )}
+                </div>
               {/* Sidebar column */}
           <div className="space-y-8">
             {/* Expert author card */}
