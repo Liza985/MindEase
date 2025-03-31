@@ -1,14 +1,12 @@
 import axios from "axios";
 import { BACKEND_URL } from "../../constants/url";
 
+axios.defaults.withCredentials = true;
 
-axios.defaults.withCredentials=true;
+const URL = BACKEND_URL + "api/v1/volunteer";
 
-const URL=BACKEND_URL+"api/v1/volunteer"
-
-
-export const registerVolunteer=(details)=>async(dispatch)=>{
-    try {
+export const registerVolunteer = (details) => async (dispatch) => {
+	try {
 		dispatch({
 			type: "VOLUNTEER_REGISTER_REQUEST",
 		});
@@ -33,11 +31,10 @@ export const registerVolunteer=(details)=>async(dispatch)=>{
 			payload: error?.response?.data?.message,
 		});
 	}
-}
+};
 
-
-export const verifyVolunteerRegister=(id,otp)=>async(dispatch)=>{
-    try {
+export const verifyVolunteerRegister = (id, otp) => async (dispatch) => {
+	try {
 		dispatch({
 			type: "VOLUNTEER_REGISTER_OTP_REQUEST",
 		});
@@ -61,11 +58,10 @@ export const verifyVolunteerRegister=(id,otp)=>async(dispatch)=>{
 			payload: error?.response?.data?.message,
 		});
 	}
-}
+};
 
-
-export const resendVerifyVolunteerRegister=(id)=>async(dispatch)=>{
-    try {
+export const resendVerifyVolunteerRegister = (id) => async (dispatch) => {
+	try {
 		dispatch({
 			type: "RESEND_VOLUNTEER_OTP_REQUEST",
 		});
@@ -80,11 +76,10 @@ export const resendVerifyVolunteerRegister=(id)=>async(dispatch)=>{
 			payload: error?.response?.data?.message,
 		});
 	}
-}
+};
 
-
-export const VolunteerLogin=(email,password)=>async(dispatch)=>{
-    try {
+export const VolunteerLogin = (email, password) => async (dispatch) => {
+	try {
 		dispatch({
 			type: "VOLUNTEER_LOGIN_REQUEST",
 		});
@@ -112,11 +107,10 @@ export const VolunteerLogin=(email,password)=>async(dispatch)=>{
 			payload: error.response?.data?.message,
 		});
 	}
-}
+};
 
-
-export const volunteerLoginVerify=(id,otp)=>async(dispatch)=>{
-    try {
+export const volunteerLoginVerify = (id, otp) => async (dispatch) => {
+	try {
 		dispatch({
 			type: "VOLUNTEER_LOGIN_OTP_REQUEST",
 		});
@@ -135,7 +129,7 @@ export const volunteerLoginVerify=(id,otp)=>async(dispatch)=>{
 			payload: {
 				message: data.message,
 				id: data.data,
-			}
+			},
 		});
 	} catch (error) {
 		dispatch({
@@ -143,10 +137,10 @@ export const volunteerLoginVerify=(id,otp)=>async(dispatch)=>{
 			payload: error?.response?.data?.message,
 		});
 	}
-}
+};
 
-export const volunteerLoginVerifyResend=(id)=>async(dispatch)=>{
-    try {
+export const volunteerLoginVerifyResend = (id) => async (dispatch) => {
+	try {
 		dispatch({
 			type: "RESEND_LOGIN_OTP_REQUEST",
 		});
@@ -161,10 +155,10 @@ export const volunteerLoginVerifyResend=(id)=>async(dispatch)=>{
 			payload: error?.response?.data?.message,
 		});
 	}
-}
+};
 
-export const volunteerForgotPassword=(email)=>async(dispatch)=>{
-    try {
+export const volunteerForgotPassword = (email) => async (dispatch) => {
+	try {
 		dispatch({
 			type: "FORGOT_VOLUNTEER_PASSWORD_REQUEST",
 		});
@@ -191,10 +185,10 @@ export const volunteerForgotPassword=(email)=>async(dispatch)=>{
 			payload: error?.response?.data?.message,
 		});
 	}
-}
+};
 
-export const volunteerResetPassword=(id,otp)=>async(dispatch)=>{
-    try {
+export const volunteerResetPassword = (id, otp) => async (dispatch) => {
+	try {
 		dispatch({
 			type: "RESET_VOLUNTEER_PASSWORD_REQUEST",
 		});
@@ -218,11 +212,10 @@ export const volunteerResetPassword=(id,otp)=>async(dispatch)=>{
 			payload: error?.response?.data?.message,
 		});
 	}
-}
+};
 
-
-export const volunteerChangePassword=(id,password)=>async(dispatch)=>{
-    try {
+export const volunteerChangePassword = (id, password) => async (dispatch) => {
+	try {
 		dispatch({
 			type: "CHANGE_VOLUNTEER_PASSWORD_REQUEST",
 		});
@@ -246,7 +239,7 @@ export const volunteerChangePassword=(id,password)=>async(dispatch)=>{
 			payload: error?.response?.data?.message,
 		});
 	}
-}
+};
 
 export const volunteerLogout = () => async (dispatch) => {
 	try {
@@ -266,4 +259,34 @@ export const volunteerLogout = () => async (dispatch) => {
 			payload: error?.response?.data?.message,
 		});
 	}
-}
+};
+
+export const updateVolunteerProfile = (userData) => async (dispatch) => {
+	try {
+		dispatch({ type: "UPDATE_VOLUNTEER_PROFILE_REQUEST" });
+
+		const { data } = await axios.put(
+			`${URL}/volunteer/profile/update`,
+			userData,
+			{
+				headers: {
+					"Content-Type": "application/json",
+				},
+				withCredentials: true,
+			}
+		);
+
+		dispatch({
+			type: "UPDATE_VOLUNTEER_PROFILE_SUCCESS",
+			payload: {
+				message: data.message,
+				data: data.data,
+			},
+		});
+	} catch (error) {
+		dispatch({
+			type: "UPDATE_VOLUNTEER_PROFILE_FAILURE",
+			payload: error.response?.data?.message || "Something went wrong",
+		});
+	}
+};
