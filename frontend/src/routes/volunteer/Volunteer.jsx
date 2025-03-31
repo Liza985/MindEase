@@ -13,6 +13,8 @@ import NewPost from "../../pages/volunteer/NewPost";
 import BlogDetails from "../../pages/volunteer/BlogDetails";
 import UpdateBlog from "../../pages/volunteer/updateBlog";
 import CounselorRequests from "../../pages/user/counselorRequest";
+import Profile from "../../pages/volunteer/Profile";
+import Reviews from "../../pages/volunteer/Reviews";
 
 const Volunteer = () => {
 	return (
@@ -46,13 +48,13 @@ const Volunteer = () => {
 						//</AuthRoute>
 					}
 				/>
-				<Route 
-				path="/newPost"
-				element={
-					//<AuthRoute>
-					<NewPost />
+				<Route
+					path="/newPost"
+					element={
+						//<AuthRoute>
+						<NewPost />
 						//</AuthRoute>
-				}
+					}
 				/>
 				<Route
 					path="/volunteer/chat"
@@ -95,6 +97,8 @@ const Volunteer = () => {
 						//</AuthRoute>
 					}
 				/>
+				<Route path="/volunteer/profile" element={<Profile />} />
+				<Route path="/volunteer/reviews" element={<Reviews />} />
 			</Routes>
 		</>
 	);
