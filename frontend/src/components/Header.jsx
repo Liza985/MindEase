@@ -30,6 +30,7 @@ const Header = () => {
 		navigate("/");
 	};
 
+	console.log(id);
 	return (
 		<>
 			<nav className="bg-white shadow-md fixed top-0 left-0 right-0 z-50">
@@ -123,10 +124,17 @@ const Header = () => {
 									<div className="relative user-menu">
 										<button
 											onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-											className="flex items-center space-x-2 text-gray-700 hover:text-orange-500 focus:outline-none"
+											className="flex items-center space-x-2 hover:text-orange-500 transition"
 										>
-											<User className="h-5 w-5" />
-											<span>My Account</span>
+											<div className="bg-orange-300 w-8 h-8 rounded-full flex items-center justify-center text-orange-800 font-bold text-sm">
+												{id?.firstName?.charAt(0) && id?.lastName?.charAt(0)
+													? `${id.firstName.charAt(0)}${id.lastName.charAt(0)}`
+													: "U"}
+											</div>
+											<div className="hidden md:block">
+												<h3 className="text-sm font-medium">{id?.firstName}</h3>
+												<p className="text-xs text-gray-500">User</p>
+											</div>
 										</button>
 
 										{/* Dropdown Menu */}
@@ -274,9 +282,14 @@ const Header = () => {
 							<div className="pt-6 space-y-3">
 								<div className="flex items-center space-x-2 py-2">
 									<div className="bg-orange-300 w-8 h-8 rounded-full flex items-center justify-center">
-										{id?.firstName?.charAt(0)}
+										{id?.firstName?.charAt(0) && id?.lastName?.charAt(0)
+											? `${id.firstName.charAt(0)}${id.lastName.charAt(0)}`
+											: "U"}
 									</div>
-									<span>{id?.firstName}</span>
+									<div className="hidden md:block">
+										<h3 className="text-sm font-medium">{id?.firstName}</h3>
+										<p className="text-xs text-gray-500">User</p>
+									</div>
 								</div>
 								<NavLink
 									to="/counselor-requests"
