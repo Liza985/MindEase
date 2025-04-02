@@ -1,242 +1,265 @@
-import React from 'react';
-import Header from '../../components/Header.jsx';
+import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import Header from '../../components/Header.jsx';
+// import AnalysisPage from './AnalysisPage';
 
 const AnalysisPage = () => {
   const location = useLocation();
-  const formData = location.state?.formData;
+  const [scores, setScores] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [overallRisk, setOverallRisk] = useState('');
+  const [recommendations, setRecommendations] = useState([]);
 
-  if (!formData) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <p className="text-xl text-gray-600">No data to display.</p>
-      </div>
-    );
-  }
+  useEffect(() => {
+    if (location.state?.formData) {
+      analyzeResults(location.state.formData);
+    }
+  }, [location.state]);
 
-  const calculateAverage = (fields) => {
-    let sum = 0;
-    let count = 0;
-    fields.forEach(field => {
-      if (formData[field]) {
-        sum += parseInt(formData[field]);
-        count++;
-      }
-    });
-    return count > 0 ? sum / count : 0;
+  const analyzeResults = (formData) => {
+    setLoading(true);
+    
+    // Calculate category scores
+    const categoryScores = {
+      "Sleep & Energy": calculateCategoryScore(formData, ["Sleep", "SleepDisturbance", "Fatigue", "LowEnergy"]),
+      "Mood & Emotions": calculateCategoryScore(formData, ["Worthlessness", "Hopelessness", "Aggression", "Interest"]),
+      "Physical Symptoms": calculateCategoryScore(formData, ["Appetite", "Agitation", "Restlessness", "PanicAttacks"]),
+      "Cognition & Thoughts": calculateCategoryScore(formData, ["Concentration", "SuicidalIdeation"])
+    };
+    
+    // Calculate overall score
+    const totalScore = Object.values(categoryScores).reduce((sum, score) => sum + score.value, 0);
+    const maxPossibleScore = Object.values(categoryScores).reduce((sum, score) => sum + score.maxPossible, 0);
+    const overallPercentage = (totalScore / maxPossibleScore) * 100;
+    
+    // Determine risk level based on overall percentage
+    let risk;
+    if (overallPercentage < 25) {
+      risk = 'Low';
+    } else if (overallPercentage < 50) {
+      risk = 'Moderate';
+    } else if (overallPercentage < 75) {
+      risk = 'High';
+    } else {
+      risk = 'Severe';
+    }
+    
+    // Check for critical indicators (suicidal ideation)
+    if (parseInt(formData.SuicidalIdeation) >= 4) {
+      risk = 'Critical';
+    }
+    
+    // Generate recommendations based on risk level and specific high scores
+    const recs = generateRecommendations(risk, categoryScores, formData);
+    
+    setScores(categoryScores);
+    setOverallRisk(risk);
+    setRecommendations(recs);
+    setLoading(false);
   };
 
-  const sleepEnergyAverage = calculateAverage(["Sleep", "SleepDisturbance", "Fatigue", "LowEnergy"]);
-  const moodEmotionsAverage = calculateAverage(["Worthlessness", "Hopelessness", "Aggression", "Interest"]);
-  const physicalSymptomsAverage = calculateAverage(["Appetite", "Agitation", "Restlessness", "PanicAttacks"]);
-  const cognitionThoughtsAverage = calculateAverage(["Concentration", "SuicidalIdeation"]);
-
-  // Calculate overall depression score (average of all categories)
-  const overallScore = (sleepEnergyAverage + moodEmotionsAverage + physicalSymptomsAverage + cognitionThoughtsAverage) / 4;
+  const calculateCategoryScore = (formData, fields) => {
+    const values = fields.map(field => parseInt(formData[field] || 0));
+    const totalValue = values.reduce((sum, val) => sum + val, 0);
+    const maxPossible = fields.length * 5; // 5 is max value for each field
+    const percentage = (totalValue / maxPossible) * 100;
+    
+    return {
+      value: totalValue,
+      maxPossible,
+      percentage,
+      level: determineLevelFromPercentage(percentage)
+    };
+  };
   
-  // Map score to percentage for gauge (0-5 scale to 0-100%)
-  const scorePercentage = (overallScore / 5) * 100;
+  const determineLevelFromPercentage = (percentage) => {
+    if (percentage < 25) return 'Low';
+    if (percentage < 50) return 'Moderate';
+    if (percentage < 75) return 'High';
+    return 'Severe';
+  };
   
-  // Calculate the rotation angle for the needle (0-180 degrees)
-  const needleRotation = (scorePercentage / 100) * 180;
-
-  const getMoodLabel = (score) => {
-    if (score < 1.5) return "GOOD";
-    if (score < 2.5) return "NORMAL";
-    if (score < 3.5) return "FAIR";
-    if (score < 4.5) return "BAD";
-    return "POOR";
-  };
-
-  const getInterpretation = (average) => {
-    if (average < 2) return "Generally feeling good.";
-    if (average < 3) return "Some areas of concern.";
-    if (average < 4) return "Moderate areas of concern.";
-    return "Significant areas of concern. Consider seeking professional help.";
-  };
-
-  const getRecommendations = () => {
+  const generateRecommendations = (risk, categoryScores, formData) => {
     const recommendations = [];
     
-    // Sleep & Energy recommendations
-    if (sleepEnergyAverage >= 2) {
+    // General recommendations based on risk level
+    switch (risk) {
+      case 'Critical':
+        recommendations.push({
+          title: 'Seek Immediate Help',
+          description: 'Please contact a mental health crisis line or go to your nearest emergency room immediately.',
+          urgent: true
+        });
+        break;
+      case 'Severe':
+        recommendations.push({
+          title: 'Professional Help Recommended',
+          description: 'We strongly recommend scheduling an appointment with a mental health professional within the next few days.',
+          urgent: true
+        });
+        break;
+      case 'High':
+        recommendations.push({
+          title: 'Consider Professional Support',
+          description: 'Consider scheduling an appointment with a therapist or counselor to discuss your symptoms.',
+          urgent: false
+        });
+        break;
+      default:
+        recommendations.push({
+          title: 'Self-Care Strategies',
+          description: 'Continue practicing self-care and monitoring your mental well-being.',
+          urgent: false
+        });
+    }
+    
+    // Specific recommendations based on category scores
+    if (categoryScores["Sleep & Energy"].level === 'High' || categoryScores["Sleep & Energy"].level === 'Severe') {
       recommendations.push({
-        category: "Sleep & Energy",
-        tips: [
-          "Maintain a consistent sleep schedule",
-          "Create a relaxing bedtime routine",
-          "Limit screen time before bed",
-          "Consider short afternoon naps if feeling fatigued"
-        ]
+        title: 'Sleep Hygiene',
+        description: 'Establish a regular sleep schedule and create a relaxing bedtime routine. Limit screen time before bed and consider sleep-promoting activities like reading or meditation.',
+        urgent: false
       });
     }
     
-    // Mood & Emotions recommendations
-    if (moodEmotionsAverage >= 2) {
+    if (categoryScores["Mood & Emotions"].level === 'High' || categoryScores["Mood & Emotions"].level === 'Severe') {
       recommendations.push({
-        category: "Mood & Emotions",
-        tips: [
-          "Practice daily gratitude journaling",
-          "Engage in activities you previously enjoyed",
-          "Connect with supportive friends or family",
-          "Consider mindfulness meditation"
-        ]
+        title: 'Mood Management',
+        description: 'Practice mindfulness and emotional regulation techniques. Consider keeping a mood journal to identify triggers and patterns.',
+        urgent: false
       });
     }
     
-    // Physical Symptoms recommendations
-    if (physicalSymptomsAverage >= 2) {
+    if (categoryScores["Physical Symptoms"].level === 'High' || categoryScores["Physical Symptoms"].level === 'Severe') {
       recommendations.push({
-        category: "Physical Symptoms",
-        tips: [
-          "Incorporate regular physical activity",
-          "Try deep breathing exercises when feeling anxious",
-          "Maintain a balanced diet",
-          "Practice progressive muscle relaxation"
-        ]
+        title: 'Physical Well-being',
+        description: 'Regular physical activity can help reduce anxiety and improve mood. Consider incorporating relaxation techniques like deep breathing or progressive muscle relaxation.',
+        urgent: false
       });
     }
     
-    // Cognition & Thoughts recommendations
-    if (cognitionThoughtsAverage >= 2) {
+    if (categoryScores["Cognition & Thoughts"].level === 'High' || categoryScores["Cognition & Thoughts"].level === 'Severe') {
       recommendations.push({
-        category: "Cognition & Thoughts",
-        tips: [
-          "Challenge negative thought patterns",
-          "Break large tasks into smaller, manageable steps",
-          "Set realistic daily goals",
-          "Consider cognitive behavioral therapy techniques"
-        ]
+        title: 'Thought Management',
+        description: 'Practice identifying and challenging negative thought patterns. Consider cognitive-behavioral techniques or guided meditation focused on thought awareness.',
+        urgent: false
       });
     }
     
-    // If severe symptoms detected
-    if (overallScore >= 4 || cognitionThoughtsAverage >= 4) {
-      recommendations.unshift({
-        category: "Important",
-        tips: [
-          "Please consider reaching out to a mental health professional",
-          "Contact a crisis helpline if you're experiencing severe distress",
-          "Remember that seeking help is a sign of strength, not weakness",
-          "Share your feelings with someone you trust"
-        ]
-      });
-    }
+    // Add resource recommendation
+    recommendations.push({
+      title: 'Resources',
+      description: 'Explore our resource library for self-help materials, guided activities, and information about mental health services in your area.',
+      urgent: false
+    });
     
     return recommendations;
   };
-  
-  const recommendations = getRecommendations();
-  const moodLabel = getMoodLabel(overallScore);
+
+  const getRiskColor = (risk) => {
+    switch (risk) {
+      case 'Low': return 'bg-green-100 text-green-800';
+      case 'Moderate': return 'bg-yellow-100 text-yellow-800';
+      case 'High': return 'bg-orange-100 text-orange-800';
+      case 'Severe':
+      case 'Critical': return 'bg-red-100 text-red-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const getCategoryColor = (level) => {
+    switch (level) {
+      case 'Low': return 'bg-green-500';
+      case 'Moderate': return 'bg-yellow-500';
+      case 'High': return 'bg-orange-500';
+      case 'Severe': return 'bg-red-500';
+      default: return 'bg-gray-500';
+    }
+  };
 
   return (
     <>
       <Header />
       <div className="bg-gradient-to-br from-orange-50 to-blue-50 min-h-screen py-12 px-4 sm:px-6 lg:px-8 mt-10">
-        <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-md overflow-hidden">
-          <div className="bg-blue-600 px-6 py-4">
-            <h1 className="text-2xl font-bold text-white">Your MindEase Analysis</h1>
-          </div>
-          <div className="px-7 py-6">
-            {/* Semicircle Gauge */}
-            <div className="flex flex-col items-center mb-10">
-              <h2 className="text-xl font-semibold mb-6 text-gray-800">Your Mental Wellbeing Score</h2>
-              
-              <div className="relative w-64 h-32">
-                {/* Semicircle Background */}
-                <svg
-                  viewBox="0 0 200 100"
-                  className="w-full h-full"
-                >
-                  {/* Outer Arc (Thicker Gradient) */}
-                  <defs>
-                    <linearGradient id="gauge-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stopColor="#22c55e" /> {/* Green */}
-                      <stop offset="25%" stopColor="#84cc16" /> {/* Light Green */}
-                      <stop offset="50%" stopColor="#facc15" /> {/* Yellow */}
-                      <stop offset="75%" stopColor="#f97316" /> {/* Orange */}
-                      <stop offset="100%" stopColor="#ef4444" /> {/* Red */}
-                    </linearGradient>
-                  </defs>
-                  <path
-                    d="M 10 90 A 90 90 0 0 1 190 90"
-                    fill="none"
-                    stroke="url(#gauge-gradient)"
-                    strokeWidth="20"
-                    strokeLinecap="round"
-                  />
-
-                  {/* Inner Arc (Thinner Background) */}
-                  <path
-                    d="M 20 90 A 80 80 0 0 1 180 90"
-                    fill="none"
-                    stroke="#e2e8f0"
-                    strokeWidth="10"
-                    strokeLinecap="round"
-                  />
-                </svg>
-
-                {/* Labels */}
-                <div className="absolute top-0 left-0 w-full h-full">
-                  <div className="absolute bottom-0 left-0 transform -translate-x-1/2 -translate-y-1/2 text-sm font-bold text-gray-700" style={{ left: '10%' }}>POOR</div>
-                  <div className="absolute bottom-0 left-0 transform -translate-x-1/2 -translate-y-1/2 text-sm font-bold text-gray-700" style={{ left: '30%' }}>BAD</div>
-                  <div className="absolute bottom-0 left-0 transform -translate-x-1/2 -translate-y-1/2 text-sm font-bold text-gray-700" style={{ left: '50%' }}>FAIR</div>
-                  <div className="absolute bottom-0 left-0 transform -translate-x-1/2 -translate-y-1/2 text-sm font-bold text-gray-700" style={{ left: '70%' }}>NORMAL</div>
-                  <div className="absolute bottom-0 left-0 transform -translate-x-1/2 -translate-y-1/2 text-sm font-bold text-gray-700" style={{ left: '90%' }}>GOOD</div>
+        <div className="max-w-4xl mx-auto">
+          {loading ? (
+            <div className="text-center py-16">
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
+              <p className="mt-4 text-gray-600">Analyzing your responses...</p>
+            </div>
+          ) : (
+            <>
+              <div className="bg-white rounded-xl shadow-md overflow-hidden mb-8">
+                <div className="bg-blue-600 px-6 py-4">
+                  <h1 className="text-2xl font-bold text-white">Your MindEase Assessment Results</h1>
+                  <p className="text-blue-50 mt-1">Based on your responses, we've prepared a personalized analysis.</p>
                 </div>
-
-                {/* Needle */}
-                <div
-                  className="absolute bottom-0 left-1/2 w-1 h-24 bg-black transform origin-bottom"
-                  style={{
-                    transform: `translateX(-50%) rotate(${needleRotation}deg)`,
-                  }}
-                ></div>
-
-                {/* Center Circle */}
-                <div className="absolute bottom-0 left-1/2 w-6 h-6 bg-black rounded-full transform -translate-x-1/2 translate-y-1/2 shadow-lg"></div>
+                
+                <div className="p-6">
+                  <div className="mb-8">
+                    <h2 className="text-xl font-semibold text-gray-900 mb-3">Overall Assessment</h2>
+                    <div className={`inline-block px-4 py-2 rounded-full font-medium ${getRiskColor(overallRisk)}`}>
+                      {overallRisk} Risk Level
+                    </div>
+                    <p className="mt-3 text-gray-600">
+                      This assessment is based on your responses across different areas of mental well-being. 
+                      Remember that this is not a clinical diagnosis but an indicator of potential areas of concern.
+                    </p>
+                  </div>
+                  
+                  <div className="mb-8">
+                    <h2 className="text-xl font-semibold text-gray-900 mb-4">Category Breakdown</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {Object.entries(scores).map(([category, score]) => (
+                        <div key={category} className="bg-gray-50 rounded-lg p-4 shadow-sm">
+                          <h3 className="text-lg font-medium text-gray-800 mb-2">{category}</h3>
+                          <div className="w-full bg-gray-200 rounded-full h-2.5 mb-2">
+                            <div 
+                              className={`h-2.5 rounded-full ${getCategoryColor(score.level)}`} 
+                              style={{ width: `${score.percentage}%` }}
+                            ></div>
+                          </div>
+                          <div className="flex justify-between text-sm text-gray-600">
+                            <span>{score.level} concern</span>
+                            <span>{score.percentage.toFixed(0)}%</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               </div>
               
-              <div className="text-center mb-2">
-                <p className="text-2xl font-bold" style={{ 
-                  color: moodLabel === "GOOD" ? "#22c55e" : 
-                         moodLabel === "NORMAL" ? "#84cc16" :
-                         moodLabel === "FAIR" ? "#facc15" :
-                         moodLabel === "BAD" ? "#f97316" : "#ef4444"
-                }}>{moodLabel}</p>
-                <p className="text-lg mt-1">Score: {overallScore.toFixed(1)}/5.0</p>
-                <p className="text-lg mt-1">{getInterpretation(overallScore)}</p>
-              </div>
-            </div>
-
-            {/* Personalized Recommendations */}
-            {recommendations.length > 0 && (
-              <div className="mt-8">
-                <h2 className="text-xl font-semibold mb-4 text-gray-800">Personalized Recommendations</h2>
-                {recommendations.map((rec, index) => (
-                  <div key={index} className="mb-6 bg-blue-50 p-4 rounded-lg">
-                    <h3 className="font-semibold text-lg text-blue-700 mb-2">{rec.category}</h3>
-                    <ul className="list-disc pl-5 space-y-1">
-                      {rec.tips.map((tip, i) => (
-                        <li key={i}>{tip}</li>
-                      ))}
-                    </ul>
+              <div className="bg-white rounded-xl shadow-md overflow-hidden">
+                <div className="bg-green-600 px-6 py-4">
+                  <h1 className="text-2xl font-bold text-white">Recommendations</h1>
+                  <p className="text-green-50 mt-1">Based on your assessment, here are some suggestions that may help.</p>
+                </div>
+                
+                <div className="p-6">
+                  <div className="space-y-6">
+                    {recommendations.map((rec, index) => (
+                      <div key={index} className={`p-4 rounded-lg ${rec.urgent ? 'bg-red-50 border-l-4 border-red-500' : 'bg-blue-50'}`}>
+                        <h3 className={`text-lg font-semibold ${rec.urgent ? 'text-red-700' : 'text-blue-700'}`}>{rec.title}</h3>
+                        <p className={`mt-1 ${rec.urgent ? 'text-red-600' : 'text-blue-600'}`}>{rec.description}</p>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                  
+                  <div className="mt-8 text-center">
+                    <p className="text-gray-500 text-sm">
+                      Note: This assessment is not a substitute for professional medical advice, diagnosis, or treatment. 
+                      Always seek the advice of a qualified healthcare provider with any questions you may have.
+                    </p>
+                  </div>
+                </div>
               </div>
-            )}
-
-            <div className="mt-6">
-              <p className="text-gray-600">
-                This analysis is for informational purposes only and is not a substitute for professional medical advice.
-                If you have concerns about your mental health, please consult a healthcare provider.
-              </p>
-            </div>
-          </div>
+            </>
+          )}
         </div>
       </div>
     </>
   );
 };
 
-export default AnalysisPage;
+export default AnalysisPage
