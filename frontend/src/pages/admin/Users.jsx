@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { Search, Download, Trash, Edit, UserIcon, X, CheckCircle } from "lucide-react"
+import { Search, Download, Trash, Edit, UserIcon, X} from "lucide-react"
 import AdminSidebar from "../../components/AdminSideBar"
 
 const Users = () => {
