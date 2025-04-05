@@ -1,14 +1,19 @@
 import { useState, useEffect } from "react"
-import { Search, Download, Trash, Edit, UserIcon, X } from "lucide-react"
+import { Search, Download, Trash, Edit, UserIcon, X} from "lucide-react"
 import AdminSidebar from "../../components/AdminSideBar"
 
 const Users = () => {
-  const [users, setUsers] = useState([
-    { id: 1, name: "John Doe", email: "john.doe@example.com", joinDate: "2023-01-15", status: "Active" },
-    { id: 2, name: "Jane Smith", email: "jane.smith@example.com", joinDate: "2023-02-22", status: "Active" },
-    { id: 3, name: "Robert Johnson", email: "robert.j@example.com", joinDate: "2023-03-10", status: "Inactive" },
-    { id: 4, name: "Emily Davis", email: "emily.davis@example.com", joinDate: "2023-04-05", status: "Active" },
-  ])
+  const [users, setUsers] = useState(() => {
+    const savedUsers = localStorage.getItem("users")
+    return savedUsers
+      ? JSON.parse(savedUsers)
+      : [
+          { id: 1, name: "John Doe", email: "john.doe@example.com", joinDate: "2023-01-15", status: "Active" },
+          { id: 2, name: "Jane Smith", email: "jane.smith@example.com", joinDate: "2023-02-22", status: "Active" },
+          { id: 3, name: "Robert Johnson", email: "robert.j@example.com", joinDate: "2023-03-10", status: "Inactive" },
+          { id: 4, name: "Emily Davis", email: "emily.davis@example.com", joinDate: "2023-04-05", status: "Active" },
+        ]
+  })
 
   const [formUser, setFormUser] = useState({ id: null, name: "", email: "", status: "Active", joinDate: "" })
   const [showForm, setShowForm] = useState(false)
@@ -17,6 +22,11 @@ const Users = () => {
   const [userToDelete, setUserToDelete] = useState(null)
   const [filteredUsers, setFilteredUsers] = useState([])
   const [notFound, setNotFound] = useState(false)
+  const [notification, setNotification] = useState({ show: false, message: "", type: "" })
+
+  useEffect(() => {
+    localStorage.setItem("users", JSON.stringify(users))
+  }, [users])
 
   useEffect(() => {
     let filtered = [...users]
@@ -41,9 +51,17 @@ const Users = () => {
     }
   }, [users, searchTerm, statusFilter])
 
+  const showNotification = (message, type) => {
+    setNotification({ show: true, message, type })
+    setTimeout(() => {
+      setNotification({ show: false, message: "", type: "" })
+    }, 3000)
+  }
+
   const handleSaveUser = () => {
     if (formUser.id) {
       setUsers(users.map((u) => (u.id === formUser.id ? formUser : u)))
+      showNotification(`User has been updated successfully!`, "success")
     } else {
       const newUser = {
         ...formUser,
@@ -51,6 +69,7 @@ const Users = () => {
         joinDate: new Date().toISOString().split("T")[0],
       }
       setUsers([...users, newUser])
+      showNotification(`User has been added successfully!`, "success")
     }
     setShowForm(false)
     setFormUser({ id: null, name: "", email: "", status: "Active", joinDate: "" })
@@ -67,6 +86,7 @@ const Users = () => {
 
   const confirmDeleteUser = () => {
     setUsers(users.filter((u) => u.id !== userToDelete.id))
+    showNotification(`User ${userToDelete.name} has been deleted successfully!`, "error")
     setUserToDelete(null)
   }
 
@@ -115,6 +135,29 @@ const Users = () => {
         </header>
 
         <main className="p-6 bg-orange-50">
+          {/* Notification Popup */}
+          {notification.show && (
+            <div
+              className={`fixed top-4 right-4 z-50 flex items-center p-4 mb-4 rounded-lg shadow-lg ${
+                notification.type === "success" ? "bg-green-50 text-green-800" : "bg-red-50 text-red-800"
+              } transition-all duration-300 transform translate-y-0 opacity-100`}
+            >
+              <div className="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-lg">
+                <button
+                  className={`w-5 h-5 ${notification.type === "success" ? "text-green-600" : "text-red-600"}`}
+                />
+              </div>
+              <div className="ml-3 text-sm font-normal">{notification.message}</div>
+              <button
+                type="button"
+                className="ml-auto -mx-1.5 -my-1.5 rounded-lg p-1.5 inline-flex h-8 w-8 hover:bg-gray-200"
+                onClick={() => setNotification({ show: false, message: "", type: "" })}
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+          )}
+
           <div className="flex justify-between items-center mb-6">
             <div>
               <h2 className="text-2xl font-semibold text-orange-700">Users</h2>
