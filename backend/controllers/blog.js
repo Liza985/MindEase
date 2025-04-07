@@ -77,6 +77,8 @@ export const getBlogsByVolunteer = async (req, res) => {
 	}
 };
 
+
+
 export const deleteBlog = async (req, res) => {
 	try {
 		const { id } = req.params;
@@ -84,24 +86,31 @@ export const deleteBlog = async (req, res) => {
 			return Response(res, 400, false, message.idNotFound);
 		}
 		
-		const  volId  = req.volunteer._id;
+		const volId = req.volunteer._id;
 
 		const blog = await Blog.findById(id);
 		if (!blog) {
 			return Response(res, 404, false, message.blogNotFoundMessage);
 		}
-		console.log(typeof(blog.volunteerId));
-		console.log(typeof(volId))
+		
 		if (blog.volunteerId.toString() !== volId.toString()) {
 			return Response(res, 401, false, message.unAuthorized);
 		}
 
-		const deletedBlog = await Blog.findByIdAndDelete(id);
+		// Extract image public ID from Cloudinary URL
+		const imageUrl = blog.image; // Assuming blog.image stores the Cloudinary image URL
+		if (imageUrl) {
+			const publicId = imageUrl.split('/').pop().split('.')[0]; // Extract Cloudinary public ID
+			await cloudinary.v2.uploader.destroy(publicId);
+		}
+
+		await Blog.findByIdAndDelete(id);
 		Response(res, 200, true, message.blogDeletedMessage);
 	} catch (error) {
 		Response(res, 500, false, error.message);
 	}
 };
+
 
 export const getBlogByTopic = async (req, res) => {
 	try {
