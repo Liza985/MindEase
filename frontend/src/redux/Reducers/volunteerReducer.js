@@ -9,9 +9,15 @@ const volunteerRegisterRequest = createAction("VOLUNTEER_REGISTER_REQUEST");
 const volunteerRegisterSuccess = createAction("VOLUNTEER_REGISTER_SUCCESS");
 const volunteerRegisterFailure = createAction("VOLUNTEER_REGISTER_FAILURE");
 
-const volunteerRegisterOtpRequest = createAction("VOLUNTEER_REGISTER_OTP_REQUEST");
-const volunteerRegisterOtpSuccess = createAction("VOLUNTEER_REGISTER_OTP_SUCCESS");
-const volunteerRegisterOtpFailure = createAction("VOLUNTEER_REGISTER_OTP_FAILURE");
+const volunteerRegisterOtpRequest = createAction(
+	"VOLUNTEER_REGISTER_OTP_REQUEST"
+);
+const volunteerRegisterOtpSuccess = createAction(
+	"VOLUNTEER_REGISTER_OTP_SUCCESS"
+);
+const volunteerRegisterOtpFailure = createAction(
+	"VOLUNTEER_REGISTER_OTP_FAILURE"
+);
 
 const ResendRegisterOtpRequest = createAction("RESEND_REGISTER_OTP_REQUEST");
 const ResendRegisterOtpSuccess = createAction("RESEND_REGISTER_OTP_SUCCESS");
@@ -24,7 +30,6 @@ const loadVolunteerFailure = createAction("LOAD_VOLUNTEER_FAILURE");
 const volunteerLoginOtpRequest = createAction("VOLUNTEER_LOGIN_OTP_REQUEST");
 const volunteerLoginOtpSuccess = createAction("VOLUNTEER_LOGIN_OTP_SUCCESS");
 const volunteerLoginOtpFailure = createAction("VOLUNTEER_LOGIN_OTP_FAILURE");
-
 
 const ResendLoginOtpRequest = createAction("RESEND_LOGIN_OTP_REQUEST");
 const ResendLoginOtpSuccess = createAction("RESEND_LOGIN_OTP_SUCCESS");
@@ -63,6 +68,20 @@ const changeVolunteerPasswordFailure = createAction(
 const logoutVolunteerRequest = createAction("LOGOUT_VOLUNTEER_REQUEST");
 const logoutVolunteerSuccess = createAction("LOGOUT_VOLUNTEER_SUCCESS");
 const logoutVolunteerFailure = createAction("LOGOUT_VOLUNTEER_FAILURE");
+
+const updateVolunteerProfileRequest = createAction(
+	"UPDATE_VOLUNTEER_PROFILE_REQUEST"
+);
+const updateVolunteerProfileSuccess = createAction(
+	"UPDATE_VOLUNTEER_PROFILE_SUCCESS"
+);
+const updateVolunteerProfileFailure = createAction(
+	"UPDATE_VOLUNTEER_PROFILE_FAILURE"
+);
+
+const getVolunteerProfileRequest = createAction("GET_VOLUNTEER_PROFILE_REQUEST");
+const getVolunteerProfileSuccess = createAction("GET_VOLUNTEER_PROFILE_SUCCESS");
+const getVolunteerProfileFailure = createAction("GET_VOLUNTEER_PROFILE_FAILURE");
 
 const clearError = createAction("CLEAR_ERROR");
 const clearMessage = createAction("CLEAR_MESSAGE");
@@ -208,6 +227,31 @@ export const volunteerReducer = createReducer(initialState, (builder) => {
 			state.error = action.payload;
 		})
 
+		.addCase(updateVolunteerProfileRequest, (state) => {
+			state.loading = true;
+		})
+		.addCase(updateVolunteerProfileSuccess, (state, action) => {
+			state.loading = false;
+			state.message = action.payload.message;
+			state.volunteer = action.payload.data;
+		})
+		.addCase(updateVolunteerProfileFailure, (state, action) => {
+			state.loading = false;
+			state.error = action.payload;
+		})
+		.addCase(getVolunteerProfileRequest, (state) => {
+			state.loading = true;
+		})
+		.addCase(getVolunteerProfileSuccess, (state, action) => {
+			state.loading = false;
+			state.message = action.payload.message;
+			state.volunteer = action.payload.data;
+		})
+		.addCase(getVolunteerProfileFailure, (state, action) => {
+			state.loading = false;
+			state.message = action.payload.message;
+			state.error = action.payload;
+		})
 		.addCase(clearError, (state) => {
 			state.error = null;
 		})

@@ -10,7 +10,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { faStar as regularStar } from "@fortawesome/free-regular-svg-icons";
 import { toast } from "react-toastify";
-import { updateVolunteerProfile } from "../../redux/Actions/volunteerAction";
+import {
+	updateVolunteerProfile,
+	getVolunteerProfile,
+} from "../../redux/Actions/volunteerAction";
 import toastOptions from "../../constants/toast";
 import Select from "react-select";
 import VolHeader from "../../components/VolHeader";
@@ -18,14 +21,11 @@ import { Link } from "react-router-dom";
 
 const Profile = () => {
 	const dispatch = useDispatch();
-	const {
-		id: volunteer,
-		loading,
-		error,
-		message,
-	} = useSelector((state) => state.volunteer);
+	const { volunteer, loading, error, message } = useSelector(
+		(state) => state.volunteer
+	);
 	const [isEditing, setIsEditing] = useState(false);
-
+	
 	const dayOptions = [
 		{ value: "monday", label: "Monday" },
 		{ value: "tuesday", label: "Tuesday" },
@@ -36,6 +36,17 @@ const Profile = () => {
 		{ value: "sunday", label: "Sunday" },
 	];
 
+	const expertiseOptions = [
+		{ value: "education", label: "Education" },
+		{ value: "healthcare", label: "Healthcare" },
+		{ value: "technology", label: "Technology" },
+		{ value: "environment", label: "Environment" },
+		{ value: "social-services", label: "Social Services" },
+		{ value: "arts-culture", label: "Arts & Culture" },
+		{ value: "sports-recreation", label: "Sports & Recreation" },
+		{ value: "other", label: "Other" },
+	];
+
 	const [formData, setFormData] = useState({
 		firstName: "",
 		middleName: "",
@@ -44,12 +55,16 @@ const Profile = () => {
 		phoneNumber: "",
 		dateOfBirth: "",
 		gender: "",
-		expertiseArea: "",
+		expertiseArea: [],
 		availability: {
 			daysAvailable: [],
 			timeSlots: { start: "", end: "" },
 		},
 	});
+
+	useEffect(() => {
+		dispatch(getVolunteerProfile());
+	}, [dispatch]);
 
 	useEffect(() => {
 		if (volunteer) {
@@ -63,7 +78,11 @@ const Profile = () => {
 					? new Date(volunteer.dateOfBirth).toISOString().split("T")[0]
 					: "",
 				gender: volunteer.gender || "",
-				expertiseArea: volunteer.expertiseArea || "",
+				expertiseArea: Array.isArray(volunteer.expertiseArea)
+					? volunteer.expertiseArea
+					: volunteer.expertiseArea
+					? [volunteer.expertiseArea]
+					: [],
 				availability: volunteer.availability || {
 					daysAvailable: [],
 					timeSlots: { start: "", end: "" },
@@ -116,9 +135,29 @@ const Profile = () => {
 		}));
 	};
 
+	const handleExpertiseChange = (selectedOptions) => {
+		setFormData((prev) => ({
+			...prev,
+			expertiseArea: selectedOptions.map((option) => option.value),
+		}));
+	};
+
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		dispatch(updateVolunteerProfile(formData));
+
+		// Create a copy of the form data to modify
+		const dataToSubmit = {
+			...formData,
+			// Ensure expertiseArea is properly formatted
+			expertiseArea: Array.isArray(formData.expertiseArea)
+				? formData.expertiseArea
+				: typeof formData.expertiseArea === "string"
+				? [formData.expertiseArea]
+				: [],
+		};
+
+		dispatch(updateVolunteerProfile(dataToSubmit));
+		setIsEditing(false);
 	};
 
 	const renderStars = (rating) => {
@@ -158,7 +197,9 @@ const Profile = () => {
 										{formData.firstName} {formData.lastName}
 									</h2>
 									<p className="text-orange-500 font-medium mb-4 capitalize">
-										{formData.expertiseArea.replace("-", " ")}
+										{Array.isArray(formData.expertiseArea)
+											? formData.expertiseArea.join(", ")
+											: formData.expertiseArea}
 									</p>
 									<div className="space-y-4">
 										<div className="p-4 bg-orange-50 rounded-xl">
@@ -355,31 +396,23 @@ const Profile = () => {
 												<label className="block text-gray-700 text-sm font-medium mb-2">
 													Area of Expertise
 												</label>
-												<select
+												<Select
+													isMulti
+													isDisabled={!isEditing}
 													name="expertiseArea"
-													value={formData.expertiseArea}
-													onChange={handleChange}
-													disabled={!isEditing}
-													className={`w-full p-3 border rounded-xl transition-colors duration-200 ${
+													options={expertiseOptions}
+													value={expertiseOptions.filter((option) =>
+														Array.isArray(formData.expertiseArea)
+															? formData.expertiseArea.includes(option.value)
+															: formData.expertiseArea === option.value
+													)}
+													onChange={handleExpertiseChange}
+													className={`w-full rounded-xl transition-colors duration-200 ${
 														isEditing
 															? "bg-white border-orange-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200"
 															: "bg-gray-50 border-gray-200"
 													}`}
-												>
-													<option value="">Select Expertise</option>
-													<option value="education">Education</option>
-													<option value="healthcare">Healthcare</option>
-													<option value="technology">Technology</option>
-													<option value="environment">Environment</option>
-													<option value="social-services">
-														Social Services
-													</option>
-													<option value="arts-culture">Arts & Culture</option>
-													<option value="sports-recreation">
-														Sports & Recreation
-													</option>
-													<option value="other">Other</option>
-												</select>
+												/>
 											</div>
 											<div className="md:col-span-2">
 												<label className="block text-gray-700 text-sm font-medium mb-2">
