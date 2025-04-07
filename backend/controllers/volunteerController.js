@@ -641,6 +641,11 @@ export const changeVolunteerPassword = async (req, res) => {
 
 export const getVolunteerProfile = async (req, res) => {
 	try {
+		const volunteer = await Volunteer.findById(req.volunteer._id);
+		if (!volunteer) {
+			return Response(res, 404, false, message.volunteerNotFound);
+		}
+		return Response(res, 200, true, message.profileUpdated, volunteer);
 	} catch (error) {
 		Response(res, 500, false, error.message);
 	}
@@ -648,6 +653,36 @@ export const getVolunteerProfile = async (req, res) => {
 
 export const updateVolunteerProfile = async (req, res) => {
 	try {
+		const { id } = req.volunteer;
+		const updateData = req.body;
+
+		// Validate required fields
+		if (!id) {
+			return Response(res, 400, false, message.idNotFound);
+		}
+
+		// Find volunteer
+		const volunteer = await Volunteer.findById(id);
+		if (!volunteer) {
+			return Response(res, 404, false, message.volunteerNotFound);
+		}
+
+		// Update fields if provided
+		if (updateData.firstName) volunteer.firstName = updateData.firstName;
+		if (updateData.middleName) volunteer.middleName = updateData.middleName;
+		if (updateData.lastName) volunteer.lastName = updateData.lastName;
+		if (updateData.phoneNumber) volunteer.phoneNumber = updateData.phoneNumber;
+		if (updateData.dateOfBirth) volunteer.dateOfBirth = updateData.dateOfBirth;
+		if (updateData.gender) volunteer.gender = updateData.gender;
+		if (updateData.expertiseArea)
+			volunteer.expertiseArea = updateData.expertiseArea;
+		if (updateData.availability)
+			volunteer.availability = updateData.availability;
+
+		// Save updated volunteer
+		await volunteer.save();
+
+		return Response(res, 200, true, message.profileUpdated, volunteer);
 	} catch (error) {
 		Response(res, 500, false, error.message);
 	}

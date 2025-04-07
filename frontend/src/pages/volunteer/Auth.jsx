@@ -62,12 +62,14 @@ const Auth = () => {
 		phoneNumber: "",
 		dateOfBirth: "",
 		gender: "",
-		expertiseArea: "",
+		expertiseArea: [],
 		availability: {
 			daysAvailable: [],
-			timeSlots: [{ start: "", end: "" }],
+			timeSlots: { start: "", end: "" },
 		},
 	});
+
+	const [selectedExpertise, setSelectedExpertise] = useState([]);
 
 	useEffect(() => {
 		if (location.pathname.includes("register")) {
@@ -101,7 +103,15 @@ const Auth = () => {
 
 	const handleRegisterSubmit = (e) => {
 		e.preventDefault();
-		dispatch(registerVolunteer(registerForm));
+
+		// Make a clean copy to send
+		const dataToSend = {
+			...registerForm,
+			expertiseArea: selectedExpertise.map((item) => item.value),
+		};
+
+		console.log("Final data structure:", dataToSend);
+		dispatch(registerVolunteer(dataToSend));
 	};
 
 	const handleSignInClick = () => {
@@ -122,27 +132,58 @@ const Auth = () => {
 	};
 
 	const handleRegisterChange = (e) => {
-		// const { name, value } = e.target;
-		// if (name.includes(".")) {
-		// 	const [parent, child] = name.split(".");
-		// 	setRegisterForm((prev) => ({
-		// 		...prev,
-		// 		[parent]: {
-		// 			...prev[parent],
-		// 			[child]: value,
-		// 		},
-		// 	}));
-		// } else {
-		// 	setRegisterForm((prev) => ({
-		// 		...prev,
-		// 		[name]: value,
-		// 	}));
-		// }
+		const { name, value } = e.target;
 
-		setRegisterForm({
-			...registerForm,
-			[e.target.name]: e.target.value,
-		});
+		if (name.includes(".")) {
+			const parts = name.split(".");
+
+			if (parts.length === 2) {
+				// Handle two-level nesting (e.g., "availability.daysAvailable")
+				const [parent, child] = parts;
+				setRegisterForm((prev) => ({
+					...prev,
+					[parent]: {
+						...prev[parent],
+						[child]: value,
+					},
+				}));
+			} else if (parts.length === 3) {
+				// Handle three-level nesting (e.g., "availability.timeSlots.start")
+				const [parent, child, grandchild] = parts;
+				setRegisterForm((prev) => ({
+					...prev,
+					[parent]: {
+						...prev[parent],
+						[child]: {
+							...prev[parent][child],
+							[grandchild]: value,
+						},
+					},
+				}));
+			}
+		} else {
+			// Handle regular fields
+			setRegisterForm((prev) => ({
+				...prev,
+				[name]: value,
+			}));
+		}
+	};
+
+	const handleTimeSlotChange = (e) => {
+		const { name, value } = e.target;
+		const timeSlotField = name.split(".").pop(); // Gets 'start' or 'end'
+
+		setRegisterForm((prev) => ({
+			...prev,
+			availability: {
+				...prev.availability,
+				timeSlots: {
+					...prev.availability.timeSlots,
+					[timeSlotField]: value,
+				},
+			},
+		}));
 	};
 
 	const toggleLoginPassword = () => {
@@ -155,6 +196,18 @@ const Auth = () => {
 
 	const handleForgotPassword = () => {
 		navigate("/volunteer/forgot-password");
+	};
+
+	const handleExpertiseAreaChange = (selectedOptions) => {
+		const values = selectedOptions.map((option) => option.value);
+		setSelectedExpertise(selectedOptions);
+
+		setRegisterForm((prev) => ({
+			...prev,
+			expertiseArea: values,
+		}));
+
+		console.log("Expertise updated:", values);
 	};
 
 	return (
@@ -445,9 +498,12 @@ const Auth = () => {
 									onChange={(selectedOptions) => {
 										setRegisterForm((prev) => ({
 											...prev,
-											daysAvailable: selectedOptions.map(
-												(option) => option.value
-											),
+											availability: {
+												...prev.availability,
+												daysAvailable: selectedOptions.map(
+													(option) => option.value
+												),
+											},
 										}));
 									}}
 								/>
@@ -457,9 +513,9 @@ const Auth = () => {
 								<div className="flex gap-4">
 									<div className="w-1/2">
 										<select
-											name="timeSlots.start"
-											value={registerForm.timeSlots?.start}
-											onChange={handleRegisterChange}
+											name="availability.timeSlots.start"
+											value={registerForm.availability.timeSlots.start}
+											onChange={handleTimeSlotChange}
 											className="bg-gray-100 border border-gray-300 rounded-lg p-3 pl-10 w-full"
 											defaultValue=""
 											required
@@ -480,9 +536,9 @@ const Auth = () => {
 									</div>
 									<div className="w-1/2">
 										<select
-											name="timeSlots.end"
-											value={registerForm.timeSlots?.end}
-											onChange={handleRegisterChange}
+											name="availability.timeSlots.end"
+											value={registerForm.availability.timeSlots.end}
+											onChange={handleTimeSlotChange}
 											className="bg-gray-100 border border-gray-300 rounded-lg p-3 pl-10 w-full"
 											defaultValue=""
 											required
@@ -505,26 +561,81 @@ const Auth = () => {
 							</div>
 						</div>
 						<div className="relative w-full mb-4">
-							<select
-								name="expertiseArea"
-								value={registerForm.expertiseArea}
-								onChange={handleRegisterChange}
-								className="bg-gray-100 border border-gray-300 rounded-lg p-3 pl-10 w-full"
-								defaultValue=""
-								required
-							>
-								<option value="" disabled>
-									Select Area of Expertise
-								</option>
-								<option value="education">Education</option>
-								<option value="healthcare">Healthcare</option>
-								<option value="technology">Technology</option>
-								<option value="environment">Environment</option>
-								<option value="social-services">Social Services</option>
-								<option value="arts-culture">Arts & Culture</option>
-								<option value="sports-recreation">Sports & Recreation</option>
-								<option value="other">Other</option>
-							</select>
+							<Select
+								isMulti
+								options={[
+									{ value: "education", label: "Education" },
+									{ value: "healthcare", label: "Healthcare" },
+									{ value: "technology", label: "Technology" },
+									{ value: "environment", label: "Environment" },
+									{ value: "social-services", label: "Social Services" },
+									{ value: "arts-culture", label: "Arts & Culture" },
+									{ value: "sports-recreation", label: "Sports & Recreation" },
+									{ value: "other", label: "Other" },
+								]}
+								value={selectedExpertise}
+								onChange={handleExpertiseAreaChange}
+								className="bg-gray-100 border border-gray-300 rounded-lg"
+								classNamePrefix="select"
+								placeholder="Select Expertise Areas"
+								styles={{
+									control: (base) => ({
+										...base,
+										backgroundColor: "rgb(243 244 246)",
+										borderRadius: "0.5rem",
+										borderColor: "rgb(209 213 219)",
+										minHeight: "unset",
+										fontSize: "12px",
+										padding: "2px",
+										lineHeight: "1",
+										"&:hover": {
+											borderColor: "rgb(209 213 219)",
+										},
+									}),
+									menu: (base) => ({
+										...base,
+										backgroundColor: "white",
+										borderRadius: "0.5rem",
+										marginTop: "0.5rem",
+										overflow: "hidden",
+									}),
+									option: (base, state) => ({
+										...base,
+										fontSize: "12px",
+										padding: "4px 8px",
+										backgroundColor: state.isSelected
+											? "rgb(249 115 22)"
+											: "white",
+										"&:hover": {
+											backgroundColor: state.isSelected
+												? "rgb(249 115 22)"
+												: "rgb(254 215 170)",
+										},
+									}),
+									multiValue: (base) => ({
+										...base,
+										backgroundColor: "rgb(254 215 170)",
+										borderRadius: "0.375rem",
+										padding: "1px 4px",
+										minHeight: "16px",
+									}),
+									multiValueLabel: (base) => ({
+										...base,
+										color: "rgb(249 115 22)",
+										fontSize: "10px",
+										padding: "0 4px",
+									}),
+									multiValueRemove: (base) => ({
+										...base,
+										color: "rgb(249 115 22)",
+										fontSize: "10px",
+										"&:hover": {
+											backgroundColor: "rgb(249 115 22)",
+											color: "white",
+										},
+									}),
+								}}
+							/>
 						</div>
 						<button
 							type="submit"

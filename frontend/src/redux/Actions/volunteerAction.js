@@ -265,16 +265,12 @@ export const updateVolunteerProfile = (userData) => async (dispatch) => {
 	try {
 		dispatch({ type: "UPDATE_VOLUNTEER_PROFILE_REQUEST" });
 
-		const { data } = await axios.put(
-			`${URL}/volunteer/profile/update`,
-			userData,
-			{
-				headers: {
-					"Content-Type": "application/json",
-				},
-				withCredentials: true,
-			}
-		);
+		const { data } = await axios.put(`${URL}/profile/update`, userData, {
+			headers: {
+				"Content-Type": "application/json",
+			},
+			withCredentials: true,
+		});
 
 		dispatch({
 			type: "UPDATE_VOLUNTEER_PROFILE_SUCCESS",
@@ -286,6 +282,27 @@ export const updateVolunteerProfile = (userData) => async (dispatch) => {
 	} catch (error) {
 		dispatch({
 			type: "UPDATE_VOLUNTEER_PROFILE_FAILURE",
+			payload: error.response?.data?.message || "Something went wrong",
+		});
+	}
+};
+
+export const getVolunteerProfile = () => async (dispatch) => {
+	try {
+		dispatch({ type: "GET_VOLUNTEER_PROFILE_REQUEST" });
+		const { data } = await axios.get(`${URL}/profile`, {
+			withCredentials: true,
+		});
+		dispatch({
+			type: "GET_VOLUNTEER_PROFILE_SUCCESS",
+			payload: {
+				message: data.message,
+				data: data.data,
+			},
+		});
+	} catch (error) {
+		dispatch({
+			type: "GET_VOLUNTEER_PROFILE_FAILURE",
 			payload: error.response?.data?.message || "Something went wrong",
 		});
 	}

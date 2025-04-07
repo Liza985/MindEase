@@ -41,19 +41,17 @@ const volunteerSchema = mongoose.Schema(
 			required: true,
 			enum: ["male", "female", "other"],
 		},
-		PhoneNumber: {
+		phoneNumber: {
 			type: Number,
 			minlength: 10,
 		},
-		expertiseAreas: [{ type: String }],
+		expertiseArea: [{ type: String }],
 		availability: {
 			daysAvailable: [{ type: String }],
-			timeSlots: [
-				{
-					start: { type: String },
-					end: { type: String },
-				},
-			],
+			timeSlots: {
+				start: { type: String },
+				end: { type: String },
+			},
 		},
 		ratings: [
 			{
@@ -62,10 +60,12 @@ const volunteerSchema = mongoose.Schema(
 				feedback: { type: String },
 			},
 		],
-		Blogs:[{
-			type: mongoose.Schema.Types.ObjectId,
-			ref: "Blog",
-		}],   
+		Blogs: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: "Blog",
+			},
+		],
 		isVerified: {
 			type: Boolean,
 			default: false,
@@ -115,7 +115,7 @@ const volunteerSchema = mongoose.Schema(
 	},
 	{
 		timestamps: true,
-	},
+	}
 );
 volunteerSchema.pre("save", async function (next) {
 	if (!this.isModified("password")) {
@@ -125,7 +125,6 @@ volunteerSchema.pre("save", async function (next) {
 	this.password = await bcrypt.hash(this.password, salt);
 	next();
 });
-
 
 volunteerSchema.methods.generateToken = async function () {
 	return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
