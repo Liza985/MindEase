@@ -1,15 +1,14 @@
 import express from "express";
 import {
 	CreateFeedBack,
-	getAllFeedBacks,
 	deleteFeedBack,
+	getAllFeedBacks,
 } from "../controllers/feedback.js";
-import { isAuthenticated } from "../middlewares/auth.js";
 
 const feedbackRouter = express.Router();
 
-feedbackRouter.post("/create", isAuthenticated, CreateFeedBack);
+feedbackRouter.post("/create", CreateFeedBack);
 feedbackRouter.get("/all", getAllFeedBacks);
-feedbackRouter.delete("/delete/:id", isAuthenticated, deleteFeedBack);
+feedbackRouter.delete("/delete/:id",  deleteFeedBack);
 
 export default feedbackRouter;

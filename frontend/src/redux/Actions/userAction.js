@@ -269,13 +269,16 @@ export const getAllUsers = () => async (dispatch) => {
 	try {
 		dispatch({ type: "GET_ALL_USERS_REQUEST" });
 
-		const { data } = await axios.get(`${BACKEND_URL}/all`, {
+		const { data } = await axios.get(`${URL}/all`, {
 			withCredentials: true,
 		});
 
 		dispatch({
 			type: "GET_ALL_USERS_SUCCESS",
-			payload: data.data,
+			payload: {
+				message: data.message,
+				data: data.data,
+			},
 		});
 	} catch (error) {
 		dispatch({
