@@ -524,3 +524,17 @@ export const deleteUser = async (req, res) => {
 		Response(res, 500, false, error.message);
 	}
 };
+
+export const getAllUsers = async (req, res) => {
+	try {
+		const users = await User.find({}).select("-password -__v").sort("-createdAt");
+
+		if (!users) {
+			return Response(res, 404, false, message.userNotFound);
+		}
+
+		Response(res, 200, true, message.userFoundMessage, users);
+	} catch (error) {
+		Response(res, 500, false, error.message);
+	}
+}

@@ -723,3 +723,15 @@ export const deleteVolunteer = async (req, res) => {
 		Response(res, 500, false, error.message);
 	}
 };
+
+export const getAllVolunteers = async (req, res) => {
+	try {
+		const volunteers = await Volunteer.find({});
+		if (!volunteers) {
+			return Response(res, 404, false, message.volunteerNotFound);
+		}
+		return Response(res, 200, true, message.volunteerNotFound, volunteers);
+	} catch (error) {
+		Response(res, 500, false, error.message);
+	}
+}
