@@ -1,4 +1,5 @@
 import { createAction, createReducer } from "@reduxjs/toolkit";
+import { getAll } from "./../Actions/volunteerAction";
 const initialState = {};
 
 const userLoginRequest = createAction("USER_LOGIN_REQUEST");
@@ -32,6 +33,10 @@ const changeUserPasswordFailure = createAction("CHANGE_USER_PASSWORD_FAILURE");
 const logoutUserRequest = createAction("LOGOUT_USER_REQUEST");
 const logoutUserSuccess = createAction("LOGOUT_USER_SUCCESS");
 const logoutUserFailure = createAction("LOGOUT_USER_FAILURE");
+
+const getAllUsersRequest = createAction("GET_ALL_USERS_REQUEST");
+const getAllUsersSuccess = createAction("GET_ALL_USERS_SUCCESS");
+const getAllUsersFailure = createAction("GET_ALL_USERS_FAILURE");
 
 const clearError = createAction("CLEAR_ERROR");
 const clearMessage = createAction("CLEAR_MESSAGE");
@@ -137,6 +142,19 @@ export const userReducer = createReducer(initialState, (builder) => {
 			state.message = action.payload;
 		})
 		.addCase(logoutUserFailure, (state, action) => {
+			state.loading = false;
+			state.error = action.payload;
+		})
+
+		.addCase(getAllUsersRequest, (state) => {
+			state.loading = true;
+		})
+		.addCase(getAllUsersSuccess, (state, action) => {
+			state.loading = false;
+			state.users = action.payload.data;
+			state.message = action.payload.message;
+		})
+		.addCase(getAllUsersFailure, (state, action) => {
 			state.loading = false;
 			state.error = action.payload;
 		})

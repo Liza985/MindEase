@@ -2,6 +2,7 @@ import express from "express";
 import {
 	changeVolunteerPassword,
 	forgetVolunteerPassword,
+	getAllVolunteers,
 	getVolunteerProfile,
 	loginVolunteer,
 	logoutVolunteer,
@@ -27,7 +28,12 @@ volunteerRouter.post("/logout", logoutVolunteer);
 volunteerRouter.post("/forgetPassword", forgetVolunteerPassword);
 volunteerRouter.post("/resetPassword/:id", resetVolunteerPassword);
 volunteerRouter.post("/changePassword/:id", changeVolunteerPassword);
-volunteerRouter.put("/profile/update", isVolAuthenticated, updateVolunteerProfile);
+volunteerRouter.put(
+	"/profile/update",
+	isVolAuthenticated,
+	updateVolunteerProfile,
+);
 volunteerRouter.get("/profile", isVolAuthenticated, getVolunteerProfile);
+volunteerRouter.get("/all", getAllVolunteers);
 
 export default volunteerRouter;

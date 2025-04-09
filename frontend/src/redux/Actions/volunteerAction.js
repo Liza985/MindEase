@@ -307,3 +307,24 @@ export const getVolunteerProfile = () => async (dispatch) => {
 		});
 	}
 };
+
+export const getAllVolunteers = () => async (dispatch) => {
+	try {
+		dispatch({ type: "GET_ALL_VOLUNTEERS_REQUEST" });
+		const { data } = await axios.get(`${URL}/all`, {
+			withCredentials: true,
+		});
+		dispatch({
+			type: "GET_ALL_VOLUNTEERS_SUCCESS",
+			payload: {
+				message: data.message,
+				data: data.data,
+			},
+		});
+	} catch (error) {
+		dispatch({
+			type: "GET_ALL_VOLUNTEERS_FAILURE",
+			payload: error.response?.data?.message || "Something went wrong",
+		});
+	}
+}

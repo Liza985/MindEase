@@ -1,4 +1,5 @@
 import { createAction, createReducer } from "@reduxjs/toolkit";
+import { getAllVolunteers } from './../Actions/volunteerAction';
 const initialState = {};
 
 const volunteerLoginRequest = createAction("VOLUNTEER_LOGIN_REQUEST");
@@ -82,6 +83,11 @@ const updateVolunteerProfileFailure = createAction(
 const getVolunteerProfileRequest = createAction("GET_VOLUNTEER_PROFILE_REQUEST");
 const getVolunteerProfileSuccess = createAction("GET_VOLUNTEER_PROFILE_SUCCESS");
 const getVolunteerProfileFailure = createAction("GET_VOLUNTEER_PROFILE_FAILURE");
+
+
+const getAllVolunteersRequest = createAction("GET_ALL_VOLUNTEERS_REQUEST");
+const getAllVolunteersSuccess = createAction("GET_ALL_VOLUNTEERS_SUCCESS");
+const getAllVolunteersFailure = createAction("GET_ALL_VOLUNTEERS_FAILURE");
 
 const clearError = createAction("CLEAR_ERROR");
 const clearMessage = createAction("CLEAR_MESSAGE");
@@ -248,6 +254,20 @@ export const volunteerReducer = createReducer(initialState, (builder) => {
 			state.volunteer = action.payload.data;
 		})
 		.addCase(getVolunteerProfileFailure, (state, action) => {
+			state.loading = false;
+			state.message = action.payload.message;
+			state.error = action.payload;
+		})
+
+		.addCase(getAllVolunteersRequest, (state) => {
+			state.loading = true;
+		})
+		.addCase(getAllVolunteersSuccess, (state, action) => {
+			state.loading = false;
+			state.message = action.payload.message;
+			state.volunteers = action.payload.data;
+		})
+		.addCase(getAllVolunteersFailure, (state, action) => {
 			state.loading = false;
 			state.message = action.payload.message;
 			state.error = action.payload;
