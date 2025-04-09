@@ -23,7 +23,11 @@ const surveySchema = mongoose.Schema({
             type:String,
             required:true,
         },
-    }]
+    }],
+    result:{
+        type:String,
+        required:true
+    }
 },{
     timestamps:true,
 });
