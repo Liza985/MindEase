@@ -53,11 +53,10 @@ const volunteerSchema = mongoose.Schema(
 				end: { type: String },
 			},
 		},
-		ratings: [
+		review: [
 			{
-				userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-				rating: { type: Number, min: 1, max: 5 },
-				feedback: { type: String },
+				type: mongoose.Schema.Types.ObjectId,
+				ref: "Review",
 			},
 		],
 		Blogs: [
@@ -115,7 +114,7 @@ const volunteerSchema = mongoose.Schema(
 	},
 	{
 		timestamps: true,
-	}
+	},
 );
 volunteerSchema.pre("save", async function (next) {
 	if (!this.isModified("password")) {
