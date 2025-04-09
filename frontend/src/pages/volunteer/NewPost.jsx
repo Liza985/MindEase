@@ -44,16 +44,28 @@ const NewPost = () => {
       reader.readAsDataURL(file);
     }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!formData.image) {
-      toast.error('Please select an image', toastOptions);
-      return;
-    }
-
-    dispatch(createBlog(formData));
-  };
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+    
+      if (!formData.image) {
+        toast.error('Please select an image', toastOptions);
+        return;
+      }
+    
+      // Convert topic string to array here
+      const topicArray = formData.topic
+        .split(/[,]+/)
+        .map(t => t.trim())
+        .filter(t => t.length > 0);
+    
+      const finalData = {
+        ...formData,
+        topic: topicArray
+      };
+    
+      dispatch(createBlog(finalData));
+    };
+    
 
   useEffect(() => {
     if (message) {
@@ -130,7 +142,7 @@ const NewPost = () => {
               </div>
 
               <div className="mb-6">
-                <label className="block text-gray-700 font-medium mb-2">Topic</label>
+                <label className="block text-gray-700 font-medium mb-2">Topic<span className="text-sm text-gray-500">(comma separated)</span></label>
                 <input 
                   type="text" 
                   name="topic"

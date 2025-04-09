@@ -100,7 +100,7 @@ export const deleteBlog = async (req, res) => {
 		// Extract image public ID from Cloudinary URL
 		const imageUrl = blog.image; // Assuming blog.image stores the Cloudinary image URL
 		if (imageUrl) {
-			const publicId = imageUrl.split('/').pop().split('.')[0]; // Extract Cloudinary public ID
+			const publicId = imageUrl.public_id
 			await cloudinary.v2.uploader.destroy(publicId);
 		}
 
