@@ -53,11 +53,6 @@ export const feedbackReducer = createReducer(
 			.addCase(clearFeedbackMessage, (state) => {
 				state.feedbackMessage = null;
 			})
-			.addCase(clearError, (state) => {
-				state.error = null;
-			})
-			.addCase(clearMessage, (state) => {
-				state.message = null;
-			});
+			
 	},
 );
