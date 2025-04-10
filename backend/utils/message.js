@@ -39,10 +39,19 @@ export const message={
     feedBackFetchSuccessfulMessage:"Feedback fetched successfully",
     feedBackDeleteMessage:"Feedback deleted successfully",
     feedBackNotFoundMessage:"Feedback not found",
-    contentCreated: "Content created successfullly",
-    contentDeletd: "Content Deleted successfully",
+    contentCreated: "Content created successfully",
+    contentDeleted: "Content Deleted successfully",
     invalidId: "Invalid Id",
     contentFetchSuccessfully: "Content Fetched Successfully",
     contentNotFound: "Content not found",
-    contentUpdatedSuccessfully: "Content Updated Successfully"
+    contentUpdatedSuccessfully: "Content Updated Successfully",
+    createRequestMessage:"Request created successfully",
+    getAllRequestsMessage:"All requests fetched successfully",
+    requestNotFound:"Request not found",
+    getRequestMessage:"Requests fetched successfully",
+    updateRequestMessage:"Request updated successfully",
+    invalidCategory:"Invalid category",
+    getRequestByIdMessage:"Request fetched successfully",
+    requestAcceptMessage:"Request accepted successfully"
+    
 }

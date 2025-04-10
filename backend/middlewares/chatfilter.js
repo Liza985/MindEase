@@ -9,8 +9,8 @@ export const filterMiddleware = (req, res, next) => {
       const emailRegex = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/; 
   
       const filteredMessage = message
-        .replace(phoneRegex, "message removed")
-        .replace(emailRegex, "message removed");
+        .replace(phoneRegex, "message removed by admin")
+        .replace(emailRegex, "message removed by admin");
   
       req.body.message = filteredMessage;
     }

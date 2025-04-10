@@ -36,7 +36,7 @@ export const deleteContent = async (req, res) => {
         if (!deletedActivity) {
             return Response(res, 404, false, message.contentNotFound);
         }
-        Response(res, 200, true, message.contentDeletd); 
+        Response(res, 200, true, message.contentDeleted); 
     } catch (error) {
         Response(res, 500, false, error.message);
     }
