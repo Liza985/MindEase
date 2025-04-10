@@ -564,13 +564,16 @@ const Auth = () => {
 							<Select
 								isMulti
 								options={[
-									{ value: "education", label: "Education" },
-									{ value: "healthcare", label: "Healthcare" },
-									{ value: "technology", label: "Technology" },
-									{ value: "environment", label: "Environment" },
-									{ value: "social-services", label: "Social Services" },
-									{ value: "arts-culture", label: "Arts & Culture" },
-									{ value: "sports-recreation", label: "Sports & Recreation" },
+									{ value: "depression", label: "Depression" },
+									{ value: "stress", label: "Stress" },
+									{ value: "relationships", label: "Relationships" },
+									{ value: "grief", label: "Grief" },
+									{ value: "trauma", label: "Trauma" },
+									{ value: "addiction", label: "Addiction" },
+									{ value: "eating-disorders", label: "Eating Disorders" },
+									{ value: "self-esteem", label: "Self-Esteem" },
+									{ value: "anger", label: "Anger Management" },
+									{ value: "sleep", label: "Sleep Issues" },
 									{ value: "other", label: "Other" },
 								]}
 								value={selectedExpertise}

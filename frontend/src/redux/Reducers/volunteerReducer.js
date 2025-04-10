@@ -89,6 +89,10 @@ const getAllVolunteersRequest = createAction("GET_ALL_VOLUNTEERS_REQUEST");
 const getAllVolunteersSuccess = createAction("GET_ALL_VOLUNTEERS_SUCCESS");
 const getAllVolunteersFailure = createAction("GET_ALL_VOLUNTEERS_FAILURE");
 
+const deleteVolunteerRequest = createAction("DELETE_VOLUNTEER_REQUEST");
+const deleteVolunteerSuccess = createAction("DELETE_VOLUNTEER_SUCCESS");
+const deleteVolunteerFailure = createAction("DELETE_VOLUNTEER_FAILURE");
+
 const clearError = createAction("CLEAR_ERROR");
 const clearMessage = createAction("CLEAR_MESSAGE");
 
@@ -272,6 +276,20 @@ export const volunteerReducer = createReducer(initialState, (builder) => {
 			state.message = action.payload.message;
 			state.error = action.payload;
 		})
+
+		.addCase(deleteVolunteerRequest, (state) => {
+			state.loading = true;
+		})	
+		.addCase(deleteVolunteerSuccess, (state, action) => {
+			state.loading = false;
+			state.volunteer = null;
+			state.message = action.payload;
+		})
+		.addCase(deleteVolunteerFailure, (state, action) => {
+			state.loading = false;
+			state.error = action.payload;
+		})
+
 		.addCase(clearError, (state) => {
 			state.error = null;
 		})

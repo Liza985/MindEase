@@ -1,6 +1,7 @@
 import express from "express";
 import {
 	changeVolunteerPassword,
+	deleteVolunteer,
 	forgetVolunteerPassword,
 	getAllVolunteers,
 	getVolunteerProfile,
@@ -28,6 +29,7 @@ volunteerRouter.post("/logout", logoutVolunteer);
 volunteerRouter.post("/forgetPassword", forgetVolunteerPassword);
 volunteerRouter.post("/resetPassword/:id", resetVolunteerPassword);
 volunteerRouter.post("/changePassword/:id", changeVolunteerPassword);
+volunteerRouter.delete("/delete/:id",isVolAuthenticated,deleteVolunteer);
 volunteerRouter.put(
 	"/profile/update",
 	isVolAuthenticated,

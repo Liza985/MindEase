@@ -128,61 +128,92 @@ const CounselingPage = () => {
                 </p>
 
                 <form onSubmit={handleSubmit}>
-                  <div className="mb-6">
-                    <label
-                      htmlFor="topic"
-                      className="block text-gray-700 font-medium mb-2"
-                    >
-                      Topic <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      id="topic"
-                      name="topic"
-                      value={formData.topic}
-                      onChange={handleInputChange}
-                      placeholder="e.g., Anxiety, Depression, Relationships"
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-                      required
-                    />
-                  </div>
+  <div className="mb-6">
+    <label
+      htmlFor="category"
+      className="block text-gray-700 font-medium mb-2"
+    >
+      Category <span className="text-red-500">*</span>
+    </label>
+    <select
+      id="category"
+      name="category"
+      value={formData.category}
+      onChange={handleInputChange}
+      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+      required
+    >
+      <option value="" disabled>Select a category</option>
+      <option value="anxiety">Anxiety</option>
+      <option value="depression">Depression</option>
+      <option value="stress">Stress</option>
+      <option value="relationships">Relationships</option>
+      <option value="grief">Grief</option>
+      <option value="trauma">Trauma</option>
+      <option value="addiction">Addiction</option>
+      <option value="eating-disorders">Eating Disorders</option>
+      <option value="self-esteem">Self-Esteem</option>
+      <option value="anger">Anger Management</option>
+      <option value="sleep">Sleep Issues</option>
+      <option value="other">Other</option>
+    </select>
+  </div>
 
-                  <div className="mb-6">
-                    <label
-                      htmlFor="description"
-                      className="block text-gray-700 font-medium mb-2"
-                    >
-                      Description <span className="text-red-500">*</span>
-                    </label>
-                    <textarea
-                      id="description"
-                      name="description"
-                      value={formData.description}
-                      onChange={handleInputChange}
-                      placeholder="Please describe what you're experiencing and what kind of help you're looking for..."
-                      rows={5}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-                      required
-                    />
-                  </div>
+  <div className="mb-6">
+    <label
+      htmlFor="topic"
+      className="block text-gray-700 font-medium mb-2"
+    >
+      Topic <span className="text-red-500">*</span>
+    </label>
+    <input
+      type="text"
+      id="topic"
+      name="topic"
+      value={formData.topic}
+      onChange={handleInputChange}
+      placeholder="e.g., Anxiety, Depression, Relationships"
+      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+      required
+    />
+  </div>
 
-                  <div className="flex justify-end">
-                    <button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-300 flex items-center"
-                    >
-                      {isSubmitting ? (
-                        <>
-                          <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white mr-2"></div>
-                          Submitting...
-                        </>
-                      ) : (
-                        "Submit Request"
-                      )}
-                    </button>
-                  </div>
-                </form>
+  <div className="mb-6">
+    <label
+      htmlFor="description"
+      className="block text-gray-700 font-medium mb-2"
+    >
+      Description <span className="text-red-500">*</span>
+    </label>
+    <textarea
+      id="description"
+      name="description"
+      value={formData.description}
+      onChange={handleInputChange}
+      placeholder="Please describe what you're experiencing and what kind of help you're looking for..."
+      rows={5}
+      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+      required
+    />
+  </div>
+
+  <div className="flex justify-end">
+    <button
+      type="submit"
+      disabled={isSubmitting}
+      className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-300 flex items-center"
+    >
+      {isSubmitting ? (
+        <>
+          <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white mr-2"></div>
+          Submitting...
+        </>
+      ) : (
+        "Submit Request"
+      )}
+    </button>
+  </div>
+</form>
               </div>
             </div>
           )}
