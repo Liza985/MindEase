@@ -244,11 +244,11 @@ export const updateUserProfile = (userData) => async (dispatch) => {
 	}
 };
 
-export const deleteUserAccount = () => async (dispatch) => {
+export const deleteUserAccount = (id) => async (dispatch) => {
 	try {
 		dispatch({ type: "DELETE_USER_REQUEST" });
 
-		const { data } = await axios.delete(`${BACKEND_URL}api/v1/user/delete`, {
+		const { data } = await axios.delete(`${URL}/delete/${id}`, {
 			withCredentials: true,
 		});
 

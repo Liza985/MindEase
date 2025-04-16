@@ -190,5 +190,6 @@ export const userReducer = createReducer(initialState, (builder) => {
 		.addCase("DELETE_USER_FAILURE", (state, action) => {
 			state.loading = false;
 			state.error = action.payload;
-		});
+		})
+		
 });

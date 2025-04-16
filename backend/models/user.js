@@ -63,12 +63,20 @@ const userSchema = mongoose.Schema(
 				ref: "Feedback",
 			},
 		],
+		volunteerFriends:[{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Volunteer",
+		}],
 		volunteerChats: [
 			{
 				type: mongoose.Schema.Types.ObjectId,
 				ref: "volunteerChat",
 			},
 		],
+		chatRequests:[{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "ChatRequest",
+		}],
 		isVerified: {
 			type: Boolean,
 			default: false,

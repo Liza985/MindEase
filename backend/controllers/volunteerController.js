@@ -712,7 +712,12 @@ export const getVolunteerRatings = async (req, res) => {
 export const deleteVolunteer = async (req, res) => {
 	try {
 		const { id } = req.params;
-
+		if (!id) {
+			return Response(res, 400, false, message.idNotFound);
+		}
+		if (id.toString() !== req.volunteer._id.toString()) {
+			return Response(res, 400, false, message.notAuthorized);
+		}
 		const volunteer = await Volunteer.findById(id);
 		if (!volunteer) {
 			return Response(res, 404, false, "Volunteer not found");

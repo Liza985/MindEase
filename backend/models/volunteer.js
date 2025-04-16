@@ -65,6 +65,10 @@ const volunteerSchema = mongoose.Schema(
 				ref: "Blog",
 			},
 		],
+		userFriends:[{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "User",
+		}],
 		isVerified: {
 			type: Boolean,
 			default: false,

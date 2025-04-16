@@ -331,3 +331,25 @@ export const getAllVolunteers = () => async (dispatch) => {
 		});
 	}
 };
+}
+
+export const deleteVolunteer = (id) => async (dispatch) => {
+	try {
+		dispatch({ type: "DELETE_VOLUNTEER_REQUEST" });
+		const { data } = await axios.delete(`${URL}/delete/${id}`, {
+			withCredentials: true,
+		});
+		dispatch({
+			type: "DELETE_VOLUNTEER_SUCCESS",
+			payload: {
+				message: data.message,
+				data: data.data,
+			},
+		});
+	} catch (error) {
+		dispatch({
+			type: "DELETE_VOLUNTEER_FAILURE",
+			payload: error.response?.data?.message || "Something went wrong",
+		});
+	}
+}

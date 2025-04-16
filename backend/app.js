@@ -8,6 +8,7 @@ import blogRouter from "./routes/blogRoute.js";
 import reviewRouter from "./routes/reviewRoute.js";
 import feedbackRouter from "./routes/feedbackRoute.js";
 import contentRouter from "./routes/ContentRoute.js";
+import chatRequestRouter from "./routes/chatRequest.js";
 
 dotenv.config({ path: "./config/.env" });
 const app = express();
@@ -17,7 +18,7 @@ app.use(
 		origin: [process.env.LOCAL_URL, process.env.WEB_URL],
 		methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
 		credentials: true,
-	})
+	}),
 );
 
 app.use(express.json({ limit: "50mb" }));
@@ -33,5 +34,6 @@ app.use("/api/v1/blog", blogRouter);
 app.use("/api/v1/review", reviewRouter);
 app.use("/api/v1/feedback", feedbackRouter);
 app.use("/api/v1/content", contentRouter);
+app.use("/api/v1/request", chatRequestRouter);
 
 export default app;

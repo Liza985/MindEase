@@ -499,6 +499,15 @@ export const getUserActivityLog = async (req, res) => {
 
 export const deleteUser = async (req, res) => {
 	try {
+		const { id } = req.params;
+		if (!id) {
+			return Response(res, 400, false, message.idNotFound);
+		}
+
+		if (id.toString() !== req.user._id.toString()) {
+			return Response(res, 403, false, message.unauthorizedUser);
+		}
+
 		const user = await User.findById(req.user._id);
 
 		if (!user) {
