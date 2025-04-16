@@ -1,5 +1,4 @@
 import { createAction, createReducer } from "@reduxjs/toolkit";
-import { getAllVolunteers } from './../Actions/volunteerAction';
 const initialState = {};
 
 const volunteerLoginRequest = createAction("VOLUNTEER_LOGIN_REQUEST");
@@ -80,10 +79,15 @@ const updateVolunteerProfileFailure = createAction(
 	"UPDATE_VOLUNTEER_PROFILE_FAILURE"
 );
 
-const getVolunteerProfileRequest = createAction("GET_VOLUNTEER_PROFILE_REQUEST");
-const getVolunteerProfileSuccess = createAction("GET_VOLUNTEER_PROFILE_SUCCESS");
-const getVolunteerProfileFailure = createAction("GET_VOLUNTEER_PROFILE_FAILURE");
-
+const getVolunteerProfileRequest = createAction(
+	"GET_VOLUNTEER_PROFILE_REQUEST"
+);
+const getVolunteerProfileSuccess = createAction(
+	"GET_VOLUNTEER_PROFILE_SUCCESS"
+);
+const getVolunteerProfileFailure = createAction(
+	"GET_VOLUNTEER_PROFILE_FAILURE"
+);
 
 const getAllVolunteersRequest = createAction("GET_ALL_VOLUNTEERS_REQUEST");
 const getAllVolunteersSuccess = createAction("GET_ALL_VOLUNTEERS_SUCCESS");
@@ -125,7 +129,8 @@ export const volunteerReducer = createReducer(initialState, (builder) => {
 		})
 		.addCase(volunteerRegisterOtpSuccess, (state, action) => {
 			state.loading = false;
-			state.message = action.payload;
+			state.message = action.payload.message;
+			state.id = action.payload.id;
 			state.isAuthenticated = true;
 		})
 		.addCase(volunteerRegisterOtpFailure, (state, action) => {

@@ -118,225 +118,290 @@ const Profile = () => {
 
 	return (
 		<Layout>
-			<div className="container mx-auto px-4 py-8 pt-24">
-				<div className="max-w-3xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
-					{/* Profile Header */}
-					<div className="bg-gradient-to-r from-orange-500 to-orange-600 px-6 py-4">
-						<div className="flex items-center justify-between">
-							<h1 className="text-2xl font-bold text-white">My Profile</h1>
-							<button
-								onClick={() => setIsEditing(!isEditing)}
-								className="text-white hover:text-orange-200"
-							>
-								<FontAwesomeIcon
-									icon={isEditing ? faTimes : faEdit}
-									className="mr-2"
-								/>
-								{isEditing ? "Cancel" : "Edit Profile"}
-							</button>
-						</div>
-					</div>
-
-					{/* Profile Content */}
-					<div className="p-6">
-						<form onSubmit={handleSubmit}>
-							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-								{/* Profile Picture */}
-								<div className="md:col-span-2 flex justify-center mb-6">
-									<div className="relative">
-										<div className="w-32 h-32 rounded-full bg-orange-100 flex items-center justify-center text-4xl font-bold text-orange-500">
-											{formData.firstName.charAt(0)}
+			<div className="min-h-screen bg-gray-50">
+				<div className="container mx-auto px-4 py-8 pt-24">
+					<div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+						{/* Left Column - Profile Summary */}
+						<div className="lg:col-span-1">
+							<div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
+								<div className="relative">
+									<div className="h-32 bg-gradient-to-r from-orange-400 to-orange-600"></div>
+									<div className="absolute -bottom-12 inset-x-0 flex justify-center">
+										<div className="w-24 h-24 rounded-full bg-white p-2 shadow-md">
+											<div className="w-full h-full rounded-full bg-orange-100 flex items-center justify-center text-3xl font-bold text-orange-500">
+												{formData.firstName.charAt(0)}
+											</div>
 										</div>
 									</div>
 								</div>
-
-								{/* Form Fields */}
-								<div className="form-group">
-									<label className="block text-gray-700 mb-2">First Name</label>
-									<input
-										type="text"
-										name="firstName"
-										value={formData.firstName}
-										onChange={handleChange}
-										disabled={!isEditing}
-										className={`w-full p-2 border rounded ${
-											isEditing ? "bg-white" : "bg-gray-50"
-										}`}
-									/>
-								</div>
-
-								<div className="form-group">
-									<label className="block text-gray-700 mb-2">
-										Middle Name
-									</label>
-									<input
-										type="text"
-										name="middleName"
-										value={formData.middleName}
-										onChange={handleChange}
-										disabled={!isEditing}
-										className={`w-full p-2 border rounded ${
-											isEditing ? "bg-white" : "bg-gray-50"
-										}`}
-									/>
-								</div>
-
-								<div className="form-group">
-									<label className="block text-gray-700 mb-2">Last Name</label>
-									<input
-										type="text"
-										name="lastName"
-										value={formData.lastName}
-										onChange={handleChange}
-										disabled={!isEditing}
-										className={`w-full p-2 border rounded ${
-											isEditing ? "bg-white" : "bg-gray-50"
-										}`}
-									/>
-								</div>
-
-								<div className="form-group">
-									<label className="block text-gray-700 mb-2">Email</label>
-									<input
-										type="email"
-										name="email"
-										value={formData.email}
-										disabled
-										className="w-full p-2 border rounded bg-gray-50"
-									/>
-								</div>
-
-								<div className="form-group">
-									<label className="block text-gray-700 mb-2">
-										Phone Number
-									</label>
-									<input
-										type="tel"
-										name="phoneNumber"
-										value={formData.phoneNumber}
-										onChange={handleChange}
-										disabled={!isEditing}
-										className={`w-full p-2 border rounded ${
-											isEditing ? "bg-white" : "bg-gray-50"
-										}`}
-									/>
-								</div>
-
-								<div className="form-group">
-									<label className="block text-gray-700 mb-2">
-										Date of Birth
-									</label>
-									<input
-										type="date"
-										name="dateOfBirth"
-										value={formData.dateOfBirth}
-										onChange={handleChange}
-										disabled={!isEditing}
-										className={`w-full p-2 border rounded ${
-											isEditing ? "bg-white" : "bg-gray-50"
-										}`}
-									/>
-								</div>
-
-								<div className="form-group">
-									<label className="block text-gray-700 mb-2">Gender</label>
-									<select
-										name="gender"
-										value={formData.gender}
-										onChange={handleChange}
-										disabled={!isEditing}
-										className={`w-full p-2 border rounded ${
-											isEditing ? "bg-white" : "bg-gray-50"
-										}`}
-									>
-										<option value="">Select Gender</option>
-										<option value="male">Male</option>
-										<option value="female">Female</option>
-										<option value="other">Other</option>
-									</select>
-								</div>
-							</div>
-
-							{/* Submit Button */}
-							{isEditing && (
-								<div className="mt-6 flex justify-end">
-									<button
-										type="submit"
-										disabled={loading}
-										className="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600 transition-colors flex items-center"
-									>
-										<FontAwesomeIcon icon={faCheck} className="mr-2" />
-										{loading ? "Saving..." : "Save Changes"}
-									</button>
-								</div>
-							)}
-						</form>
-
-						{/* Action Buttons */}
-                        {!isEditing && (<div className="mt-8 flex justify-center gap-4">
-                            <Link
-                                to="/connect"
-                                className="bg-sky-500 text-white px-4 py-2 rounded-lg hover:bg-sky-600 transition-colors flex items-center"
-                            >
-                                <FontAwesomeIcon icon={faLink} className="mr-2" />
-                                Connect
-                            </Link>
-                            <Link
-                                to="/survey"
-                                className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors flex items-center"
-                            >
-                                <FontAwesomeIcon icon={faClipboardList} className="mr-2" />
-                                Take Survey
-                            </Link>
-                            <button
-                                onClick={() => setIsModalOpen(true)}
-                                className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors flex items-center"
-                            >
-                                <FontAwesomeIcon icon={faTrash} className="mr-2" />
-                                Delete Account
-                            </button>
-                        </div>)}
-					</div>
-
-					{isModalOpen && (
-						<div className="fixed inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center z-50">
-							<div className="bg-white/90 backdrop-blur-sm rounded-lg p-8 max-w-md w-full">
-								<div className="flex justify-between items-center mb-6">
-									<h2 className="text-2xl font-bold text-gray-800">
-										Confirm Account Deletion
+								<div className="p-6 pt-16 text-center">
+									<h2 className="text-2xl font-bold text-gray-800 mb-1">
+										{formData.firstName} {formData.lastName}
 									</h2>
-									<button
-										onClick={() => setIsModalOpen(false)}
-										className="text-gray-500 hover:text-gray-700"
-									>
-										<FontAwesomeIcon icon={faTimes} />
-									</button>
-								</div>
+									<div className="space-y-4">
+										<div className="p-4 bg-orange-50 rounded-xl">
+											<h3 className="text-sm font-semibold text-gray-700 mb-3">
+												Contact Information
+											</h3>
+											<div className="space-y-2">
+												<p className="text-gray-600 text-sm flex items-center justify-center">
+													<span className="material-icons-outlined text-orange-400 mr-2">
+														email
+													</span>
+													{formData.email}
+												</p>
+												<p className="text-gray-600 text-sm flex items-center justify-center">
+													<span className="material-icons-outlined text-orange-400 mr-2">
+														phone
+													</span>
+													{formData.phoneNumber}
+												</p>
+											</div>
+										</div>
 
-								<p className="text-gray-700 mb-6">
-									Are you sure you want to delete your account? This action
-									cannot be undone.
-								</p>
-
-								<div className="flex justify-end gap-4">
-									<button
-										onClick={handleDeleteAccount}
-										className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition-colors"
-									>
-										Confirm
-									</button>
-									<button
-										onClick={() => setIsModalOpen(false)}
-										className="bg-gray-300 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-400 transition-colors"
-									>
-										Cancel
-									</button>
+										{/* Profile Actions */}
+										<div className="space-y-3">
+											{!isEditing && (
+												<>
+													<Link
+														to="/connect"
+														className="w-full bg-gradient-to-r from-sky-500 to-sky-600 text-white px-6 py-3 rounded-xl hover:from-sky-600 hover:to-sky-700 transition-all duration-300 flex items-center justify-center shadow-md hover:shadow-lg"
+													>
+														<FontAwesomeIcon icon={faLink} className="mr-2" />
+														Connect
+													</Link>
+													<Link
+														to="/survey"
+														className="w-full bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-300 flex items-center justify-center shadow-md hover:shadow-lg"
+													>
+														<FontAwesomeIcon
+															icon={faClipboardList}
+															className="mr-2"
+														/>
+														Take Survey
+													</Link>
+													<button
+														onClick={() => setIsModalOpen(true)}
+														className="w-full bg-gradient-to-r from-red-500 to-red-600 text-white px-6 py-3 rounded-xl hover:from-red-600 hover:to-red-700 transition-all duration-300 flex items-center justify-center shadow-md hover:shadow-lg"
+													>
+														<FontAwesomeIcon icon={faTrash} className="mr-2" />
+														Delete Account
+													</button>
+												</>
+											)}
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
-					)}
+
+						{/* Right Column */}
+						<div className="lg:col-span-2">
+							{/* Profile Form */}
+							<div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
+								<div className="bg-gradient-to-r from-orange-400 to-orange-600 px-6 py-4">
+									<div className="flex items-center justify-between">
+										<h2 className="text-xl font-bold text-white flex items-center">
+											<FontAwesomeIcon icon={faEdit} className="mr-3" />
+											Profile Details
+										</h2>
+										<button
+											onClick={() => setIsEditing(!isEditing)}
+											className={`flex items-center px-4 py-2 rounded-lg transition-all duration-300 ${
+												isEditing
+													? "bg-white/20 text-white hover:bg-white/30"
+													: "bg-white text-orange-600 hover:bg-orange-50"
+											}`}
+										>
+											<FontAwesomeIcon
+												icon={isEditing ? faTimes : faEdit}
+												className="mr-2"
+											/>
+											{isEditing ? "Cancel" : "Edit"}
+										</button>
+									</div>
+								</div>
+								<div className="p-6">
+									<form onSubmit={handleSubmit}>
+										<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+											<div className="form-group">
+												<label className="block text-gray-700 text-sm font-medium mb-2">
+													First Name
+												</label>
+												<input
+													type="text"
+													name="firstName"
+													value={formData.firstName}
+													onChange={handleChange}
+													disabled={!isEditing}
+													className={`w-full p-3 border rounded-xl transition-colors duration-200 ${
+														isEditing
+															? "bg-white border-orange-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200"
+															: "bg-gray-50 border-gray-200"
+													}`}
+												/>
+											</div>
+											<div className="form-group">
+												<label className="block text-gray-700 text-sm font-medium mb-2">
+													Middle Name
+												</label>
+												<input
+													type="text"
+													name="middleName"
+													value={formData.middleName}
+													onChange={handleChange}
+													disabled={!isEditing}
+													className={`w-full p-3 border rounded-xl transition-colors duration-200 ${
+														isEditing
+															? "bg-white border-orange-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200"
+															: "bg-gray-50 border-gray-200"
+													}`}
+												/>
+											</div>
+											<div className="form-group">
+												<label className="block text-gray-700 text-sm font-medium mb-2">
+													Last Name
+												</label>
+												<input
+													type="text"
+													name="lastName"
+													value={formData.lastName}
+													onChange={handleChange}
+													disabled={!isEditing}
+													className={`w-full p-3 border rounded-xl transition-colors duration-200 ${
+														isEditing
+															? "bg-white border-orange-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200"
+															: "bg-gray-50 border-gray-200"
+													}`}
+												/>
+											</div>
+											<div className="form-group">
+												<label className="block text-gray-700 text-sm font-medium mb-2">
+													Email
+												</label>
+												<input
+													type="email"
+													name="email"
+													value={formData.email}
+													disabled
+													className="w-full p-3 border rounded-xl bg-gray-50"
+												/>
+											</div>
+											<div className="form-group">
+												<label className="block text-gray-700 text-sm font-medium mb-2">
+													Phone Number
+												</label>
+												<input
+													type="tel"
+													name="phoneNumber"
+													value={formData.phoneNumber}
+													onChange={handleChange}
+													disabled={!isEditing}
+													className={`w-full p-3 border rounded-xl transition-colors duration-200 ${
+														isEditing
+															? "bg-white border-orange-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200"
+															: "bg-gray-50 border-gray-200"
+													}`}
+												/>
+											</div>
+											<div className="form-group">
+												<label className="block text-gray-700 text-sm font-medium mb-2">
+													Date of Birth
+												</label>
+												<input
+													type="date"
+													name="dateOfBirth"
+													value={formData.dateOfBirth}
+													onChange={handleChange}
+													disabled={!isEditing}
+													className={`w-full p-3 border rounded-xl transition-colors duration-200 ${
+														isEditing
+															? "bg-white border-orange-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200"
+															: "bg-gray-50 border-gray-200"
+													}`}
+												/>
+											</div>
+											<div className="form-group">
+												<label className="block text-gray-700 text-sm font-medium mb-2">
+													Gender
+												</label>
+												<select
+													name="gender"
+													value={formData.gender}
+													onChange={handleChange}
+													disabled={!isEditing}
+													className={`w-full p-3 border rounded-xl transition-colors duration-200 ${
+														isEditing
+															? "bg-white border-orange-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200"
+															: "bg-gray-50 border-gray-200"
+													}`}
+												>
+													<option value="">Select Gender</option>
+													<option value="male">Male</option>
+													<option value="female">Female</option>
+													<option value="other">Other</option>
+												</select>
+											</div>
+										</div>
+
+										{isEditing && (
+											<div className="mt-6 flex justify-end">
+												<button
+													type="submit"
+													disabled={loading}
+													className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-8 py-3 rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center shadow-md hover:shadow-lg"
+												>
+													<FontAwesomeIcon icon={faCheck} className="mr-2" />
+													{loading ? "Saving..." : "Save Changes"}
+												</button>
+											</div>
+										)}
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
+
+			{/* Delete Account Modal */}
+			{isModalOpen && (
+				<div className="fixed inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center z-50">
+					<div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full mx-4">
+						<div className="flex justify-between items-center mb-6">
+							<h2 className="text-2xl font-bold text-gray-800">
+								Confirm Account Deletion
+							</h2>
+							<button
+								onClick={() => setIsModalOpen(false)}
+								className="text-gray-500 hover:text-gray-700"
+							>
+								<FontAwesomeIcon icon={faTimes} />
+							</button>
+						</div>
+
+						<p className="text-gray-700 mb-6">
+							Are you sure you want to delete your account? This action cannot
+							be undone.
+						</p>
+
+						<div className="flex justify-end gap-4">
+							<button
+								onClick={handleDeleteAccount}
+								className="bg-gradient-to-r from-red-500 to-red-600 text-white px-6 py-2 rounded-xl hover:from-red-600 hover:to-red-700 transition-all duration-300"
+							>
+								Confirm
+							</button>
+							<button
+								onClick={() => setIsModalOpen(false)}
+								className="bg-gray-100 text-gray-800 px-6 py-2 rounded-xl hover:bg-gray-200 transition-all duration-300"
+							>
+								Cancel
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
 		</Layout>
 	);
 };

@@ -50,7 +50,10 @@ export const verifyVolunteerRegister = (id, otp) => async (dispatch) => {
 		);
 		dispatch({
 			type: "VOLUNTEER_REGISTER_OTP_SUCCESS",
-			payload: data.message,
+			payload: {
+				message: data.message,
+				id: data.data,
+			},
 		});
 	} catch (error) {
 		dispatch({
@@ -327,4 +330,4 @@ export const getAllVolunteers = () => async (dispatch) => {
 			payload: error.response?.data?.message || "Something went wrong",
 		});
 	}
-}
+};
