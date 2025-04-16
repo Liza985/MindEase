@@ -133,7 +133,8 @@ export const volunteerReducer = createReducer(initialState, (builder) => {
 		})
 		.addCase(volunteerRegisterOtpSuccess, (state, action) => {
 			state.loading = false;
-			state.message = action.payload;
+			state.message = action.payload.message;
+			state.id = action.payload.id;
 			state.isAuthenticated = true;
 		})
 		.addCase(volunteerRegisterOtpFailure, (state, action) => {
