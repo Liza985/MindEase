@@ -331,7 +331,6 @@ export const getAllVolunteers = () => async (dispatch) => {
 		});
 	}
 };
-}
 
 export const deleteVolunteer = (id) => async (dispatch) => {
 	try {
@@ -352,4 +351,4 @@ export const deleteVolunteer = (id) => async (dispatch) => {
 			payload: error.response?.data?.message || "Something went wrong",
 		});
 	}
-}
+};

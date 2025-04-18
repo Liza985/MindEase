@@ -1,5 +1,5 @@
 import { ChevronDown, Upload } from "lucide-react";
-import React, { useState } from "react";
+import { useState } from "react";
 
 const UploadModal = ({ onClose, setUploadType, uploadType }) => {
 	const [title, setTitle] = useState("");
