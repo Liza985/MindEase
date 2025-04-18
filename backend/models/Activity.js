@@ -15,7 +15,8 @@ const contentSchema = new mongoose.Schema({
         required: true,
     },
     author: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
         required: true,
     },
     link: {
@@ -33,7 +34,7 @@ const contentSchema = new mongoose.Schema({
     },
     contentType: {
         type: String,
-        enum: ['Guide', 'FAQ', 'Testimonials', 'Form', 'Calendar', 'Directory', 'Document'], 
+        enum: ['Video', 'PDF Document', 'Image', 'Article'], 
         required: true,
     },
     media: {

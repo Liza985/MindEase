@@ -32,14 +32,17 @@ export const createBlog = async (req, res) => {
 		}).exec();
 		Response(res, 201, true, message.createBlogMessage, newBlog);
 	} catch (error) {
-		console.log(error)
+		console.log(error);
 		Response(res, 500, false, error.message);
 	}
 };
 
 export const getAllBlogs = async (req, res) => {
 	try {
-		const blogs = await Blog.find().populate("volunteerId", "firstName lastName");
+		const blogs = await Blog.find().populate(
+			"volunteerId",
+			"firstName lastName"
+		);
 
 		Response(res, 200, true, message.blogsFetchSuccessfulMessage, blogs);
 	} catch (error) {
@@ -53,7 +56,10 @@ export const getBlogsById = async (req, res) => {
 		if (!id) {
 			return Response(res, 400, false, message.idNotFound);
 		}
-		const blog = await Blog.findById(id).populate("volunteerId", "firstName lastName")
+		const blog = await Blog.findById(id).populate(
+			"volunteerId",
+			"firstName lastName"
+		);
 		if (!blog) {
 			return Response(res, 404, false, message.blogNotFoundMessage);
 		}
@@ -65,19 +71,19 @@ export const getBlogsById = async (req, res) => {
 
 export const getBlogsByVolunteer = async (req, res) => {
 	try {
-		
-		const blogs = await Blog.find({ volunteerId: req.volunteer._id }).populate("volunteerId", "firstName lastName")
+		const blogs = await Blog.find({ volunteerId: req.volunteer._id }).populate(
+			"volunteerId",
+			"firstName lastName"
+		);
 		if (!blogs) {
 			return Response(res, 404, false, message.blogNotFoundMessage);
 		}
 		Response(res, 200, true, message.blogsFetchSuccessfulMessage, blogs);
 	} catch (error) {
-		console.log(error.message)
+		console.log(error.message);
 		Response(res, 500, false, error.message);
 	}
 };
-
-
 
 export const deleteBlog = async (req, res) => {
 	try {
@@ -85,14 +91,14 @@ export const deleteBlog = async (req, res) => {
 		if (!id) {
 			return Response(res, 400, false, message.idNotFound);
 		}
-		
+
 		const volId = req.volunteer._id;
 
 		const blog = await Blog.findById(id);
 		if (!blog) {
 			return Response(res, 404, false, message.blogNotFoundMessage);
 		}
-		
+
 		if (blog.volunteerId.toString() !== volId.toString()) {
 			return Response(res, 401, false, message.unAuthorized);
 		}
@@ -100,7 +106,7 @@ export const deleteBlog = async (req, res) => {
 		// Extract image public ID from Cloudinary URL
 		const imageUrl = blog.image; // Assuming blog.image stores the Cloudinary image URL
 		if (imageUrl) {
-			const publicId = imageUrl.public_id
+			const publicId = imageUrl.public_id;
 			await cloudinary.v2.uploader.destroy(publicId);
 		}
 
@@ -111,14 +117,16 @@ export const deleteBlog = async (req, res) => {
 	}
 };
 
-
 export const getBlogByTopic = async (req, res) => {
 	try {
 		const { topic } = req.params;
 		if (!topic) {
 			return Response(res, 400, false, message.missingFieldMessage);
 		}
-		const blogs = await Blog.find({ topic: topic }).populate("volunteerId", "firstName lastName");
+		const blogs = await Blog.find({ topic: topic }).populate(
+			"volunteerId",
+			"firstName lastName"
+		);
 		if (!blogs) {
 			return Response(res, 404, false, message.blogNotFoundMessage);
 		}
