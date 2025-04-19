@@ -1,61 +1,28 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import VolHeader from "../../components/VolHeader";
+import { useDispatch, useSelector } from "react-redux";
+
+import { getRequestsByVolunteerCategory, updateRequestStatus } from "../../redux/Actions/chatRequestAction";
 
 export const Request = () => {
 	const navigate = useNavigate();
-	const [requests, setRequests] = useState([
-		{
-			id: 1,
-			name: "Sarah Johnson",
-			topic: "Career guidance",
-			status: "pending",
-			time: "10 minutes ago",
-		},
-		{
-			id: 2,
-			name: "David Lee",
-			topic: "Financial advice",
-			status: "pending",
-			time: "30 minutes ago",
-		},
-		{
-			id: 3,
-			name: "Maria Garcia",
-			topic: "Educational resources",
-			status: "pending",
-			time: "1 hour ago",
-		},
-		{
-			id: 4,
-			name: "James Wilson",
-			topic: "Mental health support",
-			status: "pending",
-			time: "2 hours ago",
-		},
-		{
-			id: 5,
-			name: "Emily Chen",
-			topic: "Community involvement",
-			status: "pending",
-			time: "3 hours ago",
-		},
-	]);
+	const dispatch = useDispatch();
+
+	const { requests, loading, error } = useSelector((state) => state.chatRequest);
+
+	useEffect(() => {
+		dispatch(getRequestsByVolunteerCategory());
+	}, [dispatch]);
 
 	const handleAccept = (id) => {
-		setRequests(
-			requests.map((req) =>
-				req.id === id ? { ...req, status: "accepted" } : req,
-			),
-		);
+		console.log(id);
+		dispatch(updateRequestStatus(id, "accepted"));
 	};
 
 	const handleReject = (id) => {
-		setRequests(
-			requests.map((req) =>
-				req.id === id ? { ...req, status: "rejected" } : req,
-			),
-		);
+		console.log(id);
+		dispatch(updateRequestStatus(id, "rejected"));
 	};
 
 	return (
@@ -76,56 +43,67 @@ export const Request = () => {
 							</div>
 
 							<div className="divide-y divide-orange-100">
-								{requests.map((request) => (
-									<div
-										key={request.id}
-										className={`p-4 ${
-											request.status === "accepted"
-												? "bg-green-50"
-												: request.status === "rejected"
-												? "bg-red-50"
-												: ""
-										}`}
-									>
-										<div className="flex items-center justify-between">
-											<div>
-												<h3 className="font-medium text-lg">{request.name}</h3>
-												<p className="text-gray-600">{request.topic}</p>
-												<p className="text-sm text-gray-500">{request.time}</p>
-											</div>
-											<div className="space-x-2">
-												{request.status === "pending" ? (
-													<>
-														<button
-															onClick={() => handleAccept(request.id)}
-															className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition"
+								{loading ? (
+									<p className="p-4">Loading requests...</p>
+								) : error ? (
+									<p className="p-4 text-red-500">{error}</p>
+								) : requests?.length === 0 ? (
+									<p className="p-4">No pending requests found.</p>
+								) : (
+									requests?.map((request) => (
+										<div
+											key={request?._id}
+											className={`p-4 ${
+												request.status === "accepted"
+													? "bg-green-50"
+													: request.status === "rejected"
+													? "bg-red-50"
+													: ""
+											}`}
+										>
+											<div className="flex items-center justify-between">
+												<div>
+													<h3 className="font-medium text-lg">
+														{request.userId?.firstName} {request.userId?.lastName}
+													</h3>
+													<p className="text-gray-600">{request.Topic}</p>
+													<p className="text-sm text-gray-500">
+														{new Date(request.createdAt).toLocaleString()}
+													</p>
+												</div>
+												<div className="space-x-2">
+													{request.status === "pending" ? (
+														<>
+															<button
+																onClick={() => handleAccept(request._id)}
+																className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition"
+															>
+																Accept
+															</button>
+															<button
+																onClick={() => handleReject(request._id)}
+																className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
+															>
+																Reject
+															</button>
+														</>
+													) : (
+														<span
+															className={`px-3 py-1 rounded text-white ${
+																request.status === "accepted"
+																	? "bg-green-500"
+																	: "bg-red-500"
+															}`}
 														>
-															Accept
-														</button>
-														<button
-															onClick={() => handleReject(request.id)}
-															className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
-														>
-															Reject
-														</button>
-													</>
-												) : (
-													<span
-														className={`px-3 py-1 rounded text-white ${
-															request.status === "accepted"
-																? "bg-green-500"
-																: "bg-red-500"
-														}`}
-													>
-														{request.status === "accepted"
-															? "Accepted"
-															: "Rejected"}
-													</span>
-												)}
+															{request.status.charAt(0).toUpperCase() +
+																request.status.slice(1)}
+														</span>
+													)}
+												</div>
 											</div>
 										</div>
-									</div>
-								))}
+									))
+								)}
 							</div>
 						</div>
 					</main>

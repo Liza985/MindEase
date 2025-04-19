@@ -1,6 +1,12 @@
 import { createAction, createReducer } from "@reduxjs/toolkit";
 
-const initialState = {};
+const initialState = {
+	loading: false,
+	error: null,
+	message: null,
+	requests: [],
+	request: null,
+};
 
 const createChatRequest = createAction("CREATE_CHAT_REQUEST");
 const createChatSuccess = createAction("CREATE_CHAT_SUCCESS");
@@ -45,6 +51,16 @@ const deleteRequestFailure = createAction("DELETE_REQUEST_FAILURE");
 const acceptRequestRequest = createAction("ACCEPT_REQUEST_REQUEST");
 const acceptRequestSuccess = createAction("ACCEPT_REQUEST_SUCCESS");
 const acceptRequestFailure = createAction("ACCEPT_REQUEST_FAILURE");
+
+const getRequestsByVolunteerCategoryRequest = createAction(
+	"GET_REQUESTS_BY_VOLUNTEER_CATEGORY_REQUEST",
+);
+const getRequestsByVolunteerCategorySuccess = createAction(
+	"GET_REQUESTS_BY_VOLUNTEER_CATEGORY_SUCCESS",
+);
+const getRequestsByVolunteerCategoryFailure = createAction(
+	"GET_REQUESTS_BY_VOLUNTEER_CATEGORY_FAILURE",
+);
 
 const clearError = createAction("CLEAR_ERROR");
 const clearMessage = createAction("CLEAR_MESSAGE");
@@ -150,6 +166,19 @@ export const chatRequestReducer = createReducer(initialState, (builder) => {
 			state.message = action.payload;
 		})
 		.addCase(acceptRequestFailure, (state) => {
+			state.loading = false;
+			state.error = action.payload;
+		})
+
+		.addCase(getRequestsByVolunteerCategoryRequest, (state) => {
+			state.loading = true;
+		})
+		.addCase(getRequestsByVolunteerCategorySuccess, (state, action) => {
+			state.loading = false;
+			state.message = action.payload.message;
+			state.requests = action.payload.data;
+		})
+		.addCase(getRequestsByVolunteerCategoryFailure, (state, action) => {
 			state.loading = false;
 			state.error = action.payload;
 		})
