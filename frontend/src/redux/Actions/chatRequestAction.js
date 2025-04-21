@@ -254,8 +254,7 @@ export const updateRequestStatus = (id, status) => async (dispatch) => {
 			},
 		});
 
-		// Refresh the list after update
-		dispatch(getRequestsByVolunteerCategory());
+		
 	} catch (error) {
 		dispatch({
 			type: "UPDATE_REQUEST_FAILURE",

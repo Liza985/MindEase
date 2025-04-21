@@ -148,6 +148,7 @@ export const deleteRequest = async (req, res) => {
 
 export const getRequestByVolunteerCategory = async (req, res) => {
 	try {
+		console.log("first")
 		const volunteer = req.volunteer;
 		if (!volunteer || !volunteer.expertiseArea) {
 			return Response(res, 400, false, "Volunteer expertise areas not found");

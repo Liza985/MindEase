@@ -7,7 +7,7 @@ export const isVolAuthenticated = async (req, res, next) => {
 	try {
 		//parsing cookies
 		const { token } = req.cookies;
-
+		
 		if (!token) {
 			return Response(res, 401, false, message.unAuthorized);
 		}
