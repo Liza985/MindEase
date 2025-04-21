@@ -287,3 +287,26 @@ export const getAllUsers = () => async (dispatch) => {
 		});
 	}
 }
+
+export const getUserProfile = () => async (dispatch) => {
+	try {
+		dispatch({ type: "GET_USER_PROFILE_REQUEST" });
+
+		const { data } = await axios.get(`${URL}/profile`, {
+			withCredentials: true,
+		});
+
+		dispatch({
+			type: "GET_USER_PROFILE_SUCCESS",
+			payload: {
+				message: data.message,
+				data: data.data,
+			},
+		});
+	} catch (error) {
+		dispatch({
+			type: "GET_USER_PROFILE_FAILURE",
+			payload: error.response?.data?.message || "Something went wrong",
+		});
+	}
+}

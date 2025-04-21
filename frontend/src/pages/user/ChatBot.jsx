@@ -1,6 +1,6 @@
 import React from "react";
 import Header from "../../components/Header";
-import { Webchat, WebchatProvider, getClient } from "@botpress/webchat";
+import { Webchat, getClient } from "@botpress/webchat";
 import { buildTheme } from "@botpress/webchat-generator";
 
 // Customize your chatbot theme
@@ -9,7 +9,7 @@ const { theme, style } = buildTheme({
   themeColor: "#634433",
 });
 
-// Add your Client ID here ⬇️
+// Add your Client ID here ⬇
 const clientId = import.meta.env.VITE_USER_CLIENT_ID
 const client = getClient({ clientId });
 
@@ -28,9 +28,8 @@ const ChatbotPage = () => {
       <main className="flex-grow flex justify-center items-center p-6 md:p-10">
         <div className="w-full max-w-4xl h-96 md:h-[600px] bg-white rounded-lg shadow-md relative overflow-hidden">
           <style>{style}</style>
-          <WebchatProvider theme={theme} client={client}>
-            <Webchat />
-          </WebchatProvider>
+          <Webchat theme={theme} client={client}/>
+        
         </div>
       </main>
 

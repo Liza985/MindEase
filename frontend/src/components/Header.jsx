@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { LogOut, User, MessageCircle } from "lucide-react";
-import { logoutUser } from "../redux/Actions/userAction";
+import { getUserProfile, logoutUser } from "../redux/Actions/userAction";
 
 const Header = () => {
 	const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -10,7 +10,7 @@ const Header = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 
-	const { isAuthenticated, id } = useSelector((state) => state.user);
+	const { isAuthenticated, id,user } = useSelector((state) => state.user);
 
 	useEffect(() => {
 		const handleClickOutside = (event) => {
@@ -25,12 +25,15 @@ const Header = () => {
 		};
 	}, []);
 
+	useEffect(()=>{
+		dispatch(getUserProfile());
+	},[])
 	const handleLogout = async () => {
 		await dispatch(logoutUser());
 		navigate("/");
 	};
-
-	console.log(id);
+console.log(user); 
+console.log(isAuthenticated)
 	return (
 		<>
 			<nav className="bg-white shadow-md fixed top-0 left-0 right-0 z-50">
@@ -127,12 +130,12 @@ const Header = () => {
 											className="flex items-center space-x-2 hover:text-orange-500 transition"
 										>
 											<div className="bg-orange-300 w-8 h-8 rounded-full flex items-center justify-center text-orange-800 font-bold text-sm">
-												{id?.firstName?.charAt(0) && id?.lastName?.charAt(0)
-													? `${id.firstName.charAt(0)}${id.lastName.charAt(0)}`
+												{user?.firstName?.charAt(0) && user?.lastName?.charAt(0)
+													? `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`
 													: "U"}
 											</div>
 											<div className="hidden md:block">
-												<h3 className="text-sm font-medium">{id?.firstName}</h3>
+												<h3 className="text-sm font-medium">{user?.firstName}</h3>
 												<p className="text-xs text-gray-500">User</p>
 											</div>
 										</button>
@@ -145,7 +148,7 @@ const Header = () => {
 													className="block px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-500 flex items-center"
 												>
 													<MessageCircle className="h-4 w-4 mr-2" />
-													My Counsellings
+													My Counselings
 												</Link>
 												<Link
 													to="/profile"
@@ -282,12 +285,12 @@ const Header = () => {
 							<div className="pt-6 space-y-3">
 								<div className="flex items-center space-x-2 py-2">
 									<div className="bg-orange-300 w-8 h-8 rounded-full flex items-center justify-center">
-										{id?.firstName?.charAt(0) && id?.lastName?.charAt(0)
-											? `${id.firstName.charAt(0)}${id.lastName.charAt(0)}`
+										{user?.firstName?.charAt(0) && user?.lastName?.charAt(0)
+											? `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`
 											: "U"}
 									</div>
 									<div className="hidden md:block">
-										<h3 className="text-sm font-medium">{id?.firstName}</h3>
+										<h3 className="text-sm font-medium">{user?.firstName}</h3>
 										<p className="text-xs text-gray-500">User</p>
 									</div>
 								</div>
@@ -297,7 +300,7 @@ const Header = () => {
 									onClick={() => setIsSidebarOpen(!isSidebarOpen)}
 								>
 									<MessageCircle className="h-5 w-5 mr-2" />
-									My Counsellings
+									My Counselings
 								</NavLink>
 								<NavLink
 									to="/profile"

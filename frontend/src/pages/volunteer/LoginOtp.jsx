@@ -14,7 +14,7 @@ const LoginOtp = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
-	const { vLoading, message, error, isAuthenticated } = useSelector(
+	const { vLoading, message, error, isVolAuthenticated } = useSelector(
 		(state) => state.volunteer,
 	);
 
@@ -25,10 +25,10 @@ const LoginOtp = () => {
 	}, [id, navigate]);
 
 	useEffect(() => {
-		if (isAuthenticated) {
+		if (isVolAuthenticated) {
 			navigate(`/volunteer/Dashboard`);
 		}
-	}, [isAuthenticated, navigate]);
+	}, [isVolAuthenticated, navigate]);
 
 	useEffect(() => {
 		if (message) {

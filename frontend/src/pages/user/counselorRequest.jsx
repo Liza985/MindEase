@@ -26,10 +26,10 @@ const CounselorRequests = () => {
 
 	useEffect(() => {
 		
-		// if (user && user._id) {
-			dispatch(getRequestByUserId("67c603de1566adfc72b958c5"));
+		if (user && user._id) {
+			dispatch(getRequestByUserId(user._id));
 			
-		// }
+		}
 	}, [dispatch]);
 
 	useEffect(() => {

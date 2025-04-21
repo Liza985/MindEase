@@ -93,6 +93,8 @@ const getAllVolunteersRequest = createAction("GET_ALL_VOLUNTEERS_REQUEST");
 const getAllVolunteersSuccess = createAction("GET_ALL_VOLUNTEERS_SUCCESS");
 const getAllVolunteersFailure = createAction("GET_ALL_VOLUNTEERS_FAILURE");
 
+
+
 const deleteVolunteerRequest = createAction("DELETE_VOLUNTEER_REQUEST");
 const deleteVolunteerSuccess = createAction("DELETE_VOLUNTEER_SUCCESS");
 const deleteVolunteerFailure = createAction("DELETE_VOLUNTEER_FAILURE");
@@ -135,7 +137,7 @@ export const volunteerReducer = createReducer(initialState, (builder) => {
 			state.loading = false;
 			state.message = action.payload.message;
 			state.id = action.payload.id;
-			state.isAuthenticated = true;
+			state.isVolAuthenticated = true;
 		})
 		.addCase(volunteerRegisterOtpFailure, (state, action) => {
 			state.loading = false;
@@ -159,7 +161,7 @@ export const volunteerReducer = createReducer(initialState, (builder) => {
 		})
 		.addCase(loadVolunteerSuccess, (state, action) => {
 			state.loading = false;
-			state.isAuthenticated = true;
+			
 			state.volunteer = action.payload;
 		})
 		.addCase(loadVolunteerFailure, (state, action) => {
@@ -173,7 +175,7 @@ export const volunteerReducer = createReducer(initialState, (builder) => {
 		.addCase(volunteerLoginOtpSuccess, (state, action) => {
 			state.loading = false;
 			state.message = action.payload;
-			state.isAuthenticated = true;
+			state.isVolAuthenticated = true;
 		})
 		.addCase(volunteerLoginOtpFailure, (state, action) => {
 			state.loading = false;
@@ -234,7 +236,7 @@ export const volunteerReducer = createReducer(initialState, (builder) => {
 		})
 		.addCase(logoutVolunteerSuccess, (state) => {
 			state.loading = false;
-			state.isAuthenticated = false;
+			state.isVolAuthenticated = false;
 			state.volunteer = null;
 		})
 		.addCase(logoutVolunteerFailure, (state, action) => {
@@ -260,6 +262,7 @@ export const volunteerReducer = createReducer(initialState, (builder) => {
 		.addCase(getVolunteerProfileSuccess, (state, action) => {
 			state.loading = false;
 			state.message = action.payload.message;
+			state.isVolAuthenticated = true;
 			state.volunteer = action.payload.data;
 		})
 		.addCase(getVolunteerProfileFailure, (state, action) => {
