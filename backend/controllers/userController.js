@@ -1,10 +1,10 @@
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 import { sendEMail } from "../middlewares/sendMail.js";
 import User from "../models/user.js";
 import { message } from "../utils/message.js";
 import { Response } from "../utils/response.js";
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -59,7 +59,7 @@ export const registerUser = async (req, res) => {
 		//verification email
 		let emailTemplate = fs.readFileSync(
 			path.join(__dirname, "../templates/mail.html"),
-			"utf-8"
+			"utf-8",
 		);
 		const subject = "Verify your account";
 		emailTemplate = emailTemplate.replace("{{OTP_CODE}}", otp);
@@ -110,10 +110,10 @@ export const verifyUser = async (req, res) => {
 				400,
 				false,
 				`Try again after ${Math.floor(
-					(user.registerOtpLockUntil - Date.now()) % (60 * 1000)
+					(user.registerOtpLockUntil - Date.now()) % (60 * 1000),
 				)} minutes and ${Math.floor(
-					(user.registerOtpLockUntil - DESTRUCTION.now()) % 1000
-				)} seconds`
+					(user.registerOtpLockUntil - DESTRUCTION.now()) % 1000,
+				)} seconds`,
 			);
 		}
 		console.log("first1");
@@ -156,7 +156,7 @@ export const verifyUser = async (req, res) => {
 		const token = await user.generateToken();
 		const options = {
 			expires: new Date(
-				Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000
+				Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000,
 			),
 			httpOnly: true,
 			sameSite: "none",
@@ -198,7 +198,7 @@ export const resendOtp = async (req, res) => {
 		//generate new otp
 		const otp = Math.floor(100000 + Math.random() * 900000);
 		const otpExpire = new Date(
-			Date.now() + process.env.REGISTER_OTP_EXPIRE * 15 * 60 * 1000
+			Date.now() + process.env.REGISTER_OTP_EXPIRE * 15 * 60 * 1000,
 		);
 		//save otp
 		user.registerOtp = otp;
@@ -209,7 +209,7 @@ export const resendOtp = async (req, res) => {
 		console.log("first");
 		let emailTemplate = fs.readFileSync(
 			path.join(__dirname, "../templates/mail.html"),
-			"utf-8"
+			"utf-8",
 		);
 		const subject = "Verify your account";
 
@@ -256,7 +256,7 @@ export const loginUser = async (req, res) => {
 		if (user.loginAttempts >= process.env.MAX_LOGIN_ATTEMPTS) {
 			user.loginAttempts = 0;
 			user.lockUntil = new Date(
-				Date.now() + process.env.MAX_LOGIN_ATTEMPTS_EXPIRE * 60 * 1000
+				Date.now() + process.env.MAX_LOGIN_ATTEMPTS_EXPIRE * 60 * 1000,
 			);
 			await user.save();
 			return Response(res, 400, false, message.loginLockedMessage);
@@ -276,7 +276,7 @@ export const loginUser = async (req, res) => {
 		const token = await user.generateToken();
 		const options = {
 			expires: new Date(
-				Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000
+				Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000,
 			),
 			httpOnly: true,
 			sameSite: "none",
@@ -313,12 +313,12 @@ export const forgetPassword = async (req, res) => {
 		//generate otp for reset
 		const otp = Math.floor(100000 + Math.random() * 900000);
 		const otpExpire = new Date(
-			Date.now() + process.env.OTP_EXPIRE * 15 * 60 * 1000
+			Date.now() + process.env.OTP_EXPIRE * 15 * 60 * 1000,
 		);
 
 		let emailTemplate = fs.readFileSync(
 			path.join(__dirname, "../templates/mail.html"),
-			"utf-8"
+			"utf-8",
 		);
 		const subject = "Reset your password";
 		//const body = `Your OTP is ${otp}`;
@@ -380,7 +380,7 @@ export const resetPassword = async (req, res) => {
 			user.resetPasswordExpire = undefined;
 			user.resetPasswordAttempts = 0;
 			user.resetPasswordLock = new Date(
-				Date.now() + process.env.MAX_RESET_LOCK * 60 * 1000
+				Date.now() + process.env.MAX_RESET_LOCK * 60 * 1000,
 			);
 			await user.save();
 			return Response(res, 400, false, message.otpAttemptsExceed);
@@ -499,27 +499,68 @@ export const getUserActivityLog = async (req, res) => {
 
 export const deleteUser = async (req, res) => {
 	try {
+		const { id } = req.params;
+		if (!id) {
+			return Response(res, 400, false, message.idNotFound);
+		}
+
+		if (id.toString() !== req.user._id.toString()) {
+			return Response(res, 403, false, message.unauthorizedUser);
+		}
+
 		const user = await User.findById(req.user._id);
 
 		if (!user) {
-			return Response(res, 404, false, message.userNotFound);
+			return Response(res, 404, false, "User not found");
 		}
 
-		// Delete user's data from other collections if needed
-		// await Feedback.deleteMany({ userId: user._id });
-		// await Review.deleteMany({ userId: user._id });
-		// etc...
+		// Delete associated feedbacks
+		if (user.feedback && user.feedback.length > 0) {
+			await Feedback.deleteMany({ _id: { $in: user.feedback } });
+		}
+
+		// Delete associated surveys
+		if (user.surveyResponses && user.surveyResponses.length > 0) {
+			await Survey.deleteMany({ _id: { $in: user.surveyResponses } });
+		}
+
+		// Delete associated reviews
+		if (user.review && user.review.length > 0) {
+			await Review.deleteMany({ _id: { $in: user.review } });
+		}
+
+		// Delete associated volunteer chats
+		if (user.volunteerChats && user.volunteerChats.length > 0) {
+			await VolunteerChat.deleteMany({ _id: { $in: user.volunteerChats } });
+		}
 
 		// Delete the user
 		await user.deleteOne();
 
-		// Clear the cookie
+		// Clear auth cookie
 		res.cookie("token", null, {
 			expires: new Date(Date.now()),
 			httpOnly: true,
 		});
 
-		Response(res, 200, true, "User account deleted successfully");
+		return Response(res, 200, true, "User deleted successfully");
+	} catch (error) {
+		console.error("Delete User Error:", error);
+		return Response(res, 500, false, error.message);
+	}
+};
+
+export const getAllUsers = async (req, res) => {
+	try {
+		const users = await User.find({})
+			.select("-password -__v")
+			.sort("-createdAt");
+
+		if (!users) {
+			return Response(res, 404, false, message.userNotFound);
+		}
+
+		Response(res, 200, true, message.userFoundMessage, users);
 	} catch (error) {
 		Response(res, 500, false, error.message);
 	}

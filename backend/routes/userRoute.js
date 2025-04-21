@@ -1,7 +1,9 @@
 import express from "express";
 import {
 	changePassword,
+	deleteUser,
 	forgetPassword,
+	getAllUsers,
 	loginUser,
 	logoutUser,
 	registerUser,
@@ -9,7 +11,6 @@ import {
 	resetPassword,
 	updateUserProfile,
 	verifyUser,
-	deleteUser,
 } from "../controllers/userController.js";
 import { isAuthenticated } from "./../middlewares/auth.js";
 
@@ -25,6 +26,7 @@ userRouter.post("/forgetPassword", forgetPassword);
 userRouter.post("/resetPassword/:id", resetPassword);
 userRouter.post("/changePassword/:id", changePassword);
 userRouter.put("/profile/update", isAuthenticated, updateUserProfile);
-userRouter.delete("/delete", isAuthenticated, deleteUser);
+userRouter.delete("/delete/:id", isAuthenticated, deleteUser);
+userRouter.get("/all", getAllUsers);
 
 export default userRouter;

@@ -8,11 +8,7 @@ import blogRouter from "./routes/blogRoute.js";
 import reviewRouter from "./routes/reviewRoute.js";
 import feedbackRouter from "./routes/feedbackRoute.js";
 import contentRouter from "./routes/ContentRoute.js";
-import counsellingRoutes from "./routes/counsellingRoutes.js"
-import notificationRoutes from "./routes/notificationRoutes.js"; 
-
-import http from "http";
-import { Server } from "socket.io";
+import chatRequestRouter from "./routes/chatRequest.js";
 
 dotenv.config({ path: "./config/.env" });
 
@@ -32,11 +28,11 @@ const io = new Server(server, {
 app.set('io', io);
 
 app.use(
-  cors({
-    origin: [process.env.LOCAL_URL, process.env.WEB_URL],
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-    credentials: true,
-  })
+	cors({
+		origin: [process.env.LOCAL_URL, process.env.WEB_URL],
+		methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+		credentials: true,
+	}),
 );
 
 app.use(express.json({ limit: "50mb" }));
@@ -161,65 +157,6 @@ app.use("/api/v1/blog", blogRouter);
 app.use("/api/v1/review", reviewRouter);
 app.use("/api/v1/feedback", feedbackRouter);
 app.use("/api/v1/content", contentRouter);
-app.use("/api/counseling", counsellingRoutes); // Add counseling routes
-app.use("/api/notifications", notificationRoutes); // Add notification routes
+app.use("/api/v1/request", chatRequestRouter);
 
-// Export both app and server
-export { app, server };
-
-// import express from "express";
-// import dotenv from "dotenv";
-// import cookieParser from "cookie-parser";
-// import userRouter from "./routes/userRoute.js";
-// import volunteerRouter from "./routes/volunteerRoute.js";
-// import chatRouter from "./routes/chatRoute.js";
-// import cors from "cors";
-// import blogRouter from "./routes/blogRoute.js";
-// import reviewRouter from "./routes/reviewRoute.js";
-// import feedbackRouter from "./routes/feedbackRoute.js";
-// import contentRouter from "./routes/ContentRoute.js";
-// import http from "http";
-// import { Server } from "socket.io";
-// import setupSocketHandlers from "./socket/enhancedSocket.js";
-// dotenv.config({ path: "./config/.env" });
-
-// const app = express();
-// const server = http.createServer(app);
-
-// // Initialize Socket.io with CORS configuration
-// const io = new Server(server, {
-//   cors: {
-//     origin: [process.env.LOCAL_URL, process.env.WEB_URL],
-//     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-//     credentials: true
-//   }
-// });
-
-// app.use(
-//   cors({
-//     origin: [process.env.LOCAL_URL, process.env.WEB_URL],
-//     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-//     credentials: true,
-//   })
-// );
-
-// app.use(express.json({ limit: "50mb" }));
-// app.use(cookieParser({ extended: false }));
-
-// app.get("/", (req, res) => {
-//   res.send("server is working");
-// });
-
-// // Setup enhanced socket handlers
-// setupSocketHandlers(io);
-
-// app.use("/api/v1/user", userRouter);
-// app.use("/api/v1/volunteer", volunteerRouter);
-// app.use("/api/v1/blog", blogRouter);
-// app.use("/api/v1/review", reviewRouter);
-// app.use("/api/v1/feedback", feedbackRouter);
-// app.use("/api/v1/content", contentRouter);
-// app.use("/api/v1/chat", chatRouter); // Add the new chat routes
-
-// // Export both app and server
-// export { app, server };
+export default app;

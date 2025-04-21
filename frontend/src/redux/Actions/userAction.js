@@ -2,7 +2,7 @@ import axios from "axios";
 import { BACKEND_URL } from "../../constants/url";
 
 ///backend_url imported from constants
-const URL = BACKEND_URL + "api/v1/user";
+const URL = BACKEND_URL+ "api/v1/user";
 
 export const loginUser = (details) => async (dispatch) => {
 	try {
@@ -244,11 +244,11 @@ export const updateUserProfile = (userData) => async (dispatch) => {
 	}
 };
 
-export const deleteUserAccount = () => async (dispatch) => {
+export const deleteUserAccount = (id) => async (dispatch) => {
 	try {
 		dispatch({ type: "DELETE_USER_REQUEST" });
 
-		const { data } = await axios.delete(`${BACKEND_URL}api/v1/user/delete`, {
+		const { data } = await axios.delete(`${URL}/delete/${id}`, {
 			withCredentials: true,
 		});
 
@@ -263,3 +263,27 @@ export const deleteUserAccount = () => async (dispatch) => {
 		});
 	}
 };
+
+
+export const getAllUsers = () => async (dispatch) => {		
+	try {
+		dispatch({ type: "GET_ALL_USERS_REQUEST" });
+
+		const { data } = await axios.get(`${URL}/all`, {
+			withCredentials: true,
+		});
+
+		dispatch({
+			type: "GET_ALL_USERS_SUCCESS",
+			payload: {
+				message: data.message,
+				data: data.data,
+			},
+		});
+	} catch (error) {
+		dispatch({
+			type: "GET_ALL_USERS_FAILURE",
+			payload: error.response?.data?.message || "Something went wrong",
+		});
+	}
+}

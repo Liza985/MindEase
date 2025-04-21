@@ -21,7 +21,7 @@ export const CreateFeedBack = async (req, res) => {
 
 export const getAllFeedBacks = async (req, res) => {
 	try {
-		const feedbacks = await feedback.find().populate("userId", "name avatar");
+		const feedbacks = await feedback.find().populate("userId", "firstName");
 		Response(res, 200, true, message.feedBackFetchSuccessfulMessage, feedbacks);
 	} catch (error) {
 		Response(res, 500, false, error.message);

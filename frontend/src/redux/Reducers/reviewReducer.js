@@ -25,83 +25,77 @@ const getReviewByRatingFailure = createAction("GET_REVIEW_BY_RATING_FAILURE");
 const clearError = createAction("CLEAR_ERROR");
 const clearMessage = createAction("CLEAR_MESSAGE");
 
-export const reviewReducer  = createReducer(initialState, (builder) => {
+export const reviewReducer = createReducer(initialState, (builder) => {
 	builder
 		.addCase(createReviewRequest, (state) => {
 			state.loading = true;
 		})
-		.addCase(createReviewSuccess, (state,action) => {
+		.addCase(createReviewSuccess, (state, action) => {
 			state.loading = false;
 			state.review = action.payload.data;
 			state.message = action.payload.message;
 		})
-		.addCase(createReviewFailure, (state,action) => {
+		.addCase(createReviewFailure, (state, action) => {
 			state.loading = false;
 			state.error = action.payload;
 		})
-
 
 		.addCase(getAllReviewsRequest, (state) => {
 			state.loading = true;
 		})
-		.addCase(getAllReviewsSuccess, (state,action) => {
+		.addCase(getAllReviewsSuccess, (state, action) => {
 			state.loading = false;
 			state.message = action.payload.message;
 			state.reviews = action.payload.data;
 		})
-		.addCase(getAllReviewsFailure, (state,action) => {
+		.addCase(getAllReviewsFailure, (state, action) => {
 			state.loading = false;
 			state.error = action.payload;
 		})
 
-
-                .addCase(getReviewsByVolIdRequest,(state)=>{
-                        state.loading = true;
-                })
-                .addCase(getReviewsByVolIdSuccess,(state,action)=>{
-                        state.loading=false;
-                        state.message=action.payload.message;
-                        state.volReview=action.payload.data;
-                })
-                .addCase(getReviewsByVolIdFailure,(state,action)=>{
-                        state.loading = false;
+		.addCase(getReviewsByVolIdRequest, (state) => {
+			state.loading = true;
+		})
+		.addCase(getReviewsByVolIdSuccess, (state, action) => {
+			state.loading = false;
+			state.message = action.payload.message;
+			state.volReview = action.payload.data;
+		})
+		.addCase(getReviewsByVolIdFailure, (state, action) => {
+			state.loading = false;
 			state.error = action.payload;
-                })
+		})
 
-
-                .addCase(getReviewsByUserIdRequest,(state)=>{
-                        state.loading = true;
-                })
-                .addCase(getReviewsByUserIdSuccess,(state,action)=>{
-                        state.loading=false;
-                        state.message=action.payload.message;
-                        state.review=action.payload.data;
-                })
-                .addCase(getReviewsByUserIdFailure,(state,action)=>{
-                        state.loading = false;
+		.addCase(getReviewsByUserIdRequest, (state) => {
+			state.loading = true;
+		})
+		.addCase(getReviewsByUserIdSuccess, (state, action) => {
+			state.loading = false;
+			state.message = action.payload.message;
+			state.review = action.payload.data;
+		})
+		.addCase(getReviewsByUserIdFailure, (state, action) => {
+			state.loading = false;
 			state.error = action.payload;
-                })
+		})
 
-
-
-                .addCase(getReviewByRatingRequest,(state)=>{
-                        state.loading = true;
-                })
-                .addCase(getReviewByRatingSuccess,(state,action)=>{
-                        state.loading=false;
-                        state.message=action.payload.message;
-                        state.rateReview=action.payload.data;
-                })
-                .addCase(getReviewByRatingFailure,(state,action)=>{
-                        state.loading = false;
+		.addCase(getReviewByRatingRequest, (state) => {
+			state.loading = true;
+		})
+		.addCase(getReviewByRatingSuccess, (state, action) => {
+			state.loading = false;
+			state.message = action.payload.message;
+			state.rateReview = action.payload.data;
+		})
+		.addCase(getReviewByRatingFailure, (state, action) => {
+			state.loading = false;
 			state.error = action.payload;
-                })
+		})
 
-
-                .addCase(clearError, (state) => {
-                        state.error = null;
-                    })
-                    .addCase(clearMessage, (state) => {
-                        state.message = null;
-                    })
+		.addCase(clearError, (state) => {
+			state.error = null;
+		})
+		.addCase(clearMessage, (state) => {
+			state.message = null;
+		});
 });

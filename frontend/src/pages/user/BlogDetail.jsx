@@ -4,7 +4,7 @@ import Header from "../../components/Header";
 // import Link from "next/link";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getBlogsById } from "../../redux/Actions/blogAction";
+import { getBlogByTopic, getBlogsById } from "../../redux/Actions/blogAction";
 
 const BlogDetail = () => {
 	// const router = useRouter();
@@ -12,7 +12,7 @@ const BlogDetail = () => {
 	const { id } = useParams();
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
-	const { blogById, loading, error, message } = useSelector(
+	const { blogById, topicBlog, loading, error, message } = useSelector(
 		(state) => state.blog,
 	);
 	// Sample blog post data - in a real application, you would fetch this based on the ID
@@ -101,6 +101,9 @@ const BlogDetail = () => {
 
 	useEffect(() => {
 		dispatch(getBlogsById(id));
+	});
+	useEffect(() => {
+		dispatch(getBlogByTopic(blogById?.topic[0]));
 	});
 	return (
 		<>
@@ -237,58 +240,64 @@ const BlogDetail = () => {
 						</div>
 					</div>
 
-					{/* Related Articles */}
 					<div className="max-w-3xl mx-auto mt-12">
 						<h2 className="text-2xl font-bold text-gray-800 mb-6">
 							Related Articles
 						</h2>
-						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-							{relatedPostsData.map((post) => (
-								<div
-									key={post.id}
-									className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300"
-								>
-									<div className="p-6">
-										<div className="flex items-center text-sm text-orange-600 mb-2">
-											<span className="bg-orange-50 px-2 py-1 rounded">
-												{post.category}
-											</span>
-											<span className="mx-2">•</span>
-											<span>{post.readTime}</span>
-										</div>
-										<h3 className="text-xl font-bold text-gray-800 mb-2">
-											{post.title}
-										</h3>
-										<p className="text-gray-600 mb-4">{post.excerpt}</p>
-										<div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
-											<div className="text-sm text-gray-500">
-												<span>By {post.author}</span>
+
+						{relatedPostsData.length === 0 ? (
+							<p className="text-center text-gray-600 text-lg py-8">
+								No related articles found.
+							</p>
+						) : (
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+								{relatedPostsData.map((post) => (
+									<div
+										key={post.id}
+										className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300"
+									>
+										<div className="p-6">
+											<div className="flex items-center text-sm text-orange-600 mb-2">
+												<span className="bg-orange-50 px-2 py-1 rounded">
+													{post.category}
+												</span>
+												<span className="mx-2">•</span>
+												<span>{post.readTime}</span>
 											</div>
-											<span
-												className="text-orange-600 font-medium hover:text-orange-700 flex items-center cursor-pointer"
-												onClick={() => navigate(`/blog/${post._id}`)}
-											>
-												Read More
-												<svg
-													xmlns="http://www.w3.org/2000/svg"
-													className="h-4 w-4 ml-1"
-													fill="none"
-													viewBox="0 0 24 24"
-													stroke="currentColor"
+											<h3 className="text-xl font-bold text-gray-800 mb-2">
+												{post.title}
+											</h3>
+											<p className="text-gray-600 mb-4">{post.excerpt}</p>
+											<div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
+												<div className="text-sm text-gray-500">
+													<span>By {post.author}</span>
+												</div>
+												<span
+													className="text-orange-600 font-medium hover:text-orange-700 flex items-center cursor-pointer"
+													onClick={() => navigate(`/blog/${post._id}`)}
 												>
-													<path
-														strokeLinecap="round"
-														strokeLinejoin="round"
-														strokeWidth={2}
-														d="M9 5l7 7-7 7"
-													/>
-												</svg>
-											</span>
+													Read More
+													<svg
+														xmlns="http://www.w3.org/2000/svg"
+														className="h-4 w-4 ml-1"
+														fill="none"
+														viewBox="0 0 24 24"
+														stroke="currentColor"
+													>
+														<path
+															strokeLinecap="round"
+															strokeLinejoin="round"
+															strokeWidth={2}
+															d="M9 5l7 7-7 7"
+														/>
+													</svg>
+												</span>
+											</div>
 										</div>
 									</div>
-								</div>
-							))}
-						</div>
+								))}
+							</div>
+						)}
 					</div>
 
 					{/* Newsletter */}

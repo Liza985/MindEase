@@ -1,5 +1,6 @@
 import {
 	BarChart,
+	ClipboardListIcon,
 	FileText,
 	MessageSquare,
 	Settings,
@@ -20,7 +21,9 @@ const AdminSidebar = () => {
 		},
 		{ name: "Chats", icon: <MessageSquare size={20} />, path: "/admin/chats" },
 		{ name: "Content", icon: <FileText size={20} />, path: "/admin/content" },
+		{ name: "Feedback", icon: <ClipboardListIcon size={20} />, path: "/admin/feedback" },
 		{ name: "Settings", icon: <Settings size={20} />, path: "/admin/settings" },
+		
 	];
 
 	return (

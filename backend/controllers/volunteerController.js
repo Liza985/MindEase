@@ -75,7 +75,7 @@ export const registerVolunteer = async (req, res) => {
 		// Read email template
 		let emailTemplate = fs.readFileSync(
 			path.join(__dirname, "../templates/mail.html"),
-			"utf-8"
+			"utf-8",
 		);
 
 		const subject = "Verify your volunteer account";
@@ -84,7 +84,7 @@ export const registerVolunteer = async (req, res) => {
 		emailTemplate = emailTemplate.replace("{{PORT}}", process.env.PORT);
 		emailTemplate = emailTemplate.replace(
 			"{{USER_ID}}",
-			newVolunteer._id.toString()
+			newVolunteer._id.toString(),
 		);
 
 		// Send verification email
@@ -143,10 +143,10 @@ export const verifyVolunteer = async (req, res) => {
 				400,
 				false,
 				`Try again after ${Math.floor(
-					(volunteer.registerOtpLockUntil - Date.now()) % (60 * 1000)
+					(volunteer.registerOtpLockUntil - Date.now()) % (60 * 1000),
 				)} minutes and ${Math.floor(
-					(volunteer.registerOtpLockUntil - DESTRUCTION.now()) % 1000
-				)} seconds`
+					(volunteer.registerOtpLockUntil - DESTRUCTION.now()) % 1000,
+				)} seconds`,
 			);
 		}
 
@@ -192,7 +192,7 @@ export const verifyVolunteer = async (req, res) => {
 		const token = await volunteer.generateToken();
 		const options = {
 			expires: new Date(
-				Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000
+				Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000,
 			),
 			httpOnly: true,
 			sameSite: "none",
@@ -227,7 +227,7 @@ export const resendVolunteer = async (req, res) => {
 
 		const otp = Math.floor(100000 + Math.random() * 900000);
 		const otpExpire = new Date(
-			Date.now() + process.env.REGISTER_OTP_EXPIRE * 15 * 60 * 1000
+			Date.now() + process.env.REGISTER_OTP_EXPIRE * 15 * 60 * 1000,
 		);
 
 		volunteer.registerOtp = otp;
@@ -237,7 +237,7 @@ export const resendVolunteer = async (req, res) => {
 
 		let emailTemplate = fs.readFileSync(
 			path.join(__dirname, "../templates/mail.html"),
-			"utf-8"
+			"utf-8",
 		);
 
 		const subject = "Verify your account";
@@ -247,7 +247,7 @@ export const resendVolunteer = async (req, res) => {
 		emailTemplate = emailTemplate.replace("{{PORT}}", process.env.PORT);
 		emailTemplate = emailTemplate.replace(
 			"{{USER_ID}}",
-			volunteer._id.toString()
+			volunteer._id.toString(),
 		);
 		await sendEMail({ email: volunteer.email, subject, html: emailTemplate });
 
@@ -290,7 +290,7 @@ export const loginVolunteer = async (req, res) => {
 		if (volunteer.loginAttempts >= process.env.MAX_LOGIN_ATTEMPTS) {
 			volunteer.loginAttempts = 0;
 			volunteer.lockUntil = new Date(
-				Date.now() + process.env.MAX_LOGIN_ATTEMPTS_EXPIRE * 60 * 1000
+				Date.now() + process.env.MAX_LOGIN_ATTEMPTS_EXPIRE * 60 * 1000,
 			);
 			await volunteer.save();
 			return Response(res, 400, false, message.loginLockedMessage);
@@ -318,7 +318,7 @@ export const loginVolunteer = async (req, res) => {
 
 		let emailTemplate = fs.readFileSync(
 			path.join(__dirname, "../templates/mail.html"),
-			"utf-8"
+			"utf-8",
 		);
 
 		const subject = "Verify your volunteer account";
@@ -327,7 +327,7 @@ export const loginVolunteer = async (req, res) => {
 		emailTemplate = emailTemplate.replace("{{PORT}}", process.env.PORT);
 		emailTemplate = emailTemplate.replace(
 			"{{USER_ID}}",
-			volunteer._id.toString()
+			volunteer._id.toString(),
 		);
 
 		// Send verification email
@@ -341,7 +341,7 @@ export const loginVolunteer = async (req, res) => {
 		const token = await volunteer.generateToken();
 		const options = {
 			expires: new Date(
-				Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000
+				Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000,
 			),
 			httpOnly: true,
 			sameSite: "none",
@@ -413,7 +413,7 @@ export const verifyVolunteerLogin = async (req, res) => {
 
 		const options = {
 			expires: new Date(
-				Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000
+				Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000,
 			),
 			httpOnly: true,
 			sameSite: "none",
@@ -448,7 +448,7 @@ export const resendVerifyVolunteerLogin = async (req, res) => {
 		//generating otp and saving
 		const otp = Math.floor(100000 + Math.random() * 900000);
 		const otpExpire = new Date(
-			Date.now() + process.env.LOGIN_OTP_EXPIRE * 15 * 60 * 1000
+			Date.now() + process.env.LOGIN_OTP_EXPIRE * 15 * 60 * 1000,
 		);
 
 		volunteer.loginOtp = otp;
@@ -461,7 +461,7 @@ export const resendVerifyVolunteerLogin = async (req, res) => {
 
 		let emailTemplate = fs.readFileSync(
 			path.join(__dirname, "../templates/mail.html"),
-			"utf-8"
+			"utf-8",
 		);
 		const subject = "Two step verification";
 
@@ -470,7 +470,7 @@ export const resendVerifyVolunteerLogin = async (req, res) => {
 		emailTemplate = emailTemplate.replace("{{PORT}}", process.env.PORT);
 		emailTemplate = emailTemplate.replace(
 			"{{USER_ID}}",
-			volunteer._id.toString()
+			volunteer._id.toString(),
 		);
 
 		const email = volunteer.email;
@@ -512,12 +512,12 @@ export const forgetVolunteerPassword = async (req, res) => {
 
 		const otp = Math.floor(100000 + Math.random() * 900000);
 		const otpExpire = new Date(
-			Date.now() + process.env.OTP_EXPIRE * 15 * 60 * 1000
+			Date.now() + process.env.OTP_EXPIRE * 15 * 60 * 1000,
 		);
 
 		let emailTemplate = fs.readFileSync(
 			path.join(__dirname, "../templates/mail.html"),
-			"utf-8"
+			"utf-8",
 		);
 		const subject = "Reset your volunteer password";
 
@@ -526,7 +526,7 @@ export const forgetVolunteerPassword = async (req, res) => {
 		emailTemplate = emailTemplate.replace("{{PORT}}", process.env.PORT);
 		emailTemplate = emailTemplate.replace(
 			"{{USER_ID}}",
-			volunteer._id.toString()
+			volunteer._id.toString(),
 		);
 
 		await sendEMail({ email: volunteer.email, subject, html: emailTemplate });
@@ -576,7 +576,7 @@ export const resetVolunteerPassword = async (req, res) => {
 			volunteer.resetPasswordExpire = undefined;
 			volunteer.resetPasswordAttempts = 0;
 			volunteer.resetPasswordLock = new Date(
-				Date.now() + process.env.MAX_RESET_LOCK * 60 * 1000
+				Date.now() + process.env.MAX_RESET_LOCK * 60 * 1000,
 			);
 			await volunteer.save();
 			return Response(res, 400, false, message.otpAttemptsExceed);
@@ -641,6 +641,11 @@ export const changeVolunteerPassword = async (req, res) => {
 
 export const getVolunteerProfile = async (req, res) => {
 	try {
+		const volunteer = await Volunteer.findById(req.volunteer._id);
+		if (!volunteer) {
+			return Response(res, 404, false, message.volunteerNotFound);
+		}
+		return Response(res, 200, true, message.profileUpdated, volunteer);
 	} catch (error) {
 		Response(res, 500, false, error.message);
 	}
@@ -648,6 +653,36 @@ export const getVolunteerProfile = async (req, res) => {
 
 export const updateVolunteerProfile = async (req, res) => {
 	try {
+		const { id } = req.volunteer;
+		const updateData = req.body;
+
+		// Validate required fields
+		if (!id) {
+			return Response(res, 400, false, message.idNotFound);
+		}
+
+		// Find volunteer
+		const volunteer = await Volunteer.findById(id);
+		if (!volunteer) {
+			return Response(res, 404, false, message.volunteerNotFound);
+		}
+
+		// Update fields if provided
+		if (updateData.firstName) volunteer.firstName = updateData.firstName;
+		if (updateData.middleName) volunteer.middleName = updateData.middleName;
+		if (updateData.lastName) volunteer.lastName = updateData.lastName;
+		if (updateData.phoneNumber) volunteer.phoneNumber = updateData.phoneNumber;
+		if (updateData.dateOfBirth) volunteer.dateOfBirth = updateData.dateOfBirth;
+		if (updateData.gender) volunteer.gender = updateData.gender;
+		if (updateData.expertiseArea)
+			volunteer.expertiseArea = updateData.expertiseArea;
+		if (updateData.availability)
+			volunteer.availability = updateData.availability;
+
+		// Save updated volunteer
+		await volunteer.save();
+
+		return Response(res, 200, true, message.profileUpdated, volunteer);
 	} catch (error) {
 		Response(res, 500, false, error.message);
 	}
@@ -674,15 +709,54 @@ export const getVolunteerRatings = async (req, res) => {
 	}
 };
 
-// controller is for getting the requests from users
-export const getRequestsOfUsers = async (req, res) => {
+export const deleteVolunteer = async (req, res) => {
 	try {
+		const { id } = req.params;
+		if (!id) {
+			return Response(res, 400, false, message.idNotFound);
+		}
+		if (id.toString() !== req.volunteer._id.toString()) {
+			return Response(res, 400, false, message.notAuthorized);
+		}
+		const volunteer = await Volunteer.findById(id);
+		if (!volunteer) {
+			return Response(res, 404, false, "Volunteer not found");
+		}
+
+		// Delete associated blogs
+		if (volunteer.Blogs && volunteer.Blogs.length > 0) {
+			await Blog.deleteMany({ _id: { $in: volunteer.Blogs } });
+		}
+
+		// Delete associated reviews
+		if (volunteer.review && volunteer.review.length > 0) {
+			await Review.deleteMany({ _id: { $in: volunteer.review } });
+		}
+
+		// Delete the volunteer
+		await Volunteer.findByIdAndDelete(id);
+
+		return Response(res, 200, true, "Volunteer deleted successfully");
+	} catch (error) {
+		console.error("Error deleting volunteer:", error);
+		return Response(res, 500, false, error.message);
+	}
+};
+
+export const getAllVolunteers = async (req, res) => {
+	try {
+		const volunteers = await Volunteer.find({});
+		if (!volunteers) {
+			return Response(res, 404, false, message.volunteerNotFound);
+		}
+		return Response(res, 200, true, message.volunteerNotFound, volunteers);
 	} catch (error) {
 		Response(res, 500, false, error.message);
 	}
 };
 
-export const deleteVolunteer = async (req, res) => {
+// controller is for getting the requests from users
+export const getRequestsOfUsers = async (req, res) => {
 	try {
 	} catch (error) {
 		Response(res, 500, false, error.message);

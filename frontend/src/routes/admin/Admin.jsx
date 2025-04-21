@@ -9,6 +9,7 @@ import Users from "./../../pages/admin/Users";
 import Content from "./../../pages/admin/Content";
 import Volunteers from "./../../pages/admin/Volunteers";
 import Setting from "./../../pages/admin/Setting";
+import Feedback from "../../pages/admin/Feedback";
 
 const Admin = () => {
 	return (
@@ -72,6 +73,14 @@ const Admin = () => {
 						//</ProtectedRoute>
 					}
 				/>
+				<Route
+					path="/admin/feedback"
+					element={
+						//<ProtectedRoute>
+						<Feedback />
+						//</ProtectedRoute>
+					}
+				/>				
 			</Routes>
 		</>
 	);

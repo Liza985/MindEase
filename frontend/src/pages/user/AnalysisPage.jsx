@@ -1,13 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import Header from '../../components/Header.jsx';
-// import AnalysisPage from './AnalysisPage';
+import RiskGauge from '../../components/SemiCircleGauge';
+
 
 const AnalysisPage = () => {
   const location = useLocation();
   const [scores, setScores] = useState({});
   const [loading, setLoading] = useState(true);
   const [overallRisk, setOverallRisk] = useState('');
+  const [overallPercentage, setOverallPercentage] = useState(0);
   const [recommendations, setRecommendations] = useState([]);
 
   useEffect(() => {
@@ -30,15 +32,15 @@ const AnalysisPage = () => {
     // Calculate overall score
     const totalScore = Object.values(categoryScores).reduce((sum, score) => sum + score.value, 0);
     const maxPossibleScore = Object.values(categoryScores).reduce((sum, score) => sum + score.maxPossible, 0);
-    const overallPercentage = (totalScore / maxPossibleScore) * 100;
+    const calculatedOverallPercentage = (totalScore / maxPossibleScore) * 100;
     
     // Determine risk level based on overall percentage
     let risk;
-    if (overallPercentage < 25) {
+    if (calculatedOverallPercentage < 25) {
       risk = 'Low';
-    } else if (overallPercentage < 50) {
+    } else if (calculatedOverallPercentage < 50) {
       risk = 'Moderate';
-    } else if (overallPercentage < 75) {
+    } else if (calculatedOverallPercentage < 75) {
       risk = 'High';
     } else {
       risk = 'Severe';
@@ -47,6 +49,10 @@ const AnalysisPage = () => {
     // Check for critical indicators (suicidal ideation)
     if (parseInt(formData.SuicidalIdeation) >= 4) {
       risk = 'Critical';
+      // For the gauge visualization, we'll set Critical at 95% to keep it in the red zone
+      setOverallPercentage(95);
+    } else {
+      setOverallPercentage(calculatedOverallPercentage);
     }
     
     // Generate recommendations based on risk level and specific high scores
@@ -156,31 +162,20 @@ const AnalysisPage = () => {
     return recommendations;
   };
 
-  const getRiskColor = (risk) => {
-    switch (risk) {
-      case 'Low': return 'bg-green-100 text-green-800';
-      case 'Moderate': return 'bg-yellow-100 text-yellow-800';
-      case 'High': return 'bg-orange-100 text-orange-800';
-      case 'Severe':
-      case 'Critical': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
-  };
-
   const getCategoryColor = (level) => {
     switch (level) {
-      case 'Low': return 'bg-green-500';
-      case 'Moderate': return 'bg-yellow-500';
-      case 'High': return 'bg-orange-500';
-      case 'Severe': return 'bg-red-500';
-      default: return 'bg-gray-500';
+      case 'Low': return 'bg-green-400';
+      case 'Moderate': return 'bg-amber-400';
+      case 'High': return 'bg-orange-400';
+      case 'Severe': return 'bg-red-400';
+      default: return 'bg-gray-400';
     }
   };
 
   return (
     <>
       <Header />
-      <div className="bg-gradient-to-br from-orange-50 to-blue-50 min-h-screen py-12 px-4 sm:px-6 lg:px-8 mt-10">
+      <div className="bg-gradient-to-br from-blue-50 to-indigo-50 min-h-screen py-12 px-4 sm:px-6 lg:px-8 mt-10">
         <div className="max-w-4xl mx-auto">
           {loading ? (
             <div className="text-center py-16">
@@ -190,32 +185,32 @@ const AnalysisPage = () => {
           ) : (
             <>
               <div className="bg-white rounded-xl shadow-md overflow-hidden mb-8">
-                <div className="bg-blue-600 px-6 py-4">
+                <div className="bg-indigo-600 px-6 py-4">
                   <h1 className="text-2xl font-bold text-white">Your MindEase Assessment Results</h1>
-                  <p className="text-blue-50 mt-1">Based on your responses, we've prepared a personalized analysis.</p>
+                  <p className="text-indigo-100 mt-1">Based on your responses, we've prepared a personalized analysis.</p>
                 </div>
                 
                 <div className="p-6">
                   <div className="mb-8">
-                    <h2 className="text-xl font-semibold text-gray-900 mb-3">Overall Assessment</h2>
-                    <div className={`inline-block px-4 py-2 rounded-full font-medium ${getRiskColor(overallRisk)}`}>
-                      {overallRisk} Risk Level
+                    <h2 className="text-xl font-semibold text-gray-900 mb-3 text-center">Overall Assessment</h2>
+                    <div className="flex flex-col items-center mt-4">
+                    <RiskGauge percentage={overallPercentage} />
                     </div>
-                    <p className="mt-3 text-gray-600">
+                    <p className="mt-6 text-gray-600 text-center px-8">
                       This assessment is based on your responses across different areas of mental well-being. 
                       Remember that this is not a clinical diagnosis but an indicator of potential areas of concern.
                     </p>
                   </div>
                   
-                  <div className="mb-8">
+                  <div className="mt-12 mb-8">
                     <h2 className="text-xl font-semibold text-gray-900 mb-4">Category Breakdown</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {Object.entries(scores).map(([category, score]) => (
-                        <div key={category} className="bg-gray-50 rounded-lg p-4 shadow-sm">
+                        <div key={category} className="bg-gray-50 rounded-lg p-4 shadow-sm border border-gray-100">
                           <h3 className="text-lg font-medium text-gray-800 mb-2">{category}</h3>
-                          <div className="w-full bg-gray-200 rounded-full h-2.5 mb-2">
+                          <div className="w-full bg-gray-200 rounded-full h-3 mb-2">
                             <div 
-                              className={`h-2.5 rounded-full ${getCategoryColor(score.level)}`} 
+                              className={`h-3 rounded-full ${getCategoryColor(score.level)}`} 
                               style={{ width: `${score.percentage}%` }}
                             ></div>
                           </div>
@@ -231,15 +226,15 @@ const AnalysisPage = () => {
               </div>
               
               <div className="bg-white rounded-xl shadow-md overflow-hidden">
-                <div className="bg-green-600 px-6 py-4">
+                <div className="bg-teal-600 px-6 py-4">
                   <h1 className="text-2xl font-bold text-white">Recommendations</h1>
-                  <p className="text-green-50 mt-1">Based on your assessment, here are some suggestions that may help.</p>
+                  <p className="text-teal-100 mt-1">Based on your assessment, here are some suggestions that may help.</p>
                 </div>
                 
                 <div className="p-6">
                   <div className="space-y-6">
                     {recommendations.map((rec, index) => (
-                      <div key={index} className={`p-4 rounded-lg ${rec.urgent ? 'bg-red-50 border-l-4 border-red-500' : 'bg-blue-50'}`}>
+                      <div key={index} className={`p-4 rounded-lg ${rec.urgent ? 'bg-red-50 border-l-4 border-red-500' : 'bg-blue-50 border-l-4 border-blue-400'}`}>
                         <h3 className={`text-lg font-semibold ${rec.urgent ? 'text-red-700' : 'text-blue-700'}`}>{rec.title}</h3>
                         <p className={`mt-1 ${rec.urgent ? 'text-red-600' : 'text-blue-600'}`}>{rec.description}</p>
                       </div>
@@ -262,4 +257,4 @@ const AnalysisPage = () => {
   );
 };
 
-export default AnalysisPage
+export default AnalysisPage;

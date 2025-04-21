@@ -31,63 +31,71 @@ const Blogs = () => {
 
 				{/* Blog Posts */}
 				<main className="container mx-auto px-4 py-8 flex-1">
-					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-						{blogs?.map((post) => (
-							<div
-								key={post?._id}
-								className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300"
-							>
-								{/* Blog Image */}
-								<img
-									src={post?.image?.url } // Fallback to default image if not available
-									alt={post?.title}
-									className="w-full h-48 object-fill rounded-t-xl"
-								/>
-								<div className="p-6">
-									<div className="flex items-center text-sm text-orange-600 mb-2">
-										<span className="bg-orange-50 px-2 py-1 rounded">
-											{post?.category}
-										</span>
-										<span className="mx-2">•</span>
-										<span>{post?.readTime}</span>
-									</div>
-									<h2 className="text-xl font-bold text-gray-800 mb-2">
-										{post?.title}
-									</h2>
-									<p className="text-gray-600 mb-4">{post?.topic}</p>
-									<div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
-										<div className="text-sm text-gray-500">
-											<span>
-												By {post?.volunteerId?.firstName} {post?.volunteerId?.lastName}
-											</span>
-											<span className="mx-1">•</span>
-											<span>{post?.createdAt?.split("T")[0]}</span>
-										</div>
-										<button
-											className="text-orange-600 font-medium hover:text-orange-700 flex items-center"
-											onClick={() => navigate(`/blog/${post._id}`)}
-										>
-											Read More
-											<svg
-												xmlns="http://www.w3.org/2000/svg"
-												className="h-4 w-4 ml-1"
-												fill="none"
-												viewBox="0 0 24 24"
-												stroke="currentColor"
-											>
-												<path
-													strokeLinecap="round"
-													strokeLinejoin="round"
-													strokeWidth={2}
-													d="M9 5l7 7-7 7"
-												/>
-											</svg>
-										</button>
-									</div>
-								</div>
+					
+						{blogs?.length === 0 ? (
+							<div className="text-center text-gray-600 text-lg py-20">
+								No blogs found. Stay tuned for upcoming posts!
 							</div>
-						))}
-					</div>
+						) : (
+							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+								{blogs?.map((post) => (
+									<div
+										key={post?._id}
+										className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300"
+									>
+										<img
+											src={post?.image?.url}
+											alt={post?.title}
+											className="w-full h-48 object-fill rounded-t-xl"
+										/>
+										<div className="p-6">
+											<div className="flex items-center text-sm text-orange-600 mb-2">
+												<span className="bg-orange-50 px-2 py-1 rounded">
+													{post?.category}
+												</span>
+												<span className="mx-2">•</span>
+												<span>{post?.readTime}</span>
+											</div>
+											<h2 className="text-xl font-bold text-gray-800 mb-2">
+												{post?.title}
+											</h2>
+											<p className="text-gray-600 mb-4">{post?.topic}</p>
+											<div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
+												<div className="text-sm text-gray-500">
+													<span>
+														By {post?.volunteerId?.firstName}{" "}
+														{post?.volunteerId?.lastName}
+													</span>
+													<span className="mx-1">•</span>
+													<span>{post?.createdAt?.split("T")[0]}</span>
+												</div>
+												<button
+													className="text-orange-600 font-medium hover:text-orange-700 flex items-center"
+													onClick={() => navigate(`/blog/${post._id}`)}
+												>
+													Read More
+													<svg
+														xmlns="http://www.w3.org/2000/svg"
+														className="h-4 w-4 ml-1"
+														fill="none"
+														viewBox="0 0 24 24"
+														stroke="currentColor"
+													>
+														<path
+															strokeLinecap="round"
+															strokeLinejoin="round"
+															strokeWidth={2}
+															d="M9 5l7 7-7 7"
+														/>
+													</svg>
+												</button>
+											</div>
+										</div>
+									</div>
+								))}
+							</div>
+						)}
+					
 				</main>
 			</div>
 			<footer className="bg-white text-black text-center py-4 mt-8">
