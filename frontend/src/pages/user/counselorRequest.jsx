@@ -11,6 +11,7 @@ import {
 import { toast } from "react-toastify";
 import toastOptions from "../../constants/toast";
 
+const requests={}
 const CounselorRequests = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
@@ -195,7 +196,7 @@ const CounselorRequests = () => {
 
 							{activeTab === "chats" && (
 								<div>
-									{requests && requests.length > 0 ? (
+									{requests && requests?.length > 0 ? (
 										<div className="space-y-4">
 											{requests
 												.filter((request) => request.status === "accepted")
@@ -233,7 +234,7 @@ const CounselorRequests = () => {
 												You don't have any active chats.
 											</p>
 											<button
-												onClick={() => navigate("/counseling")}
+												onClick={() => navigate("/counselling")}
 												className="bg-orange-500 hover:bg-orange-600 text-white font-medium py-2 px-6 rounded-lg transition-colors duration-300"
 											>
 												Request Counseling

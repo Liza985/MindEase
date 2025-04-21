@@ -9,11 +9,12 @@ import reviewRouter from "./routes/reviewRoute.js";
 import feedbackRouter from "./routes/feedbackRoute.js";
 import contentRouter from "./routes/ContentRoute.js";
 import chatRequestRouter from "./routes/chatRequest.js";
-
+import { Server } from "socket.io";
+import http from "http";
 dotenv.config({ path: "./config/.env" });
 
 const app = express();
-const server = http.createServer(app);
+export const server = http.createServer(app);
 
 // Initialize Socket.io with CORS configuration
 const io = new Server(server, {
