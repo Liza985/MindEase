@@ -1,65 +1,100 @@
-import React, { useState, useEffect } from "react";
+
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
 import Header from "../../components/Header";
-import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const CounselorRequests = () => {
-  const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("requests");
-  const [isLoading, setIsLoading] = useState(true);
   const [requests, setRequests] = useState([]);
-  const [activeChats, setActiveChats] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
+  // Get user from Redux store
+  const user = useSelector((state) => state?.auth?.user);
+  const userId = user?.id;
+  
+  // Get query parameters to check for new request
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const newRequestId = queryParams.get("newRequest"); 
+  // At the top of your CounselorRequests component
+useEffect(() => {
+  // Debug the user state
+  console.log("Redux auth state:", user);
+  console.log("User ID:", userId);
+}, [user, userId]);
 
-  // Mock data - in a real app, you would fetch this from your backend
   useEffect(() => {
-    // Simulate API fetch
-    setTimeout(() => {
-      setRequests([
-        {
-          id: 1,
-          topic: "Anxiety Management",
-          description: "I've been experiencing increased anxiety at work and would like strategies to manage it better.",
-          status: "pending",
-          submittedAt: "2025-03-19T14:30:00Z"
-        },
-        {
-          id: 2,
-          topic: "Relationship Counseling",
-          description: "Having communication issues with my partner and need guidance on how to improve.",
-          status: "assigned",
-          counselor: "Dr. Sarah Johnson",
-          submittedAt: "2025-03-18T09:15:00Z"
+    const fetchRequests = async () => {
+      if (!userId) {
+        console.log("User ID not found, waiting briefly before checking again...");
+        // Wait a moment before deciding the user isn't logged in
+        setTimeout(() => {
+          if (!userId) {
+            setLoading(false);
+            setError("You must be logged in to view your requests");
+          }
+        }, 1000); // Wait 1 second
+        return;
+      }
+
+      try {
+        const response = await axios.get(
+          `http://localhost:5000/api/counseling/requests/user/${userId}`
+        );
+        setRequests(response.data);
+        setLoading(false);
+      } catch (err) {
+        console.error("Error fetching requests:", err);
+        setError("Failed to load your counseling requests");
+        setLoading(false);
+      }
+    };
+
+    fetchRequests();
+  }, [userId]);
+
+  // Scroll to highlighted request if it exists
+  useEffect(() => {
+    if (newRequestId) {
+      // Add a slight delay to ensure the DOM is fully rendered
+      setTimeout(() => {
+        const element = document.getElementById(`request-${newRequestId}`);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "center" });
         }
-      ]);
+      }, 100);
+    }
+  }, [newRequestId, requests]);
 
-      setActiveChats([
-        {
-          id: 1,
-          topic: "Work-Life Balance",
-          counselor: "Dr. Michael Patel",
-          lastMessage: "Let's schedule our follow-up for next Tuesday at 3pm.",
-          unread: 2,
-          updatedAt: "2025-03-20T16:45:00Z"
-        }
-      ]);
-
-      setIsLoading(false);
-    }, 1000);
-  }, []);
-
+  // Function to format date
   const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-      hour: "numeric",
-      minute: "2-digit"
-    });
+    const options = { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    };
+    return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
-  const handleStartChat = (chatId) => {
-    // In a real app, you would navigate to the specific chat
-    navigate(`/counselor-chat/${chatId}`);
+  // Function to get status badge color
+  const getStatusColor = (status) => {
+    switch (status.toLowerCase()) {
+      case "pending":
+        return "bg-yellow-100 text-yellow-800";
+      case "accepted":
+        return "bg-green-100 text-green-800";
+      case "completed":
+        return "bg-blue-100 text-blue-800";
+      case "cancelled":
+        return "bg-red-100 text-red-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
   };
 
   return (
@@ -73,137 +108,79 @@ const CounselorRequests = () => {
       </nav>
 
       <main className="container mx-auto px-4 py-8 flex-1">
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-6">My Counseling</h2>
+        <div className="max-w-4xl mx-auto">
+          <h1 className="text-3xl font-bold text-gray-800 mb-6">My Counseling Requests</h1>
 
-          <div className="border-b border-gray-200 mb-6">
-            <div className="flex space-x-8">
-              <button
-                className={`pb-4 px-1 ${
-                  activeTab === "requests"
-                    ? "border-b-2 border-orange-500 text-orange-600 font-medium"
-                    : "text-gray-500 hover:text-gray-700"
-                }`}
-                onClick={() => setActiveTab("requests")}
-              >
-                Requests
-              </button>
-              <button
-                className={`pb-4 px-1 ${
-                  activeTab === "chats"
-                    ? "border-b-2 border-orange-500 text-orange-600 font-medium"
-                    : "text-gray-500 hover:text-gray-700"
-                }`}
-                onClick={() => setActiveTab("chats")}
-              >
-                Active Chats
-              </button>
+          {loading ? (
+            <div className="flex justify-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
             </div>
-          </div>
-
-          {isLoading ? (
-            <div className="flex justify-center items-center py-12">
-              <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-orange-500"></div>
+          ) : error ? (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+              <strong className="font-bold">Error: </strong>
+              <span className="block sm:inline">{error}</span>
+            </div>
+          ) : requests.length === 0 ? (
+            <div className="bg-white rounded-lg shadow-md p-8 text-center">
+              <p className="text-gray-600 mb-4">You haven't submitted any counseling requests yet.</p>
+              <a 
+                href="/counseling" 
+                className="inline-block bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-300"
+              >
+                Request Counseling
+              </a>
             </div>
           ) : (
-            <>
-              {activeTab === "requests" && (
-                <div>
-                  {requests.length > 0 ? (
-                    <div className="space-y-4">
-                      {requests.map((request) => (
-                        <div
-                          key={request.id}
-                          className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
-                        >
-                          <div className="flex justify-between items-start mb-2">
-                            <h3 className="text-lg font-medium text-gray-800">
-                              {request.topic}
-                            </h3>
-                            <span
-                              className={`px-2 py-1 text-xs rounded-full ${
-                                request.status === "pending"
-                                  ? "bg-yellow-100 text-yellow-800"
-                                  : "bg-green-100 text-green-800"
-                              }`}
-                            >
-                              {request.status === "pending" ? "Pending" : "Assigned"}
-                            </span>
-                          </div>
-                          <p className="text-gray-600 mb-3">{request.description}</p>
-                          <div className="flex justify-between items-center text-sm text-gray-500">
-                            <span>Submitted: {formatDate(request.submittedAt)}</span>
-                            {request.counselor && (
-                              <span>Counselor: {request.counselor}</span>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="text-center py-8">
-                      <p className="text-gray-500 mb-4">
-                        You don't have any active requests.
-                      </p>
-                      <button
-                        onClick={() => navigate("/counseling")}
-                        className="bg-orange-500 hover:bg-orange-600 text-white font-medium py-2 px-6 rounded-lg transition-colors duration-300"
+            <div className="space-y-6">
+              {requests.map((request) => (
+                <div
+                  key={request.id}
+                  id={`request-${request.id}`}
+                  className={`bg-white rounded-lg shadow-md overflow-hidden transition-all duration-500 ${
+                    newRequestId === request.id.toString() ? "ring-2 ring-orange-500 animate-pulse-light" : ""
+                  }`}
+                >
+                  <div className="p-6">
+                    <div className="flex justify-between items-start mb-4">
+                      <h2 className="text-xl font-semibold text-gray-800">{request.topic}</h2>
+                      <span 
+                        className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(request.status)}`}
                       >
-                        Create New Request
-                      </button>
+                        {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
+                      </span>
                     </div>
-                  )}
-                </div>
-              )}
+                    
+                    <p className="text-gray-600 mb-4">{request.description}</p>
+                    
+                    <div className="text-sm text-gray-500">
+                      Submitted on {formatDate(request.submittedAt)}
+                    </div>
 
-              {activeTab === "chats" && (
-                <div>
-                  {activeChats.length > 0 ? (
-                    <div className="space-y-4">
-                      {activeChats.map((chat) => (
-                        <div
-                          key={chat.id}
-                          className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer"
-                          onClick={() => handleStartChat(chat.id)}
-                        >
-                          <div className="flex justify-between items-start mb-2">
-                            <h3 className="text-lg font-medium text-gray-800">
-                              {chat.topic}
-                            </h3>
-                            {chat.unread > 0 && (
-                              <span className="bg-orange-500 text-white text-xs px-2 py-1 rounded-full">
-                                {chat.unread} new
-                              </span>
-                            )}
-                          </div>
-                          <p className="text-gray-600 mb-3">
-                            <span className="font-medium">
-                              {chat.counselor}:
-                            </span>{" "}
-                            {chat.lastMessage}
-                          </p>
-                          <div className="text-sm text-gray-500">
-                            Last updated: {formatDate(chat.updatedAt)}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="text-center py-8">
-                      <p className="text-gray-500 mb-4">
-                        You don't have any active chats.
-                      </p>
-                      <button
-                        onClick={() => navigate("/counseling")}
-                        className="bg-orange-500 hover:bg-orange-600 text-white font-medium py-2 px-6 rounded-lg transition-colors duration-300"
-                      >
-                        Request Counseling
-                      </button>
-                    </div>
-                  )}
+                    {request.status === "pending" && (
+                      <div className="mt-4 pt-4 border-t border-gray-200">
+                        <p className="text-sm text-gray-600 italic">
+                          Your request is being processed. A counselor will respond soon.
+                        </p>
+                      </div>
+                    )}
+                    
+                    {request.counselorNotes && (
+                      <div className="mt-4 pt-4 border-t border-gray-200">
+                        <h3 className="font-medium text-gray-700 mb-2">Counselor Notes:</h3>
+                        <p className="text-gray-600">{request.counselorNotes}</p>
+                      </div>
+                    )}
+                    
+                    {request.nextSessionDate && (
+                      <div className="mt-4 bg-green-50 p-4 rounded-md">
+                        <h3 className="font-medium text-green-800 mb-1">Next Session:</h3>
+                        <p className="text-green-700">{formatDate(request.nextSessionDate)}</p>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              )}
-            </>
+              ))}
+            </div>
           )}
         </div>
       </main>

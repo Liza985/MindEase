@@ -1,6 +1,10 @@
+
 import React, { useState } from "react";
 import Header from "../../components/Header";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import axios from "axios";
+import { useSelector } from "react-redux";
 
 const CounselingPage = () => {
   const navigate = useNavigate();
@@ -10,6 +14,10 @@ const CounselingPage = () => {
     description: ""
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Get user from Redux store
+  const user = useSelector((state) => state?.auth?.user);
+  const userId = user?.id;
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -22,19 +30,40 @@ const CounselingPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
-    // Simulate API call to submit the form
+  
+    // Check if userId is available
+    if (!userId) {
+      toast.error("You must be logged in to submit a counseling request.");
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
-      // In a real app, you would send this data to your backend
       console.log("Submitting request:", formData);
       
-      // Simulate network delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Send the request to the API with userId included
+      const response = await axios.post('http://localhost:5000/api/counseling/requests', {
+        topic: formData.topic,
+        description: formData.description,
+        userId: userId,
+        submittedAt: new Date().toISOString(),
+        status: "pending"
+      });
       
-      // Redirect to the requests page
-      navigate("/counselor-requests");
+      console.log("API response:", response.data);
+      
+      // Navigate to the requests page with the new request ID as a query parameter
+      if (response.data && response.data.id) {
+        navigate(`/counselor-requests?newRequest=${response.data.id}`);
+      } else {
+        navigate("/counselor-requests");
+      }
+      
+      // Show success message
+      toast.success("Your counseling request has been submitted successfully!");
     } catch (error) {
-      console.error("Error submitting form:", error);
+      console.error("Error submitting form:", error.response?.data || error.message);
+      toast.error("There was an error submitting your request. Please try again.");
     } finally {
       setIsSubmitting(false);
     }

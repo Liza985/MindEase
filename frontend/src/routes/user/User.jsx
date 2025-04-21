@@ -3,7 +3,6 @@ import { Route, Routes } from "react-router-dom";
 import AnalysisPage from "../../pages/user/AnalysisPage";
 import Auth from "../../pages/user/Auth";
 import Blogs from "../../pages/user/Blogs";
-import ChatbotPage from "../../pages/user/ChatBot";
 import CounselingPage from "../../pages/user/Counsellors";
 import ForgotPassword from "../../pages/user/ForgotPassword";
 import Home from "../../pages/user/Home";
@@ -18,6 +17,7 @@ import CounselorRequests from "../../pages/user/counselorRequest";
 import CounselorChat from "../../pages/user/CounselorChat";
 import Feedback from "../../pages/user/Feedback";
 import Profile from "../../pages/user/Profile";
+import UserChat from "../../pages/user/UserChat";
 
 const User = () => {
 	return (
@@ -96,10 +96,10 @@ const User = () => {
 				<Route path="/counselor-chat/:chatId" element={<CounselorChat />} />
 				<Route path="/blog/:id" element={<BlogDetail />} />
 				<Route
-					path="/aichat"
+					path="/user-chat"
 					element={
 						// <ProtectedRoute>
-						<ChatbotPage />
+						<UserChat />
 						// </ProtectedRoute>
 					}
 				/>
