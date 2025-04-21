@@ -137,13 +137,10 @@ export const AcceptRequest = async (req, res) => {
 		if (!user) {
 			return Response(res, 404, false, message.userNotFound);
 		}
-		console.log(request);
-		console.log(user);
-		console.log(req.volunteer._id);
 		user.volunteerFriends.push(req.volunteer._id);
 		await user.save();
 
-		req.volunteer.volunteerFriends.push(request.userId);
+		req.volunteer.userFriends.push(user._id);
 		await req.volunteer.save();
 
 		return Response(res, 200, true, message.requestAcceptMessage, request);
