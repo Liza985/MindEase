@@ -102,7 +102,6 @@ export const registerVolunteer = async (req, res) => {
 			token,
 		});
 	} catch (error) {
-		console.error(error.message);
 		return Response(res, 500, false, error.message);
 	}
 };
@@ -179,7 +178,6 @@ export const verifyVolunteer = async (req, res) => {
 			return Response(res, 400, false, message.otpExpire);
 		}
 
-		console.log("Working");
 		// update volunteer
 		volunteer.isVerified = true;
 		volunteer.registerOtp = undefined;
@@ -307,7 +305,6 @@ export const loginVolunteer = async (req, res) => {
 		volunteer.loginAttempts = 0;
 		volunteer.lockUntil = undefined;
 		await volunteer.save();
-		// console.log("Final working");
 
 		const otp = Math.floor(100000 + Math.random() * 900000);
 		const otpExpire = new Date(Date.now() + 5 * 60 * 1000);
@@ -355,7 +352,6 @@ export const loginVolunteer = async (req, res) => {
 			data: volunteer,
 		});
 	} catch (error) {
-		console.log(error.message);
 		Response(res, 500, false, error.message);
 	}
 };

@@ -32,7 +32,6 @@ const LoginOtp = () => {
 
 	useEffect(() => {
 		if (message) {
-			console.log(message?.message);
 			toast.success(message?.message, successToastOptions);
 			dispatch({ type: "CLEAR_MESSAGE" });
 			if (typeof message === "string" && message.includes("Login Successful")) {

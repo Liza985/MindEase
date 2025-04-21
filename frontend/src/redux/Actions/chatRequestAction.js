@@ -200,6 +200,7 @@ export const acceptRequest = (id) => async (dispatch) => {
 			payload: data,
 		});
 	} catch (error) {
+		console.log(error?.response?.data?.message )
 		dispatch({
 			type: "ACCEPT_REQUEST_FAILURE",
 			payload: error?.response?.data?.message || "Something went wrong",

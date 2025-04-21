@@ -28,7 +28,10 @@ export const createRequest = async (req, res) => {
 
 export const getAllRequests = async (req, res) => {
 	try {
-		const requests = await ChatRequest.find().populate("userId", "firstName lastName email");
+		const requests = await ChatRequest.find().populate(
+			"userId",
+			"firstName lastName email",
+		);
 		return Response(res, 200, true, message.getAllRequestsMessage, requests);
 	} catch (error) {
 		return Response(res, 500, false, error.message);
@@ -41,7 +44,10 @@ export const getRequestByUserId = async (req, res) => {
 		if (!id || !mongoose.Types.ObjectId.isValid(id)) {
 			return Response(res, 400, false, message.invalidId);
 		}
-		const requests = await ChatRequest.find({ userId: id }).populate("userId", "firstName lastName email");
+		const requests = await ChatRequest.find({ userId: id }).populate(
+			"userId",
+			"firstName lastName email",
+		);
 		if (!requests || requests.length === 0) {
 			return Response(res, 404, false, message.requestNotFound);
 		}
@@ -57,11 +63,19 @@ export const updateRequest = async (req, res) => {
 		if (!id || !mongoose.Types.ObjectId.isValid(id)) {
 			return Response(res, 400, false, message.invalidId);
 		}
-		const updatedRequest = await ChatRequest.findByIdAndUpdate(id, req.body, { new: true });
+		const updatedRequest = await ChatRequest.findByIdAndUpdate(id, req.body, {
+			new: true,
+		});
 		if (!updatedRequest) {
 			return Response(res, 404, false, message.requestNotFound);
 		}
-		return Response(res, 200, true, message.updateRequestMessage, updatedRequest);
+		return Response(
+			res,
+			200,
+			true,
+			message.updateRequestMessage,
+			updatedRequest,
+		);
 	} catch (error) {
 		return Response(res, 500, false, error.message);
 	}
@@ -73,7 +87,10 @@ export const getRequestByCategory = async (req, res) => {
 		if (!category) {
 			return Response(res, 400, false, message.invalidCategory);
 		}
-		const requests = await ChatRequest.find({ category }).populate("userId", "firstName lastName email");
+		const requests = await ChatRequest.find({ category }).populate(
+			"userId",
+			"firstName lastName email",
+		);
 		if (!requests || requests.length === 0) {
 			return Response(res, 404, false, message.requestNotFound);
 		}
@@ -89,7 +106,10 @@ export const getRequestById = async (req, res) => {
 		if (!id || !mongoose.Types.ObjectId.isValid(id)) {
 			return Response(res, 400, false, message.invalidId);
 		}
-		const request = await ChatRequest.findById(id).populate("userId", "firstName lastName email");
+		const request = await ChatRequest.findById(id).populate(
+			"userId",
+			"firstName lastName email",
+		);
 		if (!request) {
 			return Response(res, 404, false, message.requestNotFound);
 		}
@@ -105,7 +125,11 @@ export const AcceptRequest = async (req, res) => {
 		// if (!id || !mongoose.Types.ObjectId.isValid(id)) {
 		// 	return Response(res, 400, false, message.invalidId);
 		// }
-		const request = await ChatRequest.findByIdAndUpdate(id, { status: "accepted" }, { new: true });
+		const request = await ChatRequest.findByIdAndUpdate(
+			id,
+			{ status: "accepted" },
+			{ new: true },
+		);
 		if (!request) {
 			return Response(res, 404, false, message.requestNotFound);
 		}
@@ -113,6 +137,9 @@ export const AcceptRequest = async (req, res) => {
 		if (!user) {
 			return Response(res, 404, false, message.userNotFound);
 		}
+		console.log(request);
+		console.log(user);
+		console.log(req.volunteer._id);
 		user.volunteerFriends.push(req.volunteer._id);
 		await user.save();
 
@@ -148,7 +175,6 @@ export const deleteRequest = async (req, res) => {
 
 export const getRequestByVolunteerCategory = async (req, res) => {
 	try {
-		console.log("first")
 		const volunteer = req.volunteer;
 		if (!volunteer || !volunteer.expertiseArea) {
 			return Response(res, 400, false, "Volunteer expertise areas not found");
@@ -157,12 +183,13 @@ export const getRequestByVolunteerCategory = async (req, res) => {
 			category: { $in: volunteer.expertiseArea },
 			status: "pending",
 		}).populate("userId", "firstName lastName email");
-        console.log(requests);
+
 		if (!requests || requests.length === 0) {
 			return Response(res, 404, false, "No matching requests found");
 		}
 		return Response(res, 200, true, "Matching requests found", requests);
 	} catch (error) {
+		console.log(error);
 		return Response(res, 500, false, error.message);
 	}
 };

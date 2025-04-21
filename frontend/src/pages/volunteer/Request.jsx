@@ -9,8 +9,10 @@ import {
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import VolHeader from "../../components/VolHeader";
-import { getRequestsByVolunteerCategory } from './../../redux/Actions/chatRequestAction';
-
+import {
+	acceptRequest,
+	getRequestsByVolunteerCategory,
+} from "./../../redux/Actions/chatRequestAction";
 
 const staticRequests = [
 	{
@@ -56,45 +58,12 @@ export const Request = () => {
 	const [editingId, setEditingId] = useState(null);
 	const [editTopic, setEditTopic] = useState("");
 	const dispatch = useDispatch();
-	const {requests} =useSelector((state)=>state.chatRequest);
-	useEffect(()=>{
-		dispatch(getRequestsByVolunteerCategory())
-	},[])
+	const { requests } = useSelector((state) => state.chatRequest);
+	useEffect(() => {
+		dispatch(getRequestsByVolunteerCategory());
+	}, []);
 	const handleAccept = (id) => {
-		setRequest(
-			request.map((requ) =>
-				requ._id === id ? { ...requ, status: "accepted" } : requ,
-			),
-		);
-	};
-
-	const handleReject = (id) => {
-		setRequest(
-			request.map((requ) =>
-				requ._id === id ? { ...requ, status: "rejected" } : requ,
-			),
-		);
-	};
-
-	const handleEdit = (request) => {
-		setEditingId(request._id);
-		setEditTopic(request.Topic);
-	};
-
-	const handleSaveEdit = (id) => {
-		setRequest(
-			request.map((requ) =>
-				requ._id === id ? { ...requ, Topic: editTopic } : requ,
-			),
-		);
-		setEditingId(null);
-		setEditTopic("");
-	};
-
-	const handleDelete = (id) => {
-		if (window.confirm("Are you sure you want to delete this request?")) {
-			setRequest(requests.filter((request) => request._id !== id));
-		}
+		dispatch(acceptRequest(id));
 	};
 
 	return (
@@ -189,13 +158,6 @@ export const Request = () => {
 																	<CheckCircle2 size={16} />
 																	Accept
 																</button>
-																<button
-																	onClick={() => handleReject(request._id)}
-																	className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition flex items-center gap-2"
-																>
-																	<XCircle size={16} />
-																	Reject
-																</button>
 															</>
 														)}
 														{request.status !== "pending" && (
@@ -215,18 +177,6 @@ export const Request = () => {
 																	request.status.slice(1)}
 															</span>
 														)}
-														<button
-															onClick={() => handleEdit(request)}
-															className="text-blue-600 hover:text-blue-700 p-1 rounded hover:bg-blue-50"
-														>
-															<FileEdit size={16} />
-														</button>
-														<button
-															onClick={() => handleDelete(request._id)}
-															className="text-red-600 hover:text-red-700 p-1 rounded hover:bg-red-50"
-														>
-															<Trash size={16} />
-														</button>
 													</div>
 												</div>
 											</div>

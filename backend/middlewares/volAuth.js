@@ -7,7 +7,7 @@ export const isVolAuthenticated = async (req, res, next) => {
 	try {
 		//parsing cookies
 		const { token } = req.cookies;
-		
+
 		if (!token) {
 			return Response(res, 401, false, message.unAuthorized);
 		}
@@ -18,12 +18,10 @@ export const isVolAuthenticated = async (req, res, next) => {
 			return Response(res, 400, false, message.unAuthorized);
 		}
 
-
 		req.volunteer = volunteer;
-		
+
 		next();
 	} catch (error) {
-		console.log(error);
 		Response(res, 500, false, error.message);
 	}
 };

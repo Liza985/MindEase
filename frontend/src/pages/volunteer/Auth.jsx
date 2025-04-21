@@ -44,10 +44,9 @@ const Auth = () => {
 	];
 
 	const { loading, message, error, id } = useSelector(
-		(state) => state.volunteer
+		(state) => state.volunteer,
 	);
 
-	console.log(message);
 	const [loginForm, setLoginForm] = useState({
 		email: "",
 		password: "",
@@ -110,7 +109,6 @@ const Auth = () => {
 			expertiseArea: selectedExpertise.map((item) => item.value),
 		};
 
-		console.log("Final data structure:", dataToSend);
 		dispatch(registerVolunteer(dataToSend));
 	};
 
@@ -206,8 +204,6 @@ const Auth = () => {
 			...prev,
 			expertiseArea: values,
 		}));
-
-		console.log("Expertise updated:", values);
 	};
 
 	return (
@@ -501,7 +497,7 @@ const Auth = () => {
 											availability: {
 												...prev.availability,
 												daysAvailable: selectedOptions.map(
-													(option) => option.value
+													(option) => option.value,
 												),
 											},
 										}));

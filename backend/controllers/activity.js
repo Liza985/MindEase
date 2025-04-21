@@ -59,7 +59,7 @@ export const updateById = async (req, res) => {
 			200,
 			true,
 			message.contentUpdatedSuccessfully,
-			updatedContent
+			updatedContent,
 		);
 	} catch (error) {
 		Response(res, 500, false, error.message);
@@ -80,7 +80,7 @@ export const getContentByCategory = async (req, res) => {
 		const { category } = req.params;
 		const content = await Activity.find({ category: category }).populate(
 			"author",
-			"_id username"
+			"_id username",
 		);
 		if (!content || content.length === 0) {
 			return Response(res, 404, false, message.contentNotFound);
