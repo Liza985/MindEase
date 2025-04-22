@@ -505,7 +505,7 @@ export const forgetVolunteerPassword = async (req, res) => {
 		if (!volunteer) {
 			return Response(res, 400, false, message.volunteerNotFound);
 		}
-
+		console.log("working")
 		const otp = Math.floor(100000 + Math.random() * 900000);
 		const otpExpire = new Date(
 			Date.now() + process.env.OTP_EXPIRE * 15 * 60 * 1000,
@@ -608,6 +608,7 @@ export const changeVolunteerPassword = async (req, res) => {
 		const { id } = req.params;
 		const { password } = req.body;
 		//checking id
+		
 		if (!id) {
 			return Response(res, 400, false, message.idNotFound);
 		}

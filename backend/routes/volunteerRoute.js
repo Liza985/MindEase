@@ -28,7 +28,7 @@ volunteerRouter.get("/login/resend/:id", resendVerifyVolunteerLogin);
 volunteerRouter.post("/logout", logoutVolunteer);
 volunteerRouter.post("/forgetPassword", forgetVolunteerPassword);
 volunteerRouter.post("/resetPassword/:id", resetVolunteerPassword);
-volunteerRouter.post("/changePassword/:id", changeVolunteerPassword);
+volunteerRouter.put("/changePassword/:id", changeVolunteerPassword);
 volunteerRouter.delete("/delete/:id",isVolAuthenticated,deleteVolunteer);
 volunteerRouter.put(
 	"/profile/update",

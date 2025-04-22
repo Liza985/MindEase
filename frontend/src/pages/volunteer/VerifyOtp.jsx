@@ -26,7 +26,7 @@ const VerifyOtp = () => {
 
 	useEffect(() => {
 		if (isAuthenticated) {
-			navigate(`/volunteer/Dashboard`);
+			navigate(`/volunteer/dashboard`);
 		}
 	}, [isAuthenticated, navigate]);
 
@@ -35,7 +35,7 @@ const VerifyOtp = () => {
 			toast.success(message, successToastOptions);
 			dispatch({ type: "CLEAR_MESSAGE" });
 			if (message.includes("Volunteer verified successfully")) {
-				navigate("/volunteer/survey");
+				navigate("/volunteer/dashboard");
 			}
 		}
 		if (error) {

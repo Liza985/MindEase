@@ -102,9 +102,9 @@ const User = () => {
 				<Route
 					path="/survey"
 					element={
-						 <ProtectedRoute>
+						  <ProtectedRoute>
 						<MindeaseForm />
-						 </ProtectedRoute>
+						  </ProtectedRoute>
 					}
 				/>
 				<Route path="/counselor-requests" element={<CounselorRequests />} />

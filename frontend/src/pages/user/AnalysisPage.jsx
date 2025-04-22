@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Header from '../../components/Header.jsx';
 import RiskGauge from '../../components/SemiCircleGauge';
 
-
 const AnalysisPage = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [scores, setScores] = useState({});
   const [loading, setLoading] = useState(true);
   const [overallRisk, setOverallRisk] = useState('');
@@ -242,10 +242,16 @@ const AnalysisPage = () => {
                   </div>
                   
                   <div className="mt-8 text-center">
-                    <p className="text-gray-500 text-sm">
+                    <p className="text-gray-500 text-sm mb-4">
                       Note: This assessment is not a substitute for professional medical advice, diagnosis, or treatment. 
                       Always seek the advice of a qualified healthcare provider with any questions you may have.
                     </p>
+                    <button
+                      onClick={() => navigate('/wellness-hub')}
+                      className="mt-4 bg-teal-600 hover:bg-teal-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors duration-200"
+                    >
+                      Explore Wellness Hub Resources
+                    </button>
                   </div>
                 </div>
               </div>

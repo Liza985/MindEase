@@ -166,7 +166,7 @@ export const volunteerForgotPassword = (email) => async (dispatch) => {
 			type: "FORGOT_VOLUNTEER_PASSWORD_REQUEST",
 		});
 		const { data } = await axios.post(
-			`${URL}/forgotPassword`,
+			`${URL}/forgetPassword`,
 			{ email },
 			{
 				headers: {
@@ -183,6 +183,7 @@ export const volunteerForgotPassword = (email) => async (dispatch) => {
 			},
 		});
 	} catch (error) {
+		
 		dispatch({
 			type: "FORGOT_VOLUNTEER_PASSWORD_FAILURE",
 			payload: error?.response?.data?.message,
@@ -222,6 +223,7 @@ export const volunteerChangePassword = (id, password) => async (dispatch) => {
 		dispatch({
 			type: "CHANGE_VOLUNTEER_PASSWORD_REQUEST",
 		});
+		
 		const { data } = await axios.put(
 			`${URL}/changePassword/${id}`,
 			{ password },
@@ -237,6 +239,7 @@ export const volunteerChangePassword = (id, password) => async (dispatch) => {
 			payload: data.message,
 		});
 	} catch (error) {
+		console.log(error?.response?.data?.message)
 		dispatch({
 			type: "CHANGE_VOLUNTEER_PASSWORD_FAILURE",
 			payload: error?.response?.data?.message,

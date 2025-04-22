@@ -25,22 +25,21 @@ const VerifyOtp = () => {
 	}, [id, navigate]);
 
 	useEffect(() => {
-		if (isAuthenticated) {
-			navigate(`/dashboard`);
-		}
-	}, [isAuthenticated, navigate]);
-
-	useEffect(() => {
 		if (message) {
 			toast.success(message, successToastOptions);
 			dispatch({ type: "CLEAR_MESSAGE" });
-			navigate("/survey");
 		}
 		if (error) {
 			toast.error(error, toastOptions);
 			dispatch({ type: "CLEAR_ERROR" });
 		}
-	}, [message, error, dispatch, navigate]);
+	}, [message, error, dispatch]);
+	
+	useEffect(() => {
+		if (isAuthenticated) {
+			navigate("/survey");
+		}
+	}, [isAuthenticated, navigate]);
 
 	const handleSubmit = (e) => {
 		e.preventDefault();

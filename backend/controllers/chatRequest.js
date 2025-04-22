@@ -48,9 +48,7 @@ export const getRequestByUserId = async (req, res) => {
 			"userId",
 			"firstName lastName email",
 		);
-		if (!requests || requests.length === 0) {
-			return Response(res, 404, false, message.requestNotFound);
-		}
+		
 		return Response(res, 200, true, message.getRequestMessage, requests);
 	} catch (error) {
 		return Response(res, 500, false, error.message);

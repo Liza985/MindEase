@@ -19,6 +19,7 @@ import VerifyOtp from "../../pages/volunteer/VerifyOtp";
 import { getVolunteerProfile } from "../../redux/Actions/volunteerAction";
 import AuthRoute from "../user/AuthRoute";
 import ProtectedRoute from "./ProtectedRoute";
+import ForgotPassword from './../../pages/volunteer/forgotpassword';
 
 const Volunteer = () => {
 	const dispatch = useDispatch();
@@ -36,6 +37,9 @@ const Volunteer = () => {
 						</AuthRoute>
 					}
 				/>
+				<Route path="/volunteer/forgot-password" element={<ForgotPassword />} />
+				<Route path="/volunteer/forgot-password/:id" element={<ForgotPassword />} />
+				<Route path="/volunteer/change-password/:id" element={<ForgotPassword />} />
 				<Route
 					path="/volunteer/register"
 					element={
