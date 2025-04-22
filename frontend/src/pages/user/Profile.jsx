@@ -22,7 +22,7 @@ const Profile = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const {
-		id: user,
+		user,
 		loading,
 		error,
 		message,
