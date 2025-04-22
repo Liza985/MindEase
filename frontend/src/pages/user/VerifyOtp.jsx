@@ -26,21 +26,39 @@ const VerifyOtp = () => {
 
 	useEffect(() => {
 		if (isAuthenticated) {
-			navigate(`/dashboard`);
+			navigate(`/survey`);
 		}
 	}, [isAuthenticated, navigate]);
+
+	// useEffect(() => {
+	// 	if (message) {
+	// 		toast.success(message, successToastOptions);
+	// 		dispatch({ type: "CLEAR_MESSAGE" });
+	// 		navigate("/survey");
+	// 	}
+	// 	if (error) {
+	// 		toast.error(error, toastOptions);
+	// 		dispatch({ type: "CLEAR_ERROR" });
+	// 	}
+	// }, [message, error, dispatch, navigate]);
 
 	useEffect(() => {
 		if (message) {
 			toast.success(message, successToastOptions);
+	
+			if (message === "OTP verified successfully") {
+				navigate("/survey", { state: { fromOtp: true } });
+			}
+			
+	
 			dispatch({ type: "CLEAR_MESSAGE" });
-			navigate("/survey");
 		}
 		if (error) {
 			toast.error(error, toastOptions);
 			dispatch({ type: "CLEAR_ERROR" });
 		}
 	}, [message, error, dispatch, navigate]);
+	
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
