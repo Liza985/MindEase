@@ -137,11 +137,18 @@ export const AcceptRequest = async (req, res) => {
 		if (!user) {
 			return Response(res, 404, false, message.userNotFound);
 		}
-		user.volunteerFriends.push(req.volunteer._id);
-		await user.save();
 
-		req.volunteer.userFriends.push(user._id);
-		await req.volunteer.save();
+		// Check if volunteer is already in user's friends list
+		if (!user.volunteerFriends.includes(req.volunteer._id)) {
+			user.volunteerFriends.push(req.volunteer._id);
+			await user.save();
+		}
+
+		// Check if user is already in volunteer's friends list
+		if (!req.volunteer.userFriends.includes(user._id)) {
+			req.volunteer.userFriends.push(user._id);
+			await req.volunteer.save();
+		}
 
 		return Response(res, 200, true, message.requestAcceptMessage, request);
 	} catch (error) {

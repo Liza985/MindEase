@@ -113,9 +113,9 @@ const User = () => {
 				<Route
 					path="/user-chat"
 					element={
-						 <ProtectedRoute>
+						//  <ProtectedRoute>
 						<UserChat />
-						 </ProtectedRoute>
+						//  </ProtectedRoute>
 					}
 				/>
 				<Route
