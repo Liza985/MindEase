@@ -27,6 +27,12 @@ const VerifyOtp = () => {
 	useEffect(() => {
 		if (message) {
 			toast.success(message, successToastOptions);
+	
+			if (message === "OTP verified successfully") {
+				navigate("/survey", { state: { fromOtp: true } });
+			}
+			
+	
 			dispatch({ type: "CLEAR_MESSAGE" });
 		}
 		if (error) {

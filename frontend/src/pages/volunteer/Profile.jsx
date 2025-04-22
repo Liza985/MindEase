@@ -212,7 +212,7 @@ const Profile = () => {
 											<div className="space-y-2">
 												<p className="text-gray-600 text-sm flex items-center justify-center">
 													<span className="material-icons-outlined text-orange-400 mr-2">
-														email
+														e-mail
 													</span>
 													{formData.email}
 												</p>
