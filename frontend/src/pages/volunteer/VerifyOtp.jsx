@@ -14,7 +14,7 @@ const VerifyOtp = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
-	const { vLoading, message, error, isAuthenticated } = useSelector(
+	const { loading, message, error, isAuthenticated } = useSelector(
 		(state) => state.volunteer
 	);
 
@@ -87,10 +87,10 @@ const VerifyOtp = () => {
 					<div>
 						<button
 							type="submit"
-							disabled={vLoading}
+							disabled={loading}
 							className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-orange-500 hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 cursor-pointer"
 						>
-							{vLoading ? "Verifying..." : "Verify OTP"}
+							{loading ? "Verifying..." : "Verify OTP"}
 						</button>
 					</div>
 

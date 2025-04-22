@@ -14,7 +14,7 @@ const LoginOtp = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
-	const { vLoading, message, error, isVolAuthenticated } = useSelector(
+	const { loading, message, error, isVolAuthenticated } = useSelector(
 		(state) => state.volunteer,
 	);
 
@@ -32,7 +32,7 @@ const LoginOtp = () => {
 
 	useEffect(() => {
 		if (message) {
-			toast.success(message?.message, successToastOptions);
+			toast.success(message, successToastOptions);
 			dispatch({ type: "CLEAR_MESSAGE" });
 			if (typeof message === "string" && message.includes("Login Successful")) {
 				toast.success(message, successToastOptions);
@@ -89,10 +89,10 @@ const LoginOtp = () => {
 					<div>
 						<button
 							type="submit"
-							disabled={vLoading}
+							disabled={loading}
 							className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-orange-500 hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 cursor-pointer"
 						>
-							{vLoading ? "Verifying..." : "Verify OTP"}
+							{loading ? "Verifying..." : "Verify OTP"}
 						</button>
 					</div>
 
