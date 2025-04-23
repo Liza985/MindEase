@@ -1,14 +1,31 @@
 import { ChevronDown, Upload } from "lucide-react";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { addContent } from "../redux/Actions/activityAction";
 
 const UploadModal = ({ onClose, setUploadType, uploadType }) => {
+	const dispatch = useDispatch();
+
 	const [title, setTitle] = useState("");
 	const [description, setDescription] = useState("");
+	const [category, setCategory] = useState("");
+	const [status, setStatus] = useState("Published");
+	const [link, setLink] = useState("");
 	const [file, setFile] = useState(null);
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		// Here you would handle the upload logic
+
+		const formData = new FormData();
+		formData.append("title", title);
+		formData.append("description", description);
+		formData.append("category", category);
+		formData.append("status", status);
+		formData.append("link", link);
+		formData.append("contentType", uploadType);
+		if (file) formData.append("file", file);
+
+		dispatch(addContent(formData));
 		onClose();
 	};
 
@@ -28,44 +45,51 @@ const UploadModal = ({ onClose, setUploadType, uploadType }) => {
 				</div>
 
 				<form onSubmit={handleSubmit}>
+					{/* Title */}
 					<div className="mb-4">
-						<label
-							className="block text-gray-700 text-sm font-bold mb-2"
-							htmlFor="title"
-						>
+						<label className="block text-sm font-bold text-gray-700 mb-1">
 							Title
 						</label>
 						<input
 							type="text"
-							id="title"
 							value={title}
 							onChange={(e) => setTitle(e.target.value)}
-							className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-							placeholder="Enter content title"
+							className="w-full px-3 py-2 border rounded-md"
 							required
 						/>
 					</div>
 
+					{/* Description */}
 					<div className="mb-4">
-						<label
-							className="block text-gray-700 text-sm font-bold mb-2"
-							htmlFor="type"
-						>
+						<label className="block text-sm font-bold text-gray-700 mb-1">
+							Description
+						</label>
+						<textarea
+							value={description}
+							onChange={(e) => setDescription(e.target.value)}
+							className="w-full px-3 py-2 border rounded-md"
+							rows="3"
+							required
+						/>
+					</div>
+
+					{/* Content Type */}
+					<div className="mb-4">
+						<label className="block text-sm font-bold text-gray-700 mb-1">
 							Content Type
 						</label>
 						<div className="relative">
 							<select
-								id="type"
 								value={uploadType}
 								onChange={(e) => setUploadType(e.target.value)}
-								className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 appearance-none"
+								className="w-full px-3 py-2 border rounded-md appearance-none"
 								required
 							>
 								<option value="">Select Type</option>
-								<option value="video">Video</option>
-								<option value="pdf">PDF Document</option>
-								<option value="article">Article</option>
-								<option value="image">Image</option>
+								<option value="Video">Video</option>
+								<option value="PDF Document">PDF Document</option>
+								<option value="Article">Article</option>
+								<option value="Image">Image</option>
 							</select>
 							<ChevronDown
 								size={16}
@@ -74,29 +98,59 @@ const UploadModal = ({ onClose, setUploadType, uploadType }) => {
 						</div>
 					</div>
 
+					{/* Category */}
 					<div className="mb-4">
-						<label
-							className="block text-gray-700 text-sm font-bold mb-2"
-							htmlFor="description"
-						>
-							Description
+						<label className="block text-sm font-bold text-gray-700 mb-1">
+							Category
 						</label>
-						<textarea
-							id="description"
-							value={description}
-							onChange={(e) => setDescription(e.target.value)}
-							className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-							placeholder="Enter content description"
-							rows="3"
+						<select
+							value={category}
+							onChange={(e) => setCategory(e.target.value)}
+							className="w-full px-3 py-2 border rounded-md"
 							required
+						>
+							<option value="">Select Category</option>
+							<option value="Assistance Programs">Assistance Programs</option>
+							<option value="Volunteers">Volunteers</option>
+							<option value="Resources">Resources</option>
+							<option value="Events">Events</option>
+							<option value="Community">Community</option>
+						</select>
+					</div>
+
+					{/* Status */}
+					<div className="mb-4">
+						<label className="block text-sm font-bold text-gray-700 mb-1">
+							Status
+						</label>
+						<select
+							value={status}
+							onChange={(e) => setStatus(e.target.value)}
+							className="w-full px-3 py-2 border rounded-md"
+						>
+							<option value="Published">Published</option>
+							<option value="Draft">Draft</option>
+							<option value="Under Review">Under Review</option>
+						</select>
+					</div>
+
+					{/* Optional Link */}
+					<div className="mb-4">
+						<label className="block text-sm font-bold text-gray-700 mb-1">
+							Optional Link
+						</label>
+						<input
+							type="url"
+							value={link}
+							onChange={(e) => setLink(e.target.value)}
+							className="w-full px-3 py-2 border rounded-md"
+							placeholder="https://example.com/resource"
 						/>
 					</div>
 
+					{/* File Upload */}
 					<div className="mb-6">
-						<label
-							className="block text-gray-700 text-sm font-bold mb-2"
-							htmlFor="file"
-						>
+						<label className="block text-sm font-bold text-gray-700 mb-2">
 							Upload File
 						</label>
 						<div className="border-2 border-dashed border-gray-300 rounded-md p-4 text-center hover:border-orange-500 transition">
@@ -115,17 +169,18 @@ const UploadModal = ({ onClose, setUploadType, uploadType }) => {
 						</div>
 					</div>
 
+					{/* Actions */}
 					<div className="flex justify-end space-x-3">
 						<button
 							type="button"
 							onClick={onClose}
-							className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100 transition"
+							className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100"
 						>
 							Cancel
 						</button>
 						<button
 							type="submit"
-							className="px-4 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 transition"
+							className="px-4 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600"
 						>
 							Upload
 						</button>

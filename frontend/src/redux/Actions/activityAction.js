@@ -1,7 +1,7 @@
 import axios from "axios";
 import { BACKEND_URL } from "../../constants/url";
 
-const url = `${BACKEND_URL}/api/v1/content`;
+const url = `${BACKEND_URL}api/v1/content`;
 
 
 export const addContent = (details) => async (dispatch) => {

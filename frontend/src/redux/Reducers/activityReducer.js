@@ -85,6 +85,7 @@ export const contentReducer = createReducer(initialState, (builder) => {
 		})
 		.addCase(getAllContentSuccess, (state, action) => {
 			state.loading = false;
+			state.message = action.payload.message;
 			state.contentItems = action.payload.data;
 		})
 		.addCase(getAllContentFailure, (state, action) => {
