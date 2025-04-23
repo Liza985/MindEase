@@ -47,7 +47,7 @@ import { getRequestsByVolunteerCategory } from "./../../redux/Actions/chatReques
 // ];
 
 export const Request = () => {
-	const [request, setRequest] = useState(staticRequests);
+	// const [request, setRequest] = useState(staticRequests);
 	const [editingId, setEditingId] = useState(null);
 	const [editTopic, setEditTopic] = useState("");
 	const dispatch = useDispatch();
