@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from "react";
-import Header from "../../components/Header";
-import { useNavigate } from "react-router-dom";
 import { Pencil, Trash, X } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-	getRequestByUserId,
-	deleteRequest,
-	updateRequest,
-} from "../../redux/Actions/chatRequestAction";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import Header from "../../components/Header";
 import toastOptions from "../../constants/toast";
+import { getUserChat } from "../../redux/Actions/chatAction";
+import {
+	deleteRequest,
+	getRequestByUserId,
+} from "../../redux/Actions/chatRequestAction";
 
-const requests={}
+const requests = {};
 const CounselorRequests = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
@@ -22,15 +22,19 @@ const CounselorRequests = () => {
 	const { loading, requestByUser, error, message } = useSelector(
 		(state) => state.chatRequest,
 	);
+	const { userChats } = useSelector((state) => state.chat);
 	const { user } = useSelector((state) => state.user);
 
 	useEffect(() => {
-		
 		if (user && user._id) {
 			dispatch(getRequestByUserId(user._id));
-			
 		}
+		dispatch(getUserChat());
 	}, [dispatch]);
+
+	// useEffect(()=>{
+	//
+	// },[dispatch])
 
 	useEffect(() => {
 		if (error) {
@@ -166,7 +170,7 @@ const CounselorRequests = () => {
 														</div>
 													</div>
 													<p className="text-gray-600 mb-3">
-														{request.description}
+														{request?.description}
 													</p>
 													<div className="text-sm text-gray-500">
 														<span>Category: {request.category}</span>
@@ -196,37 +200,36 @@ const CounselorRequests = () => {
 
 							{activeTab === "chats" && (
 								<div>
-									{requests && requests?.length > 0 ? (
+									{userChats && userChats?.length > 0 ? (
 										<div className="space-y-4">
-											{requests
-												.filter((request) => request.status === "accepted")
-												.map((chat) => (
-													<div
-														key={chat._id}
-														className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer"
-														onClick={() => handleStartChat(chat._id)}
-													>
-														<div className="flex justify-between items-start mb-2">
-															<h3 className="text-lg font-medium text-gray-800">
-																{chat.Topic}
-															</h3>
-															{chat.unread > 0 && (
-																<span className="bg-orange-500 text-white text-xs px-2 py-1 rounded-full">
-																	{chat.unread} new
-																</span>
-															)}
-														</div>
-														<p className="text-gray-600 mb-3">
-															<span className="font-medium">
-																{chat.counselor}:
-															</span>{" "}
-															{chat.lastMessage}
-														</p>
-														<div className="text-sm text-gray-500">
-															Last updated: {formatDate(chat.updatedAt)}
-														</div>
+											{userChats.map((chat) => (
+												<div
+													key={chat._id}
+													className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer"
+													onClick={() => handleStartChat(chat._id)}
+												>
+													<div className="flex justify-between items-start mb-2">
+														<h3 className="text-lg font-medium text-gray-800">
+															{chat?.topic}
+														</h3>
+														{chat.unread > 0 && (
+															<span className="bg-orange-500 text-white text-xs px-2 py-1 rounded-full">
+																{chat.unread} new
+															</span>
+														)}
 													</div>
-												))}
+													<p className="text-gray-600 mb-3">
+														<span className="font-medium">
+															{chat?.volunteerId?.firstName}{" "}
+															{chat?.volunteerId?.lastName}
+														</span>{" "}
+														{chat.lastMessage}
+													</p>
+													<div className="text-sm text-gray-500">
+														Last updated: {formatDate(chat.updatedAt)}
+													</div>
+												</div>
+											))}
 										</div>
 									) : (
 										<div className="text-center py-8">

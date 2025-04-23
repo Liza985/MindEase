@@ -1,11 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
+import { contentReducer } from "./Reducers/activityReducer";
+import { blogReducer } from "./Reducers/blogReducer";
+import { chatReducer } from "./Reducers/chatReducer";
+import { chatRequestReducer } from "./Reducers/chatRequestReducer";
+import { feedbackReducer } from "./Reducers/feedbackReducer";
+import { reviewReducer } from "./Reducers/reviewReducer";
 import { userReducer } from "./Reducers/userReducer";
 import { volunteerReducer } from "./Reducers/volunteerReducer";
-import { blogReducer } from "./Reducers/blogReducer";
-import { reviewReducer } from "./Reducers/reviewReducer";
-import { feedbackReducer } from "./Reducers/feedbackReducer";
-import { contentReducer } from "./Reducers/activityReducer";
-import { chatRequestReducer } from "./Reducers/chatRequestReducer";
 
 const store = configureStore({
 	reducer: {
@@ -15,7 +16,8 @@ const store = configureStore({
 		review: reviewReducer,
 		feedback: feedbackReducer,
 		content: contentReducer,
-		chatRequest:chatRequestReducer
+		chatRequest: chatRequestReducer,
+		chat: chatReducer,
 	},
 });
 

@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 
 const volunteerSchema = mongoose.Schema(
 	{
@@ -65,10 +65,6 @@ const volunteerSchema = mongoose.Schema(
 				ref: "Blog",
 			},
 		],
-		userFriends:[{
-			type: mongoose.Schema.Types.ObjectId,
-			ref: "User",
-		}],
 		isVerified: {
 			type: Boolean,
 			default: false,

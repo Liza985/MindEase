@@ -1,16 +1,21 @@
 import cloudinary from "cloudinary";
-import { server } from "./app.js"; // Import server instead of app
+import dotenv from "dotenv";
+import { httpServer } from "./app.js";
 import connectDB from "./config/db.js";
 
+// Configure dotenv before using any environment variables
+dotenv.config({ path: "./config/.env" });
+
+// Connect to database
 connectDB();
 
 cloudinary.config({
-  cloud_name: process.env.CLOUD_NAME,
-  api_key: process.env.CLOUD_API_KEY,
-  api_secret: process.env.CLOUD_API_SECRET,
+	cloud_name: process.env.CLOUD_NAME,
+	api_key: process.env.CLOUD_API_KEY,
+	api_secret: process.env.CLOUD_API_SECRET,
 });
 
-// Use the server instead of app to listen
-server.listen(process.env.PORT, () => {
-  console.log(`Server is running at port ${process.env.PORT}`);
+// Replace app.listen with httpServer.listen
+httpServer.listen(process.env.PORT, () => {
+	console.log(`Server is running on port ${process.env.PORT}`);
 });

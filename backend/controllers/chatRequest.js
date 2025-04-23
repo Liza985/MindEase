@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import ChatRequest from "../models/chatRequest.js";
-import User from "../models/user.js";
 import { message } from "../utils/message.js";
 import { Response } from "../utils/response.js";
 
@@ -48,7 +47,7 @@ export const getRequestByUserId = async (req, res) => {
 			"userId",
 			"firstName lastName email",
 		);
-		
+
 		return Response(res, 200, true, message.getRequestMessage, requests);
 	} catch (error) {
 		return Response(res, 500, false, error.message);
@@ -120,9 +119,7 @@ export const getRequestById = async (req, res) => {
 export const AcceptRequest = async (req, res) => {
 	try {
 		const { id } = req.params;
-		// if (!id || !mongoose.Types.ObjectId.isValid(id)) {
-		// 	return Response(res, 400, false, message.invalidId);
-		// }
+
 		const request = await ChatRequest.findByIdAndUpdate(
 			id,
 			{ status: "accepted" },
@@ -131,24 +128,9 @@ export const AcceptRequest = async (req, res) => {
 		if (!request) {
 			return Response(res, 404, false, message.requestNotFound);
 		}
-		const user = await User.findById(request.userId);
-		if (!user) {
-			return Response(res, 404, false, message.userNotFound);
-		}
+		const requests = await getRequestByVolunteerCategory(req.volunteer);
 
-		// Check if volunteer is already in user's friends list
-		if (!user.volunteerFriends.includes(req.volunteer._id)) {
-			user.volunteerFriends.push(req.volunteer._id);
-			await user.save();
-		}
-
-		// Check if user is already in volunteer's friends list
-		if (!req.volunteer.userFriends.includes(user._id)) {
-			req.volunteer.userFriends.push(user._id);
-			await req.volunteer.save();
-		}
-
-		return Response(res, 200, true, message.requestAcceptMessage, request);
+		return Response(res, 200, true, message.requestAcceptMessage, requests);
 	} catch (error) {
 		return Response(res, 500, false, error.message);
 	}
@@ -186,9 +168,6 @@ export const getRequestByVolunteerCategory = async (req, res) => {
 			status: "pending",
 		}).populate("userId", "firstName lastName email");
 
-		if (!requests || requests.length === 0) {
-			return Response(res, 404, false, "No matching requests found");
-		}
 		return Response(res, 200, true, "Matching requests found", requests);
 	} catch (error) {
 		console.log(error);

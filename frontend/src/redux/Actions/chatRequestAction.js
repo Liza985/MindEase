@@ -1,10 +1,11 @@
 import axios from "axios";
 import { BACKEND_URL } from "../../constants/url";
+import { createChat } from "./chatAction";
 
 const url = BACKEND_URL + "api/v1/request";
 
-
-export const createChatRequest =(category, Topic, description) => async (dispatch) => {
+export const createChatRequest =
+	(category, Topic, description) => async (dispatch) => {
 		try {
 			dispatch({
 				type: "CREATE_CHAT_REQUEST",
@@ -67,14 +68,13 @@ export const getRequestByUserId = (id) => async (dispatch) => {
 		const { data } = await axios.get(`${url}/user/${id}`, {
 			withCredentials: true,
 		});
-        
+
 		dispatch({
 			type: "GET_REQUEST_BY_USER_ID_SUCCESS",
 			payload: {
 				message: data.message,
 				data: data.data,
 			},
-           
 		});
 	} catch (error) {
 		dispatch({
@@ -187,27 +187,6 @@ export const deleteRequest = (id) => async (dispatch) => {
 	}
 };
 
-export const acceptRequest = (id) => async (dispatch) => {
-	try {
-		dispatch({
-			type: "ACCEPT_REQUEST_REQUEST",
-		});
-		const { data } = await axios.get(`${url}/accept/${id}`, {
-			withCredentials: true,
-		});
-		dispatch({
-			type: "ACCEPT_REQUEST_SUCCESS",
-			payload: data,
-		});
-	} catch (error) {
-		console.log(error?.response?.data?.message )
-		dispatch({
-			type: "ACCEPT_REQUEST_FAILURE",
-			payload: error?.response?.data?.message || "Something went wrong",
-		});
-	}
-};
-
 export const getRequestsByVolunteerCategory = () => async (dispatch) => {
 	try {
 		dispatch({ type: "GET_REQUESTS_BY_VOLUNTEER_CATEGORY_REQUEST" });
@@ -231,7 +210,27 @@ export const getRequestsByVolunteerCategory = () => async (dispatch) => {
 	}
 };
 
-
+export const acceptRequest = (id) => async (dispatch) => {
+	try {
+		dispatch({
+			type: "ACCEPT_REQUEST_REQUEST",
+		});
+		const { data } = await axios.get(`${url}/accept/${id}`, {
+			withCredentials: true,
+		});
+		dispatch(createChat(id));
+		dispatch({
+			type: "ACCEPT_REQUEST_SUCCESS",
+			payload: data,
+		});
+	} catch (error) {
+		console.log(error?.response?.data?.message);
+		dispatch({
+			type: "ACCEPT_REQUEST_FAILURE",
+			payload: error?.response?.data?.message || "Something went wrong",
+		});
+	}
+};
 export const updateRequestStatus = (id, status) => async (dispatch) => {
 	try {
 		dispatch({ type: "UPDATE_REQUEST_REQUEST" });
@@ -254,8 +253,6 @@ export const updateRequestStatus = (id, status) => async (dispatch) => {
 				data: data.data,
 			},
 		});
-
-		
 	} catch (error) {
 		dispatch({
 			type: "UPDATE_REQUEST_FAILURE",

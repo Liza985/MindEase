@@ -1,154 +1,171 @@
-// In-memory storage for active chats when database is not available
-import Chat from "../models/chatModel.js"; // Assuming you have a Chat model defined
-const activeChats = new Map();
-const pendingChats = new Map();
+import Chat from "../models/Chat.js";
+import ChatRequest from "../models/chatRequest.js";
+import { message } from "../utils/message.js";
+import { Response } from "../utils/response.js";
 
-export const getChatStats = async (req, res) => {
-	try {
-		// If you're using a database
-		if (Chat) {
-			const pendingCount = await Chat.countDocuments({
-				volunteerId: null,
-				status: "pending",
-			});
+export const initializeSocket = (io) => {
+	io.on("connection", (socket) => {
+		console.log("New client connected");
 
-			const acceptedCount = await Chat.countDocuments({
-				volunteerId: { $ne: null },
-				status: "assigned",
-			});
-
-			return res.status(200).json({
-				success: true,
-				stats: {
-					pending: pendingCount,
-					accepted: acceptedCount,
-					total: pendingCount + acceptedCount,
-				},
-			});
-		} else {
-			// Using in-memory storage
-			return res.status(200).json({
-				success: true,
-				stats: {
-					pending: pendingChats.size,
-					accepted: activeChats.size,
-					total: pendingChats.size + activeChats.size,
-				},
-			});
-		}
-	} catch (error) {
-		return res.status(500).json({
-			success: false,
-			message: "Failed to fetch chat statistics",
-			error: error.message,
+		// Join a chat room
+		socket.on("join_chat", (chatId) => {
+			socket.join(chatId);
+			console.log(`User joined chat: ${chatId}`);
 		});
-	}
-};
 
-export const getChatsByVolunteer = async (req, res) => {
-	try {
-		const { volunteerId } = req.params;
+		// Handle new messages
+		socket.on("send_message", async (data) => {
+			try {
+				const { chatId, content, senderId, senderType } = data;
+				const chat = await Chat.findById(chatId);
 
-		if (!volunteerId) {
-			return res.status(400).json({
-				success: false,
-				message: "Volunteer ID is required",
-			});
-		}
+				if (!chat) {
+					socket.emit("error", "Chat not found");
+					return;
+				}
 
-		// If using database
-		if (Chat) {
-			const chats = await Chat.find({
-				volunteerId,
-				status: "assigned",
-			});
+				const newMessage = {
+					sender: senderId,
+					senderModel: senderType,
+					content,
+					timestamp: new Date(),
+					read: false,
+				};
 
-			return res.status(200).json({
-				success: true,
-				volunteerId,
-				chatCount: chats.length,
-				chats,
-			});
-		} else {
-			// Using in-memory storage
-			const volunteerChats = Array.from(activeChats.values()).filter(
-				(chat) => chat.volunteerId === volunteerId,
-			);
+				chat.messages.push(newMessage);
+				chat.lastMessage = content;
+				await chat.save();
 
-			return res.status(200).json({
-				success: true,
-				volunteerId,
-				chatCount: volunteerChats.length,
-				chats: volunteerChats,
-			});
-		}
-	} catch (error) {
-		return res.status(500).json({
-			success: false,
-			message: "Failed to fetch volunteer chats",
-			error: error.message,
+				io.to(chatId).emit("receive_message", {
+					...newMessage,
+					chatId,
+				});
+			} catch (error) {
+				socket.emit("error", error.message);
+			}
 		});
-	}
-};
 
-// For Socket.io to use these functions
-export const trackChat = (chatId, userId, userName) => {
-	pendingChats.set(chatId, {
-		id: chatId,
-		userId,
-		userName,
-		status: "pending",
-		createdAt: Date.now(),
-		messages: [],
+		// Mark messages as read
+		socket.on("mark_messages_read", async (data) => {
+			try {
+				const { chatId, userId } = data;
+				const chat = await Chat.findById(chatId);
+
+				if (chat) {
+					chat.messages.forEach((msg) => {
+						if (msg.sender.toString() !== userId) {
+							msg.read = true;
+						}
+					});
+					await chat.save();
+					io.to(chatId).emit("messages_marked_read", { chatId, userId });
+				}
+			} catch (error) {
+				socket.emit("error", error.message);
+			}
+		});
+
+		socket.on("disconnect", () => {
+			console.log("Client disconnected");
+		});
 	});
-
-	return {
-		pending: pendingChats.size,
-		accepted: activeChats.size,
-	};
 };
 
-export const acceptChat = (chatId, volunteerId, volunteerName) => {
-	const chat = pendingChats.get(chatId);
+export const createChat = async (req, res) => {
+	try {
+		const { id } = req.body;
 
-	if (chat) {
-		chat.volunteerId = volunteerId;
-		chat.volunteerName = volunteerName;
-		chat.status = "assigned";
-		chat.assignedAt = Date.now();
+		const request = await ChatRequest.findById(id);
 
-		// Move from pending to active
-		pendingChats.delete(chatId);
-		activeChats.set(chatId, chat);
+		if (!request) {
+			return Response(res, 404, false, message.requestNotFound);
+		}
+
+		if (request.status !== "pending") {
+			return Response(res, 400, false, "Request already processed");
+		}
+
+		const chat = await Chat.create({
+			requestId: id,
+			userId: request.userId,
+			volunteerId: req.volunteer._id,
+			topic: request.Topic,
+			messages: [],
+			status: "active",
+		});
+
+		request.status = "accepted";
+		await request.save();
+
+		await chat.populate([
+			{ path: "userId", select: "firstName lastName email" },
+			{ path: "volunteerId", select: "firstName lastName email expertiseArea" },
+		]);
+
+		return Response(res, 201, true, "Chat created successfully", chat);
+	} catch (error) {
+		return Response(res, 500, false, error.message);
 	}
-
-	return {
-		pending: pendingChats.size,
-		accepted: activeChats.size,
-	};
 };
 
-export const rejectChat = (chatId) => {
-	pendingChats.delete(chatId);
+export const getUserChats = async (req, res) => {
+	try {
+		const chats = await Chat.find({ userId: req.user._id })
+			.populate("volunteerId", "firstName lastName email expertiseArea")
+			.populate("requestId", "Topic category")
+			.sort({ updatedAt: -1 });
 
-	return {
-		pending: pendingChats.size,
-		accepted: activeChats.size,
-	};
+		return Response(res, 200, true, "Chats fetched successfully", chats);
+	} catch (error) {
+		return Response(res, 500, false, error.message);
+	}
 };
 
-export const endChat = (chatId) => {
-	activeChats.delete(chatId);
+export const getVolunteerChats = async (req, res) => {
+	try {
+		const chats = await Chat.find({ volunteerId: req.volunteer._id })
+			.populate("userId", "firstName lastName email")
+			.populate("requestId", "Topic category")
+			.sort({ updatedAt: -1 });
 
-	return {
-		pending: pendingChats.size,
-		accepted: activeChats.size,
-	};
+		return Response(res, 200, true, "Chats fetched successfully", chats);
+	} catch (error) {
+		return Response(res, 500, false, error.message);
+	}
 };
 
-export const getAllChats = () => {
-	return {
-		pending: Array.from(pendingChats.values()),
-		accepted: Array.from(activeChats.values()),
-	};
+export const getChatById = async (req, res) => {
+	try {
+		const { id } = req.params;
+		const chat = await Chat.findById(id)
+			.populate("userId", "firstName lastName email")
+			.populate("volunteerId", "firstName lastName email expertiseArea")
+			.populate("requestId", "Topic category");
+
+		if (!chat) {
+			return Response(res, 404, false, "Chat not found");
+		}
+
+		return Response(res, 200, true, "Chat fetched successfully", chat);
+	} catch (error) {
+		return Response(res, 500, false, error.message);
+	}
+};
+
+export const updateChatStatus = async (req, res) => {
+	try {
+		const { status } = req.body;
+		const chat = await Chat.findById(req.params.id);
+
+		if (!chat) {
+			return Response(res, 404, false, "Chat not found");
+		}
+
+		chat.status = status;
+		await chat.save();
+
+		return Response(res, 200, true, "Chat status updated successfully", chat);
+	} catch (error) {
+		return Response(res, 500, false, error.message);
+	}
 };
