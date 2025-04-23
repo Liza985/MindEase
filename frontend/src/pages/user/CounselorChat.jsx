@@ -1,132 +1,101 @@
-// Create a new file: CounselorChat.js in the same directory
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import Header from "../../components/Header";
 import { getChatById } from "../../redux/Actions/chatAction";
+import { useSocket } from "../../context/SocketContext";
 
 const CounselorChat = () => {
 	const navigate = useNavigate();
 	const { chatId } = useParams();
-	const [isLoading, setIsLoading] = useState(true);
-	const [chatData, setChatData] = useState(null);
 	const [newMessage, setNewMessage] = useState("");
-	const [messages, setMessages] = useState([]);
 	const messageEndRef = useRef(null);
 	const dispatch = useDispatch();
-
-	// Mock data - in a real app, you would fetch this from your backend
-	// useEffect(() => {
-	//   // Simulate API fetch
-	//   setTimeout(() => {
-	//     setChatData({
-	//       id: chatId,
-	//       topic: "Work-Life Balance",
-	//       counselor: "Dr. Michael Patel",
-	//       startedAt: "2025-03-15T10:30:00Z",
-	//       status: "active"
-	//     });
-
-	//     setMessages([
-	//       {
-	//         id: 1,
-	//         sender: "counselor",
-	//         text: "Hello! Thank you for reaching out about work-life balance. This is something many people struggle with. Could you tell me a bit more about your specific situation?",
-	//         timestamp: "2025-03-15T10:35:00Z"
-	//       },
-	//       {
-	//         id: 2,
-	//         sender: "user",
-	//         text: "Hi Dr. Patel, I've been feeling overwhelmed with my work responsibilities lately. I'm finding it hard to disconnect after work hours and it's affecting my personal life.",
-	//         timestamp: "2025-03-15T10:38:00Z"
-	//       },
-	//       {
-	//         id: 3,
-	//         sender: "counselor",
-	//         text: "I understand how challenging that can be. It's quite common, especially with remote work blurring the lines between work and home. Could you share what your typical day looks like and what specific aspects are most stressful for you?",
-	//         timestamp: "2025-03-15T10:42:00Z"
-	//       },
-	//       {
-	//         id: 4,
-	//         sender: "user",
-	//         text: "I usually start working at 8am and often don't finish until 7 or 8pm. I feel like I need to always be available for emails and messages, even on weekends. The constant notifications and feeling of always being 'on call' is wearing me down.",
-	//         timestamp: "2025-03-15T10:46:00Z"
-	//       },
-	//       {
-	//         id: 5,
-	//         sender: "counselor",
-	//         text: "Thank you for sharing that. Those long hours combined with the expectation of constant availability would be difficult for anyone. Let's work on establishing some boundaries and strategies to help you reclaim your personal time. Have you tried any approaches to disconnect so far?",
-	//         timestamp: "2025-03-15T10:50:00Z"
-	//       },
-	//       {
-	//         id: 6,
-	//         sender: "counselor",
-	//         text: "Let's schedule our follow-up for next Tuesday at 3pm. Does that work for you?",
-	//         timestamp: "2025-03-20T16:45:00Z"
-	//       }
-	//     ]);
-
-	//     setIsLoading(false);
-	//   }, 1000);
-	// }, [chatId]);
-
+	const { socket } = useSocket();
+	const { user } = useSelector((state) => state.user);
 	const { loading, chatDetails } = useSelector((state) => state.chat);
+
 	useEffect(() => {
 		dispatch(getChatById(chatId));
-	}, [chatId]);
+	}, [chatId, dispatch]);
+
+	useEffect(() => {
+		if (socket && chatId) {
+			// Join the chat room
+			socket.emit("join_chat", chatId);
+
+			// Listen for new messages
+			socket.on("receive_message", (message) => {
+				dispatch(getChatById(chatId)); // Refresh chat to include new message
+			});
+
+			// Mark messages as read
+			socket.emit("mark_messages_read", { chatId, userId: user._id });
+
+			// Listen for messages marked as read
+			socket.on("messages_marked_read", ({ chatId: updatedChatId }) => {
+				if (updatedChatId === chatId) {
+					dispatch(getChatById(chatId));
+				}
+			});
+
+			return () => {
+				socket.off("receive_message");
+				socket.off("messages_marked_read");
+			};
+		}
+	}, [socket, chatId, user._id, dispatch]);
+
 	useEffect(() => {
 		// Scroll to bottom whenever messages change
 		messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
-	}, [messages]);
+	}, [chatDetails?.messages]);
 
 	const handleSendMessage = (e) => {
 		e.preventDefault();
-		if (!newMessage.trim()) return;
+		if (!newMessage.trim() || !socket) return;
 
-		const newMsg = {
-			id: messages.length + 1,
-			sender: "user",
-			text: newMessage,
-			timestamp: new Date().toISOString(),
-		};
+		socket.emit("send_message", {
+			chatId,
+			content: newMessage.trim(),
+			senderId: user._id,
+			senderType: "User"
+		});
 
-		setMessages([...messages, newMsg]);
 		setNewMessage("");
-
-		// Simulate counselor response
-		setTimeout(() => {
-			const counselorResponse = {
-				id: messages.length + 2,
-				sender: "counselor",
-				text: "Thank you for your message. I'll review this and get back to you shortly.",
-				timestamp: new Date().toISOString(),
-			};
-			setMessages((prev) => [...prev, counselorResponse]);
-		}, 1500);
 	};
 
 	const formatMessageTime = (timestamp) => {
 		const date = new Date(timestamp);
-		return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+		return date.toLocaleTimeString([], { 
+			hour: "2-digit", 
+			minute: "2-digit",
+			hour12: true 
+		});
 	};
 
 	const formatMessageDate = (timestamp) => {
 		const date = new Date(timestamp);
-		return date.toLocaleDateString();
+		return date.toLocaleDateString("en-US", {
+			weekday: 'long',
+			year: 'numeric',
+			month: 'long',
+			day: 'numeric'
+		});
 	};
 
 	// Group messages by date
 	const groupMessagesByDate = () => {
 		const grouped = {};
-
-		chatDetails?.messages.forEach((message) => {
-			const date = formatMessageDate(message.timestamp);
-			if (!grouped[date]) {
-				grouped[date] = [];
-			}
-			grouped[date].push(message);
-		});
-
+		if (chatDetails?.messages) {
+			chatDetails.messages.forEach((message) => {
+				const date = formatMessageDate(message.timestamp);
+				if (!grouped[date]) {
+					grouped[date] = [];
+				}
+				grouped[date].push(message);
+			});
+		}
 		return grouped;
 	};
 
@@ -187,26 +156,26 @@ const CounselorChat = () => {
 										</span>
 									</div>
 
-									{groupedMessages[date].map((message) => (
+									{groupedMessages[date].map((message, idx) => (
 										<div
-											key={message.id}
+											key={idx}
 											className={`flex mb-4 ${
-												message.sender === "user"
+												message.senderModel === "User"
 													? "justify-end"
 													: "justify-start"
 											}`}
 										>
 											<div
 												className={`max-w-xs md:max-w-md lg:max-w-lg xl:max-w-xl rounded-lg px-4 py-2 ${
-													message.sender === "user"
+													message.senderModel === "User"
 														? "bg-orange-500 text-white rounded-br-none"
 														: "bg-gray-100 text-gray-800 rounded-bl-none"
 												}`}
 											>
-												<p className="mb-1">{message.text}</p>
+												<p className="mb-1">{message.content}</p>
 												<p
 													className={`text-xs ${
-														message.sender === "user"
+														message.senderModel === "User"
 															? "text-orange-100"
 															: "text-gray-500"
 													} text-right`}

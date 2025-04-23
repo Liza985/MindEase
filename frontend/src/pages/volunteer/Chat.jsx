@@ -1,20 +1,74 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import VolHeader from "../../components/VolHeader";
 import { getChatById, getVolunteerChat } from "../../redux/Actions/chatAction";
+import { useSocket } from "../../context/SocketContext";
 
 export const Chat = () => {
 	const dispatch = useDispatch();
 	const { volunteerChats, chatDetails } = useSelector((state) => state.chat);
+	const { volunteer } = useSelector((state) => state.volunteer);
 	const [selectedChatId, setSelectedChatId] = useState(null);
+	const [newMessage, setNewMessage] = useState("");
+	const { socket } = useSocket();
+	const messageEndRef = useRef(null);
 
 	useEffect(() => {
 		dispatch(getVolunteerChat());
 	}, [dispatch]);
 
+	useEffect(() => {
+		if (socket && selectedChatId) {
+			// Join the chat room
+			socket.emit("join_chat", selectedChatId);
+
+			// Listen for new messages
+			socket.on("receive_message", (message) => {
+				dispatch(getChatById(selectedChatId));
+			});
+
+			// Mark messages as read
+			socket.emit("mark_messages_read", { 
+				chatId: selectedChatId, 
+				userId: volunteer._id 
+			});
+
+			// Listen for messages marked as read
+			socket.on("messages_marked_read", ({ chatId: updatedChatId }) => {
+				if (updatedChatId === selectedChatId) {
+					dispatch(getChatById(selectedChatId));
+				}
+			});
+
+			return () => {
+				socket.off("receive_message");
+				socket.off("messages_marked_read");
+			};
+		}
+	}, [socket, selectedChatId, volunteer._id, dispatch]);
+
+	useEffect(() => {
+		// Scroll to bottom whenever messages change
+		messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
+	}, [chatDetails?.messages]);
+
 	const handleChatSelect = (chatId) => {
 		setSelectedChatId(chatId);
 		dispatch(getChatById(chatId));
+	};
+
+	const handleSendMessage = (e) => {
+		e.preventDefault();
+		if (!newMessage.trim() || !socket || !selectedChatId) return;
+
+		socket.emit("send_message", {
+			chatId: selectedChatId,
+			content: newMessage.trim(),
+			senderId: volunteer._id,
+			senderType: "Volunteer"
+		});
+
+		setNewMessage("");
 	};
 
 	return (
@@ -105,19 +159,25 @@ export const Chat = () => {
 												</div>
 											</div>
 										))}
+										<div ref={messageEndRef}></div>
 									</div>
 
 									<div className="p-4 border-t border-orange-100">
-										<div className="flex">
+										<form onSubmit={handleSendMessage} className="flex">
 											<input
 												type="text"
 												placeholder="Type your message..."
 												className="flex-grow border border-gray-300 rounded-l-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
+												value={newMessage}
+												onChange={(e) => setNewMessage(e.target.value)}
 											/>
-											<button className="bg-orange-500 text-white px-4 py-2 rounded-r-lg hover:bg-orange-600">
+											<button
+												type="submit"
+												className="bg-orange-500 text-white px-4 py-2 rounded-r-lg hover:bg-orange-600"
+											>
 												Send
 											</button>
-										</div>
+										</form>
 									</div>
 								</div>
 							</div>
