@@ -68,7 +68,6 @@ const Profile = () => {
 	useEffect(() => {
 		dispatch(getVolunteerProfile());
 	}, [dispatch]);
-
 	useEffect(() => {
 		if (volunteer) {
 			setFormData({
@@ -86,14 +85,16 @@ const Profile = () => {
 					: volunteer.expertiseArea
 					? [volunteer.expertiseArea]
 					: [],
-				availability: volunteer.availability || {
-					daysAvailable: [],
-					timeSlots: { start: "", end: "" },
+				availability: {
+					daysAvailable: volunteer.availability?.daysAvailable || [],
+					timeSlots: {
+						start: volunteer.availability?.timeSlots?.start || "",
+						end: volunteer.availability?.timeSlots?.end || "",
+					},
 				},
 			});
 		}
 	}, [volunteer]);
-
 	useEffect(() => {
 		if (error) {
 			toast.error(error, toastOptions);
@@ -442,7 +443,7 @@ const Profile = () => {
 												<input
 													type="time"
 													name="start"
-													value={formData.availability.timeSlots.start}
+													value={formData.availability?.timeSlots?.start || ""}
 													onChange={handleTimeChange}
 													disabled={!isEditing}
 													className={`w-full p-3 border rounded-xl transition-colors duration-200 ${
@@ -459,7 +460,7 @@ const Profile = () => {
 												<input
 													type="time"
 													name="end"
-													value={formData.availability.timeSlots.end}
+													value={formData.availability?.timeSlots?.end || ""}
 													onChange={handleTimeChange}
 													disabled={!isEditing}
 													className={`w-full p-3 border rounded-xl transition-colors duration-200 ${
