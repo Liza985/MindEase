@@ -32,7 +32,6 @@ export const createBlog = async (req, res) => {
 		}).exec();
 		Response(res, 201, true, message.createBlogMessage, newBlog);
 	} catch (error) {
-		console.log(error);
 		Response(res, 500, false, error.message);
 	}
 };
@@ -41,7 +40,7 @@ export const getAllBlogs = async (req, res) => {
 	try {
 		const blogs = await Blog.find().populate(
 			"volunteerId",
-			"firstName lastName"
+			"firstName lastName",
 		);
 
 		Response(res, 200, true, message.blogsFetchSuccessfulMessage, blogs);
@@ -58,7 +57,7 @@ export const getBlogsById = async (req, res) => {
 		}
 		const blog = await Blog.findById(id).populate(
 			"volunteerId",
-			"firstName lastName"
+			"firstName lastName",
 		);
 		if (!blog) {
 			return Response(res, 404, false, message.blogNotFoundMessage);
@@ -73,14 +72,13 @@ export const getBlogsByVolunteer = async (req, res) => {
 	try {
 		const blogs = await Blog.find({ volunteerId: req.volunteer._id }).populate(
 			"volunteerId",
-			"firstName lastName"
+			"firstName lastName",
 		);
 		if (!blogs) {
 			return Response(res, 404, false, message.blogNotFoundMessage);
 		}
 		Response(res, 200, true, message.blogsFetchSuccessfulMessage, blogs);
 	} catch (error) {
-		console.log(error.message);
 		Response(res, 500, false, error.message);
 	}
 };
@@ -125,7 +123,7 @@ export const getBlogByTopic = async (req, res) => {
 		}
 		const blogs = await Blog.find({ topic: topic }).populate(
 			"volunteerId",
-			"firstName lastName"
+			"firstName lastName",
 		);
 		if (!blogs) {
 			return Response(res, 404, false, message.blogNotFoundMessage);

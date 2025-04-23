@@ -1,61 +1,69 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import {
+	CheckCircle2,
+	FileEdit,
+	Save,
+	Trash,
+	XCircle,
+	XOctagon,
+} from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import VolHeader from "../../components/VolHeader";
+import {
+	acceptRequest,
+	getRequestsByVolunteerCategory,
+} from "./../../redux/Actions/chatRequestAction";
+
+const staticRequests = [
+	{
+		_id: "1",
+		userId: {
+			firstName: "John",
+			lastName: "Doe",
+		},
+		category: "Mental Health",
+		Topic: "Anxiety Management",
+		description: "Need help with managing daily anxiety and panic attacks",
+		createdAt: "2025-04-21T10:30:00",
+		status: "pending",
+	},
+	{
+		_id: "2",
+		userId: {
+			firstName: "Jane",
+			lastName: "Smith",
+		},
+		category: "Stress Management",
+		Topic: "Work-Life Balance",
+		description: "Struggling with balancing professional and personal life",
+		createdAt: "2025-04-21T09:15:00",
+		status: "pending",
+	},
+	{
+		_id: "3",
+		userId: {
+			firstName: "Mike",
+			lastName: "Johnson",
+		},
+		category: "Depression",
+		Topic: "Depression Support",
+		description: "Looking for guidance to cope with depression symptoms",
+		createdAt: "2025-04-20T16:45:00",
+		status: "accepted",
+	},
+];
 
 export const Request = () => {
-	const navigate = useNavigate();
-	const [requests, setRequests] = useState([
-		{
-			id: 1,
-			name: "Sarah Johnson",
-			topic: "Career guidance",
-			status: "pending",
-			time: "10 minutes ago",
-		},
-		{
-			id: 2,
-			name: "David Lee",
-			topic: "Financial advice",
-			status: "pending",
-			time: "30 minutes ago",
-		},
-		{
-			id: 3,
-			name: "Maria Garcia",
-			topic: "Educational resources",
-			status: "pending",
-			time: "1 hour ago",
-		},
-		{
-			id: 4,
-			name: "James Wilson",
-			topic: "Mental health support",
-			status: "pending",
-			time: "2 hours ago",
-		},
-		{
-			id: 5,
-			name: "Emily Chen",
-			topic: "Community involvement",
-			status: "pending",
-			time: "3 hours ago",
-		},
-	]);
-
+	const [request, setRequest] = useState(staticRequests);
+	const [editingId, setEditingId] = useState(null);
+	const [editTopic, setEditTopic] = useState("");
+	const dispatch = useDispatch();
+	const { requests } = useSelector((state) => state.chatRequest);
+	useEffect(() => {
+		dispatch(getRequestsByVolunteerCategory());
+	}, []);
 	const handleAccept = (id) => {
-		setRequests(
-			requests.map((req) =>
-				req.id === id ? { ...req, status: "accepted" } : req,
-			),
-		);
-	};
-
-	const handleReject = (id) => {
-		setRequests(
-			requests.map((req) =>
-				req.id === id ? { ...req, status: "rejected" } : req,
-			),
-		);
+		dispatch(acceptRequest(id));
 	};
 
 	return (
@@ -76,56 +84,105 @@ export const Request = () => {
 							</div>
 
 							<div className="divide-y divide-orange-100">
-								{requests.map((request) => (
-									<div
-										key={request.id}
-										className={`p-4 ${
-											request.status === "accepted"
-												? "bg-green-50"
-												: request.status === "rejected"
-												? "bg-red-50"
-												: ""
-										}`}
-									>
-										<div className="flex items-center justify-between">
-											<div>
-												<h3 className="font-medium text-lg">{request.name}</h3>
-												<p className="text-gray-600">{request.topic}</p>
-												<p className="text-sm text-gray-500">{request.time}</p>
-											</div>
-											<div className="space-x-2">
-												{request.status === "pending" ? (
-													<>
-														<button
-															onClick={() => handleAccept(request.id)}
-															className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition"
-														>
-															Accept
-														</button>
-														<button
-															onClick={() => handleReject(request.id)}
-															className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
-														>
-															Reject
-														</button>
-													</>
-												) : (
-													<span
-														className={`px-3 py-1 rounded text-white ${
-															request.status === "accepted"
-																? "bg-green-500"
-																: "bg-red-500"
-														}`}
-													>
-														{request.status === "accepted"
-															? "Accepted"
-															: "Rejected"}
-													</span>
-												)}
+								{requests.length === 0 ? (
+									<p className="p-4">No pending requests found.</p>
+								) : (
+									requests.map((request) => (
+										<div
+											key={request._id}
+											className={`p-4 ${
+												request.status === "accepted"
+													? "bg-green-50"
+													: request.status === "rejected"
+													? "bg-red-50"
+													: ""
+											}`}
+										>
+											<div className="flex flex-col gap-3">
+												<div className="flex items-start justify-between">
+													<div className="flex-grow">
+														<div className="flex items-center gap-3 mb-2">
+															<h3 className="font-medium text-lg">
+																{request.userId.firstName}{" "}
+																{request.userId.lastName}
+															</h3>
+															<span className="px-2 py-1 bg-orange-100 text-orange-800 rounded-full text-sm">
+																{request.category}
+															</span>
+														</div>
+
+														{editingId === request._id ? (
+															<div className="flex items-center gap-2">
+																<input
+																	type="text"
+																	value={editTopic}
+																	onChange={(e) => setEditTopic(e.target.value)}
+																	className="border rounded px-2 py-1"
+																/>
+																<button
+																	onClick={() => handleSaveEdit(request._id)}
+																	className="text-green-600 hover:text-green-700"
+																>
+																	<Save size={16} />
+																</button>
+																<button
+																	onClick={() => setEditingId(null)}
+																	className="text-gray-600 hover:text-gray-700"
+																>
+																	<XOctagon size={16} />
+																</button>
+															</div>
+														) : (
+															<>
+																<h4 className="text-gray-800 font-medium mb-1">
+																	{request.Topic}
+																</h4>
+																<p className="text-gray-600 mb-2">
+																	{request.description}
+																</p>
+															</>
+														)}
+
+														<p className="text-sm text-gray-500">
+															{new Date(request.createdAt).toLocaleString()}
+														</p>
+													</div>
+
+													<div className="flex items-center gap-2">
+														{request.status === "pending" && (
+															<>
+																<button
+																	onClick={() => handleAccept(request._id)}
+																	className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition flex items-center gap-2"
+																>
+																	<CheckCircle2 size={16} />
+																	Accept
+																</button>
+															</>
+														)}
+														{request.status !== "pending" && (
+															<span
+																className={`px-3 py-1 rounded text-white flex items-center gap-2 ${
+																	request.status === "accepted"
+																		? "bg-green-500"
+																		: "bg-red-500"
+																}`}
+															>
+																{request.status === "accepted" ? (
+																	<CheckCircle2 size={14} />
+																) : (
+																	<XCircle size={14} />
+																)}
+																{request.status.charAt(0).toUpperCase() +
+																	request.status.slice(1)}
+															</span>
+														)}
+													</div>
+												</div>
 											</div>
 										</div>
-									</div>
-								))}
+									))
+								)}
 							</div>
 						</div>
 					</main>

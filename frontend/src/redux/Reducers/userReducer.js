@@ -37,6 +37,10 @@ const getAllUsersRequest = createAction("GET_ALL_USERS_REQUEST");
 const getAllUsersSuccess = createAction("GET_ALL_USERS_SUCCESS");
 const getAllUsersFailure = createAction("GET_ALL_USERS_FAILURE");
 
+const getUserProfileRequest = createAction("GET_USER_PROFILE_REQUEST");
+const getUserProfileSuccess = createAction("GET_USER_PROFILE_SUCCESS");		
+const getUserProfileFailure = createAction("GET_USER_PROFILE_FAILURE");
+
 const clearError = createAction("CLEAR_ERROR");
 const clearMessage = createAction("CLEAR_MESSAGE");
 
@@ -190,6 +194,21 @@ export const userReducer = createReducer(initialState, (builder) => {
 		.addCase("DELETE_USER_FAILURE", (state, action) => {
 			state.loading = false;
 			state.error = action.payload;
+		})
+		.addCase(getUserProfileRequest, (state) => {
+			state.loading = true;
+		})
+		.addCase(getUserProfileSuccess, (state, action) => {
+			state.loading = false;
+			state.message = action.payload.message;
+			state.user = action.payload.data;
+			state.isAuthenticated = true;
+		})
+		.addCase(getUserProfileFailure, (state, action) => {
+			state.loading = false;
+			state.message = action.payload.message;
+			state.error = action.payload;
+			state.isAuthenticated = false;
 		})
 		
 });

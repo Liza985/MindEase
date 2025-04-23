@@ -207,7 +207,7 @@ const LandingPage = () => {
 								Your journey to mental wellness starts here.
 							</p>
 							<div className="inline-flex rounded-full shadow-lg hover:shadow-xl transition-shadow bg-white bg-opacity-50 backdrop-blur-sm p-1 mt-6 md:mt-8">
-								<NavLink to="/register">
+								<NavLink to="/survey">
 									<button className="bg-blue-500 text-white px-4 py-2 md:px-6 md:py-2 rounded-full font-semibold hover:bg-blue-600 transform hover:scale-105 transition-all flex items-center group">
 										Start Your Journey{" "}
 										<ChevronRight className="ml-2 h-4 w-4 md:h-5 md:w-5 group-hover:translate-x-1 transition-transform" />
@@ -287,7 +287,7 @@ const LandingPage = () => {
 
 								{/* CTA Button */}
 								<NavLink
-									to="/login"
+									to="/survey"
 									className="inline-block bg-orange-500 text-white px-8 py-3 md:px-10 md:py-4 rounded-full font-semibold text-base md:text-lg hover:bg-orange-600 transform hover:scale-110 hover:shadow-xl transition-all duration-300"
 								>
 									Get Started Now

@@ -81,7 +81,6 @@ export const verifyUser = async (req, res) => {
 		//fetching id and otp
 		const { id } = req.params;
 		let { otp } = req.body;
-		console.log(otp);
 
 		//checking id
 		if (!id) {
@@ -93,7 +92,7 @@ export const verifyUser = async (req, res) => {
 		if (!user) {
 			return Response(res, 404, false, message.userNotFound);
 		}
-		console.log("first");
+
 		// user already verified
 		if (user.isVerified) {
 			return Response(res, 400, false, message.userAlreadyVerified);
@@ -116,7 +115,7 @@ export const verifyUser = async (req, res) => {
 				)} seconds`,
 			);
 		}
-		console.log("first1");
+
 		// checking otp attempts
 		if (user.registerOtpAttempts >= 3) {
 			user.registerOtp = undefined;
@@ -135,7 +134,7 @@ export const verifyUser = async (req, res) => {
 			await user.save();
 			return Response(res, 400, false, message.otpNotFound);
 		}
-		console.log("first2");
+
 		// check otp expire
 		if (user.registerOtpExpire < Date.now()) {
 			user.registerOtp = undefined;
@@ -170,7 +169,6 @@ export const verifyUser = async (req, res) => {
 			data: user,
 		});
 	} catch (error) {
-		console.log(error);
 		return Response(res, 500, false, error.message);
 	}
 };
@@ -206,7 +204,7 @@ export const resendOtp = async (req, res) => {
 		user.registerOtpAttempts = 0;
 		await user.save();
 		//send otp
-		console.log("first");
+
 		let emailTemplate = fs.readFileSync(
 			path.join(__dirname, "../templates/mail.html"),
 			"utf-8",
@@ -297,7 +295,6 @@ export const forgetPassword = async (req, res) => {
 	try {
 		// parse data
 		const { email } = req.body;
-		console.log(email);
 
 		//checking data
 		if (!email) {
@@ -338,7 +335,6 @@ export const forgetPassword = async (req, res) => {
 		//send response
 		Response(res, 200, true, message.otpSendMessage, user._id);
 	} catch (error) {
-		console.log(error);
 		Response(res, 500, false, error.message);
 	}
 };
@@ -485,7 +481,6 @@ export const updateUserProfile = async (req, res) => {
 
 		Response(res, 200, true, message.userProfileUpdatedMessage, user);
 	} catch (error) {
-		console.log(error.message);
 		Response(res, 500, false, error.message);
 	}
 };
@@ -545,7 +540,6 @@ export const deleteUser = async (req, res) => {
 
 		return Response(res, 200, true, "User deleted successfully");
 	} catch (error) {
-		console.error("Delete User Error:", error);
 		return Response(res, 500, false, error.message);
 	}
 };

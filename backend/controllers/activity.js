@@ -78,7 +78,7 @@ export const updateById = async (req, res) => {
 			200,
 			true,
 			message.contentUpdatedSuccessfully,
-			updatedContent
+			updatedContent,
 		);
 	} catch (error) {
 		Response(res, 500, false, error.message);

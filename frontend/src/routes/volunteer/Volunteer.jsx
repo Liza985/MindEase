@@ -1,104 +1,158 @@
 import { Route, Routes } from "react-router-dom";
 
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import Auth from "../../pages/volunteer/Auth";
 import Blog from "../../pages/volunteer/Blog";
+import BlogDetails from "../../pages/volunteer/BlogDetails";
 import Chat from "../../pages/volunteer/Chat";
+import ChatbotAssistant from "../../pages/volunteer/ChatAssistant";
 import Dashboard from "../../pages/volunteer/Dashboard";
 import LandingPage from "../../pages/volunteer/LandingPage";
-import Request from "../../pages/volunteer/Request";
-import ChatbotAssistant from "../../pages/volunteer/ChatAssistant";
-import Auth from "../../pages/volunteer/Auth";
-import VerifyOtp from "../../pages/volunteer/VerifyOtp";
 import LoginOtp from "../../pages/volunteer/LoginOtp";
 import NewPost from "../../pages/volunteer/NewPost";
-import BlogDetails from "../../pages/volunteer/BlogDetails";
-import UpdateBlog from "../../pages/volunteer/updateBlog";
-import CounselorRequests from "../../pages/user/counselorRequest";
 import Profile from "../../pages/volunteer/Profile";
+import Request from "../../pages/volunteer/Request";
 import Reviews from "../../pages/volunteer/Reviews";
+import UpdateBlog from "../../pages/volunteer/updateBlog";
+import VerifyOtp from "../../pages/volunteer/VerifyOtp";
+import { getVolunteerProfile } from "../../redux/Actions/volunteerAction";
+import AuthRoute from "../user/AuthRoute";
+import ProtectedRoute from "./ProtectedRoute";
+import ForgotPassword from './../../pages/volunteer/forgotpassword';
 
 const Volunteer = () => {
+	const dispatch = useDispatch();
+	useEffect(() => {
+		dispatch(getVolunteerProfile());
+	},[]);
 	return (
 		<>
 			<Routes>
-				<Route path="/volunteer/login" element={<Auth />} />
-				<Route path="/volunteer/register" element={<Auth />} />
-				<Route path="/volunteer/verify/:id" element={<VerifyOtp />} />
-				<Route path="/volunteer/login/:id" element={<LoginOtp />} />
+				<Route
+					path="/volunteer/login"
+					element={
+						<AuthRoute>
+							<Auth />
+						</AuthRoute>
+					}
+				/>
+				<Route path="/volunteer/forgot-password" element={<ForgotPassword />} />
+				<Route path="/volunteer/forgot-password/:id" element={<ForgotPassword />} />
+				<Route path="/volunteer/change-password/:id" element={<ForgotPassword />} />
+				<Route
+					path="/volunteer/register"
+					element={
+						<AuthRoute>
+							<Auth />
+						</AuthRoute>
+					}
+				/>
+				<Route
+					path="/volunteer/verify/:id"
+					element={
+						<AuthRoute>
+							<VerifyOtp />
+						</AuthRoute>
+					}
+				/>
+				<Route
+					path="/volunteer/login/:id"
+					element={
+						<AuthRoute>
+							<LoginOtp />
+						</AuthRoute>
+					}
+				/>
 				<Route
 					path="/connect"
 					element={
-						// <AuthRoute>
-						<LandingPage />
-						//</AuthRoute>
+						<AuthRoute>
+							<LandingPage />
+						</AuthRoute>
 					}
 				/>
 				<Route
 					path="/volunteer/Dashboard"
 					element={
-						//<AuthRoute>
-						<Dashboard />
-						//</AuthRoute>
+						<ProtectedRoute>
+							<Dashboard />
+						</ProtectedRoute>
 					}
 				/>
 				<Route
 					path="/volunteer/requests"
 					element={
-						//<AuthRoute>
-						<Request />
-						//</AuthRoute>
+						<ProtectedRoute>
+							<Request />
+						</ProtectedRoute>
 					}
 				/>
 				<Route
 					path="/newPost"
 					element={
-						//<AuthRoute>
-						<NewPost />
-						//</AuthRoute>
+						<ProtectedRoute>
+							<NewPost />
+						</ProtectedRoute>
 					}
 				/>
 				<Route
 					path="/volunteer/chat"
 					element={
-						//<AuthRoute>
-						<Chat />
-						//</AuthRoute>
+						<ProtectedRoute>
+							<Chat />
+						</ProtectedRoute>
 					}
 				/>
 				<Route
 					path="/volunteer/article"
 					element={
-						//<AuthRoute>
-						<Blog />
-						//</AuthRoute>
+						<ProtectedRoute>
+							<Blog />
+						</ProtectedRoute>
 					}
 				/>
 
 				<Route
 					path="/volunteer/article/:id"
 					element={
-						//<AuthRoute>
-						<BlogDetails />
-						//</AuthRoute>
+						<ProtectedRoute>
+							<BlogDetails />
+						</ProtectedRoute>
 					}
 				/>
 				<Route
 					path="/volunteer/article/update/:id"
 					element={
-						//<AuthRoute>
-						<UpdateBlog />
-						//</AuthRoute>
+						<ProtectedRoute>
+							<UpdateBlog />
+						</ProtectedRoute>
 					}
 				/>
 				<Route
 					path="/volunteer/ai"
 					element={
-						//<AuthRoute>
-						<ChatbotAssistant />
-						//</AuthRoute>
+						<ProtectedRoute>
+							<ChatbotAssistant />
+						</ProtectedRoute>
 					}
 				/>
-				<Route path="/volunteer/profile" element={<Profile />} />
-				<Route path="/volunteer/reviews" element={<Reviews />} />
+				<Route
+					path="/volunteer/profile"
+					element={
+						<ProtectedRoute>
+							<Profile />
+						</ProtectedRoute>
+					}
+				/>
+				<Route
+					path="/volunteer/reviews"
+					element={
+						<ProtectedRoute>
+							<Reviews />
+						</ProtectedRoute>
+					}
+				/>
 			</Routes>
 		</>
 	);

@@ -23,6 +23,7 @@
     "axios": "^1.7.9",
     "framer-motion": "^12.4.3",
     "frontend": "file:",
+    "immer": "^10.1.1",
     "lucide-react": "^0.475.0",
     "react": "^18.3.1",
     "react-circular-progressbar": "^2.2.0",
@@ -32,6 +33,10 @@
     "react-router-dom": "^7.1.5",
     "react-select": "^5.10.1",
     "react-toastify": "^11.0.3",
+    "redux": "^5.0.1",
+    "redux-thunk": "^3.1.0",
+    "reselect": "^5.1.1",
+    "socket.io-client": "^4.8.1",
     "tailwindcss": "^4.0.6"
   },
   "devDependencies": {

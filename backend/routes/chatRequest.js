@@ -1,19 +1,20 @@
 import express from "express";
 import {
-    AcceptRequest,
-    createRequest,
-    deleteRequest,
-    getAllRequests,
-    getRequestByCategory,
-    getRequestById,
-    getRequestByUserId,
-    updateRequest,
+	AcceptRequest,
+	createRequest,
+	deleteRequest,
+	getAllRequests,
+	getRequestByCategory,
+	getRequestById,
+	getRequestByUserId,
+	updateRequest,
+	getRequestByVolunteerCategory,
 } from "../controllers/chatRequest.js";
 import { isAuthenticated } from "./../middlewares/auth.js";
 import { isVolAuthenticated } from "./../middlewares/volAuth.js";
 
 const chatRequestRouter = express.Router();
-
+chatRequestRouter.get("/volunteer-category",isVolAuthenticated,getRequestByVolunteerCategory);
 chatRequestRouter.post("/create", isAuthenticated, createRequest);
 chatRequestRouter.get("/all", getAllRequests);
 chatRequestRouter.get("/:id", getRequestById);
@@ -23,5 +24,6 @@ chatRequestRouter.put("/update/:id", isAuthenticated, updateRequest);
 chatRequestRouter.delete("/delete/:id", isAuthenticated, deleteRequest);
 
 chatRequestRouter.get("/accept/:id", isVolAuthenticated, AcceptRequest);
+
 
 export default chatRequestRouter;

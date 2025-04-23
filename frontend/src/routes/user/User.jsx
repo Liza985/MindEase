@@ -3,7 +3,6 @@ import { Route, Routes } from "react-router-dom";
 import AnalysisPage from "../../pages/user/AnalysisPage";
 import Auth from "../../pages/user/Auth";
 import Blogs from "../../pages/user/Blogs";
-import ChatbotPage from "../../pages/user/ChatBot";
 import CounselingPage from "../../pages/user/Counsellors";
 import ForgotPassword from "../../pages/user/ForgotPassword";
 import Home from "../../pages/user/Home";
@@ -18,34 +17,50 @@ import CounselorRequests from "../../pages/user/counselorRequest";
 import CounselorChat from "../../pages/user/CounselorChat";
 import Feedback from "../../pages/user/Feedback";
 import Profile from "../../pages/user/Profile";
+import UserChat from "../../pages/user/UserChat";
+import AuthRoute from "./AuthRoute";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { getUserProfile } from "../../redux/Actions/userAction";
+import ProtectedRoute from "./ProtectedRoute";
+import ChatbotPage from './../../pages/user/ChatBot';
 
 const User = () => {
+	const dispatch = useDispatch();
+	const { isAuthenticated, loading, error } = useSelector(
+		(state) => state.user,
+	);
+
+	useEffect(() => {
+			dispatch(getUserProfile());
+	}, []); 
+
 	return (
 		<>
 			<Routes>
 				<Route
 					path="/login"
 					element={
-						//<AuthRoute>
-						<Auth />
-						///</AuthRoute>
+						<AuthRoute>
+							<Auth />
+						</AuthRoute>
 					}
 				/>
 
 				<Route
 					path="/register"
 					element={
-						//<AuthRoute>
-						<Auth />
-						//</AuthRoute>
+						<AuthRoute>
+							<Auth />
+						</AuthRoute>
 					}
 				/>
 				<Route
 					path="/verify/:id"
 					element={
-						//<AuthRoute>
-						<VerifyOtp />
-						//</AuthRoute>
+						<AuthRoute>
+							<VerifyOtp />
+						</AuthRoute>
 					}
 				/>
 				<Route path="/forgot-password" element={<ForgotPassword />} />
@@ -55,73 +70,74 @@ const User = () => {
 				<Route
 					path="/how-it-works"
 					element={
-						// <ProtectedRoute>
+						<ProtectedRoute>
 						<HowItWorks />
-						// </ProtectedRoute>
+						 </ProtectedRoute>
 					}
 				/>
 				<Route
 					path="/wellness-hub"
 					element={
-						// <ProtectedRoute>
+						<ProtectedRoute>
 						<WellnessHub />
-						// </ProtectedRoute>
+						 </ProtectedRoute>
 					}
 				/>
 				<Route
 					path="/counselling"
 					element={
-						// <ProtectedRoute>
+						 <ProtectedRoute>
 						<CounselingPage />
-						// </ProtectedRoute>
+						 </ProtectedRoute>
 					}
 				/>
 				<Route
 					path="/blogs"
 					element={
-						// <ProtectedRoute>
+						<ProtectedRoute>
 						<Blogs />
-						// </ProtectedRoute>
+						 </ProtectedRoute>
 					}
 				/>
 				<Route
 					path="/survey"
 					element={
-						// <ProtectedRoute>
+						  <ProtectedRoute>
 						<MindeaseForm />
-						// </ProtectedRoute>
+						  </ProtectedRoute>
 					}
 				/>
 				<Route path="/counselor-requests" element={<CounselorRequests />} />
 				<Route path="/counselor-chat/:chatId" element={<CounselorChat />} />
 				<Route path="/blog/:id" element={<BlogDetail />} />
 				<Route
-					path="/aichat"
+					path="/user-chat"
 					element={
-						// <ProtectedRoute>
-						<ChatbotPage />
-						// </ProtectedRoute>
+						//  <ProtectedRoute>
+						<UserChat />
+						//  </ProtectedRoute>
 					}
 				/>
 				<Route
 					path="/plans&pricing"
 					element={
-						// <ProtectedRoute>
+						 <ProtectedRoute>
 						<PricingPage />
-						// </ProtectedRoute>
+						 </ProtectedRoute>
 					}
 				/>
 				<Route path="/resource/:title" element={<ResourceDetail />} />
 				<Route
 					path="/analysis"
 					element={
-						// <ProtectedRoute>
+						 <ProtectedRoute>
 						<AnalysisPage />
-						// </ProtectedRoute>
+						 </ProtectedRoute>
 					}
 				/>
 				<Route path="/feedback" element={<Feedback />} />
 				<Route path="/profile" element={<Profile />} />
+				<Route path="/aichat" element={<ChatbotPage/>}/>
 			</Routes>
 		</>
 	);

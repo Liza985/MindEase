@@ -37,13 +37,16 @@ const Profile = () => {
 	];
 
 	const expertiseOptions = [
-		{ value: "education", label: "Education" },
-		{ value: "healthcare", label: "Healthcare" },
-		{ value: "technology", label: "Technology" },
-		{ value: "environment", label: "Environment" },
-		{ value: "social-services", label: "Social Services" },
-		{ value: "arts-culture", label: "Arts & Culture" },
-		{ value: "sports-recreation", label: "Sports & Recreation" },
+		{ value: "depression", label: "Depression" },
+		{ value: "stress", label: "Stress" },
+		{ value: "relationships", label: "Relationships" },
+		{ value: "grief", label: "Grief" },
+		{ value: "trauma", label: "Trauma" },
+		{ value: "addiction", label: "Addiction" },
+		{ value: "eating-disorders", label: "Eating Disorders" },
+		{ value: "self-esteem", label: "Self-Esteem" },
+		{ value: "anger", label: "Anger Management" },
+		{ value: "sleep", label: "Sleep Issues" },
 		{ value: "other", label: "Other" },
 	];
 
@@ -65,7 +68,6 @@ const Profile = () => {
 	useEffect(() => {
 		dispatch(getVolunteerProfile());
 	}, [dispatch]);
-
 	useEffect(() => {
 		if (volunteer) {
 			setFormData({
@@ -83,14 +85,16 @@ const Profile = () => {
 					: volunteer.expertiseArea
 					? [volunteer.expertiseArea]
 					: [],
-				availability: volunteer.availability || {
-					daysAvailable: [],
-					timeSlots: { start: "", end: "" },
+				availability: {
+					daysAvailable: volunteer.availability?.daysAvailable || [],
+					timeSlots: {
+						start: volunteer.availability?.timeSlots?.start || "",
+						end: volunteer.availability?.timeSlots?.end || "",
+					},
 				},
 			});
 		}
 	}, [volunteer]);
-
 	useEffect(() => {
 		if (error) {
 			toast.error(error, toastOptions);
@@ -209,7 +213,7 @@ const Profile = () => {
 											<div className="space-y-2">
 												<p className="text-gray-600 text-sm flex items-center justify-center">
 													<span className="material-icons-outlined text-orange-400 mr-2">
-														email
+														e-mail
 													</span>
 													{formData.email}
 												</p>
@@ -439,7 +443,7 @@ const Profile = () => {
 												<input
 													type="time"
 													name="start"
-													value={formData.availability.timeSlots.start}
+													value={formData.availability?.timeSlots?.start || ""}
 													onChange={handleTimeChange}
 													disabled={!isEditing}
 													className={`w-full p-3 border rounded-xl transition-colors duration-200 ${
@@ -456,7 +460,7 @@ const Profile = () => {
 												<input
 													type="time"
 													name="end"
-													value={formData.availability.timeSlots.end}
+													value={formData.availability?.timeSlots?.end || ""}
 													onChange={handleTimeChange}
 													disabled={!isEditing}
 													className={`w-full p-3 border rounded-xl transition-colors duration-200 ${

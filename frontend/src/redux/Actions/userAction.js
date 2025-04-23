@@ -2,7 +2,7 @@ import axios from "axios";
 import { BACKEND_URL } from "../../constants/url";
 
 ///backend_url imported from constants
-const URL = BACKEND_URL+ "api/v1/user";
+const URL = BACKEND_URL + "api/v1/user";
 
 export const loginUser = (details) => async (dispatch) => {
 	try {
@@ -16,7 +16,6 @@ export const loginUser = (details) => async (dispatch) => {
 			},
 			withCredentials: true,
 		});
-		console.log(data);
 
 		dispatch({
 			type: "USER_LOGIN_SUCCESS",
@@ -38,15 +37,14 @@ export const registerUser = (details) => async (dispatch) => {
 		dispatch({
 			type: "USER_REGISTER_REQUEST",
 		});
-		console.log("working2");
-		console.log(details);
+
 		const { data } = await axios.post(`${URL}/register`, details, {
 			headers: {
 				"Content-Type": "application/json",
 			},
 			withCredentials: true,
 		});
-		console.log(data);
+
 		dispatch({
 			type: "USER_REGISTER_SUCCESS",
 			payload: {
@@ -55,7 +53,6 @@ export const registerUser = (details) => async (dispatch) => {
 			},
 		});
 	} catch (error) {
-		console.log(error?.response?.data?.message);
 		dispatch({
 			type: "USER_REGISTER_FAILURE",
 			payload: error?.response?.data?.message,
@@ -76,7 +73,7 @@ export const verifyRegisterOtp = (id, otp) => async (dispatch) => {
 					"Content-Type": "application/json",
 				},
 				withCredentials: true,
-			}
+			},
 		);
 		dispatch({
 			type: "REGISTER_OTP_SUCCESS",
@@ -95,7 +92,7 @@ export const resendRegisterOtp = (id) => async (dispatch) => {
 		dispatch({
 			type: "RESEND_REGISTER_OTP_REQUEST",
 		});
-		// console.log(id)
+
 		const { data } = await axios.get(`${URL}/resend/${id}`);
 		dispatch({
 			type: "RESEND_REGISTER_OTP_SUCCESS",
@@ -122,7 +119,7 @@ export const forgotUserPassword = (email) => async (dispatch) => {
 					"Content-Type": "application/json",
 				},
 				withCredentials: true,
-			}
+			},
 		);
 		dispatch({
 			type: "FORGOT_USER_PASSWORD_SUCCESS",
@@ -152,7 +149,7 @@ export const resetUserPassword = (id, otp) => async (dispatch) => {
 					"Content-Type": "application/json",
 				},
 				withCredentials: true,
-			}
+			},
 		);
 		dispatch({
 			type: "RESET_USER_PASSWORD_SUCCESS",
@@ -179,9 +176,9 @@ export const changeUserPassword = (id, password) => async (dispatch) => {
 					"Content-Type": "application/json",
 				},
 				withCredentials: true,
-			}
+			},
 		);
-		console.log(data);
+
 		dispatch({
 			type: "CHANGE_USER_PASSWORD_SUCCESS",
 			payload: data.message,
@@ -226,7 +223,7 @@ export const updateUserProfile = (userData) => async (dispatch) => {
 					"Content-Type": "application/json",
 				},
 				withCredentials: true,
-			}
+			},
 		);
 
 		dispatch({
@@ -264,8 +261,7 @@ export const deleteUserAccount = (id) => async (dispatch) => {
 	}
 };
 
-
-export const getAllUsers = () => async (dispatch) => {		
+export const getAllUsers = () => async (dispatch) => {
 	try {
 		dispatch({ type: "GET_ALL_USERS_REQUEST" });
 
@@ -286,4 +282,27 @@ export const getAllUsers = () => async (dispatch) => {
 			payload: error.response?.data?.message || "Something went wrong",
 		});
 	}
-}
+};
+
+export const getUserProfile = () => async (dispatch) => {
+	try {
+		dispatch({ type: "GET_USER_PROFILE_REQUEST" });
+
+		const { data } = await axios.get(`${URL}/profile`, {
+			withCredentials: true,
+		});
+
+		dispatch({
+			type: "GET_USER_PROFILE_SUCCESS",
+			payload: {
+				message: data.message,
+				data: data.data,
+			},
+		});
+	} catch (error) {
+		dispatch({
+			type: "GET_USER_PROFILE_FAILURE",
+			payload: error.response?.data?.message || "Something went wrong",
+		});
+	}
+};
