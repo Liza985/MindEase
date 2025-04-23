@@ -4,6 +4,7 @@ import { volunteerReducer } from "./Reducers/volunteerReducer";
 import { blogReducer } from "./Reducers/blogReducer";
 import { reviewReducer } from "./Reducers/reviewReducer";
 import { feedbackReducer } from "./Reducers/feedbackReducer";
+import { contentReducer } from "./Reducers/activityReducer";
 
 const store = configureStore({
 	reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
 		blog: blogReducer,
 		review: reviewReducer,
 		feedback: feedbackReducer,
+		content: contentReducer,
 	},
 });
 

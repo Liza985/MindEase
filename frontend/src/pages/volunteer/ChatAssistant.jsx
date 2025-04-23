@@ -1,4 +1,3 @@
-import React from "react";
 import VolHeader from "../../components/VolHeader";
 import { Webchat, WebchatProvider, getClient } from "@botpress/webchat";
 import { buildTheme } from "@botpress/webchat-generator";

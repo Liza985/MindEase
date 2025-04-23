@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
 	Search,
 	Filter,
@@ -9,97 +9,26 @@ import {
 	ArrowUpDown,
 	Download,
 } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+	getAllContent,
+	deleteContent,
+} from "../../redux/Actions/activityAction";
 import AdminSidebar from "../../components/AdminSideBar";
 import UploadModal from "../../components/AdminUploadModal";
+import ContentViewModal from "../../components/ContentViewModal";
 
 const Content = () => {
 	// Mock content data
-	const [contentItems, setContentItems] = useState([
-		{
-			id: "CNT001",
-			title: "How to Apply for Assistance",
-			type: "Guide",
-			category: "Assistance Programs",
-			author: "Emma Smith",
-			status: "Published",
-			featured: true,
-			views: 1245,
-			createdAt: "2025-02-10T10:15:00",
-			updatedAt: "2025-02-28T14:30:00",
-		},
-		{
-			id: "CNT002",
-			title: "Volunteer Orientation Materials",
-			type: "Document",
-			category: "Volunteers",
-			author: "David Miller",
-			status: "Published",
-			featured: false,
-			views: 890,
-			createdAt: "2025-02-12T09:20:00",
-			updatedAt: "2025-02-12T09:20:00",
-		},
-		{
-			id: "CNT003",
-			title: "Community Resources Directory",
-			type: "Directory",
-			category: "Resources",
-			author: "Sarah Wilson",
-			status: "Published",
-			featured: true,
-			views: 2340,
-			createdAt: "2025-01-15T11:30:00",
-			updatedAt: "2025-02-20T16:45:00",
-		},
-		{
-			id: "CNT004",
-			title: "Upcoming Workshops and Events",
-			type: "Calendar",
-			category: "Events",
-			author: "Tom Jackson",
-			status: "Draft",
-			featured: false,
-			views: 0,
-			createdAt: "2025-02-26T13:40:00",
-			updatedAt: "2025-02-26T13:40:00",
-		},
-		{
-			id: "CNT005",
-			title: "Financial Assistance FAQ",
-			type: "FAQ",
-			category: "Assistance Programs",
-			author: "Linda Johnson",
-			status: "Under Review",
-			featured: false,
-			views: 120,
-			createdAt: "2025-02-22T15:10:00",
-			updatedAt: "2025-03-01T10:20:00",
-		},
-		{
-			id: "CNT006",
-			title: "Success Stories",
-			type: "Testimonials",
-			category: "Community",
-			author: "Maria Garcia",
-			status: "Published",
-			featured: true,
-			views: 1760,
-			createdAt: "2025-01-28T09:50:00",
-			updatedAt: "2025-02-15T11:25:00",
-		},
-		{
-			id: "CNT007",
-			title: "Housing Assistance Application Form",
-			type: "Form",
-			category: "Assistance Programs",
-			author: "Robert Chen",
-			status: "Published",
-			featured: false,
-			views: 980,
-			createdAt: "2025-02-05T14:20:00",
-			updatedAt: "2025-02-18T09:15:00",
-		},
-	]);
+	const dispatch = useDispatch();
+	const { loading, error, contentItems } = useSelector(
+		(state) => state.content
+	);
+
+	// Fetch content from backend
+	useEffect(() => {
+		dispatch(getAllContent());
+	}, [dispatch]);
 
 	// Filter states
 	const [searchTerm, setSearchTerm] = useState("");
@@ -110,15 +39,16 @@ const Content = () => {
 	const [sortDirection, setSortDirection] = useState("desc");
 	const [showUploadModal, setShowUploadModal] = useState(false);
 	const [uploadType, setUploadType] = useState("");
+	const [viewItem, setViewItem] = useState(null);
 
 	// Extract unique content types, categories for filters
 	const contentTypes = [
 		"All",
-		...new Set(contentItems.map((item) => item.type)),
+		...new Set(contentItems?.map((item) => item.contentType)),
 	];
 	const contentCategories = [
 		"All",
-		...new Set(contentItems.map((item) => item.category)),
+		...new Set(contentItems?.map((item) => item.category)),
 	];
 
 	// Sorting function
@@ -131,15 +61,22 @@ const Content = () => {
 		}
 	};
 
+	// Delete handler
+	const handleDelete = (id) => {
+		dispatch(deleteContent(id)).then(() => {
+			dispatch(getAllContent()); // Re-fetch content after deletion
+		});
+	};
+
 	// Filter and sort content
 	const filteredContent = contentItems
-		.filter(
+		?.filter(
 			(item) =>
-				(typeFilter === "All" || item.type === typeFilter) &&
+				(typeFilter === "All" || item.contentType === typeFilter) &&
 				(statusFilter === "All" || item.status === statusFilter) &&
 				(categoryFilter === "All" || item.category === categoryFilter) &&
 				(item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-					item.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+					item._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
 					item.author.toLowerCase().includes(searchTerm.toLowerCase()))
 		)
 		.sort((a, b) => {
@@ -148,9 +85,9 @@ const Content = () => {
 			if (sortField === "title") {
 				compareA = a.title;
 				compareB = b.title;
-			} else if (sortField === "type") {
-				compareA = a.type;
-				compareB = b.type;
+			} else if (sortField === "contentType") {
+				compareA = a.contentType;
+				compareB = b.contentType;
 			} else if (sortField === "category") {
 				compareA = a.category;
 				compareB = b.category;
@@ -232,7 +169,7 @@ const Content = () => {
 										value={typeFilter}
 										onChange={(e) => setTypeFilter(e.target.value)}
 									>
-										{contentTypes.map((type) => (
+										{contentTypes?.map((type) => (
 											<option key={type} value={type}>
 												{type === "All" ? "All Types" : type}
 											</option>
@@ -384,7 +321,7 @@ const Content = () => {
 								</tr>
 							</thead>
 							<tbody className="bg-white divide-y divide-gray-200">
-								{filteredContent.map((item) => (
+								{filteredContent?.map((item) => (
 									<tr key={item.id} className="hover:bg-gray-50">
 										<td className="px-6 py-4">
 											<div className="flex items-center">
@@ -393,7 +330,7 @@ const Content = () => {
 														{item.title}
 													</div>
 													<div className="text-xs text-gray-500">
-														ID: {item.id} • Author: {item.author}
+														• Author: {item.author}
 													</div>
 												</div>
 												{item.featured && (
@@ -405,7 +342,7 @@ const Content = () => {
 										</td>
 										<td className="px-6 py-4 whitespace-nowrap">
 											<span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-												{item.type}
+												{item.contentType}
 											</span>
 										</td>
 										<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -436,18 +373,15 @@ const Content = () => {
 												<button
 													className="text-blue-600 hover:text-blue-800"
 													title="View"
+													onClick={() => setViewItem(item)}
 												>
 													<Eye size={18} />
 												</button>
-												<button
-													className="text-orange-600 hover:text-orange-800"
-													title="Edit"
-												>
-													<Edit size={18} />
-												</button>
+
 												<button
 													className="text-red-600 hover:text-red-800"
 													title="Delete"
+													onClick={() => handleDelete(item._id)}
 												>
 													<Trash2 size={18} />
 												</button>
@@ -455,7 +389,7 @@ const Content = () => {
 										</td>
 									</tr>
 								))}
-								{filteredContent.length === 0 && (
+								{filteredContent?.length === 0 && (
 									<tr>
 										<td
 											colSpan="7"
@@ -472,8 +406,8 @@ const Content = () => {
 					<div className="p-4 border-t border-gray-200 flex justify-between items-center">
 						<div className="text-sm text-gray-700">
 							Showing{" "}
-							<span className="font-medium">{filteredContent.length}</span> of{" "}
-							<span className="font-medium">{contentItems.length}</span> items
+							<span className="font-medium">{filteredContent?.length}</span> of{" "}
+							<span className="font-medium">{contentItems?.length}</span> items
 						</div>
 						<div className="flex space-x-2">
 							<button className="px-3 py-1 border border-gray-300 rounded-md text-sm bg-white hover:bg-gray-50">
@@ -492,6 +426,10 @@ const Content = () => {
 					setUploadType={setUploadType}
 					uploadType={uploadType}
 				/>
+			)}
+
+			{viewItem && (
+				<ContentViewModal item={viewItem} onClose={() => setViewItem(null)} />
 			)}
 		</div>
 	);
