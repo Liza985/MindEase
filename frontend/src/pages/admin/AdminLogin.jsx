@@ -20,7 +20,9 @@ const AdminLogin = () => {
 
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
-	const { loading, error } = useSelector((state) => state.admin);
+	const loading = false; 
+	const error = null;
+	// const { loading, error } = useSelector((state) => state.admin);
 
 	const togglePasskey = () => {
 		setShowPasskey(!showPasskey);
