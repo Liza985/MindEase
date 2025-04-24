@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar as solidStar } from "@fortawesome/free-solid-svg-icons";
 import { faStar as regularStar } from "@fortawesome/free-regular-svg-icons";
 import VolHeader from "../../components/VolHeader";
+import { getReviewsByVolId } from "../../redux/Actions/reviewAction";
 
 const Reviews = () => {
-	const { id } = useSelector((state) => state.volunteer);
-	const [reviews, setReviews] = useState([]);
+	const dispatch = useDispatch();
+	const { volReview: reviews, loading } = useSelector((state) => state.review);
 	const [stats, setStats] = useState({
 		averageRating: 0,
 		totalReviews: 0,
@@ -22,71 +23,35 @@ const Reviews = () => {
 	const [filteredReviews, setFilteredReviews] = useState([]);
 	const [selectedUser, setSelectedUser] = useState("all");
 
-	// Static data for testing
-	const staticReviews = [
-		{
-			_id: "1",
-			userId: {
-				_id: "user1",
-				firstName: "John",
-				lastName: "Doe"
-			},
-			rating: 5,
-			feedback: "Excellent volunteer work! Very dedicated and professional.",
-			createdAt: "2024-03-15T10:00:00Z"
-		},
-		{
-			_id: "2",
-			userId: {
-				_id: "user2",
-				firstName: "Jane",
-				lastName: "Smith"
-			},
-			rating: 4,
-			feedback: "Great communication and very helpful.",
-			createdAt: "2024-03-14T15:30:00Z"
-		},
-		{
-			_id: "3",
-			userId: {
-				_id: "user1",
-				firstName: "John",
-				lastName: "Doe"
-			},
-			rating: 5,
-			feedback: "Another great experience working together!",
-			createdAt: "2024-03-10T09:15:00Z"
-		}
-	];
+	useEffect(() => {
+		dispatch(getReviewsByVolId());
+	}, [dispatch]);
 
 	useEffect(() => {
-		// Using static data instead of volunteer.ratings
-		setReviews(staticReviews);
-		setFilteredReviews(staticReviews);
+		if (reviews) {
+			setFilteredReviews(reviews);
 
-		// Calculate statistics
-		const totalReviews = staticReviews.length;
-		const sumRatings = staticReviews.reduce(
-			(acc, curr) => acc + curr.rating,
-			0
-		);
-		const avgRating = totalReviews > 0 ? sumRatings / totalReviews : 0;
+			// Calculate statistics
+			const totalReviews = reviews.length;
+			const sumRatings = reviews.reduce((acc, curr) => acc + curr.rating, 0);
+			const avgRating = totalReviews > 0 ? sumRatings / totalReviews : 0;
 
-		// Calculate rating distribution
-		const distribution = staticReviews.reduce(
-			(acc, curr) => {
-				acc[curr.rating] = (acc[curr.rating] || 0) + 1;
-				return acc;
-			},
-			{ 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 }
-		);
+			// Calculate rating distribution
+			const distribution = reviews.reduce(
+				(acc, curr) => {
+					acc[curr.rating] = (acc[curr.rating] || 0) + 1;
+					return acc;
+				},
+				{ 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 },
+			);
 
-		setStats({
-			averageRating: avgRating.toFixed(1),
-			totalReviews,
-			ratingDistribution: distribution,
-		});
-	}, []);
+			setStats({
+				averageRating: avgRating.toFixed(1),
+				totalReviews,
+				ratingDistribution: distribution,
+			});
+		}
+	}, [reviews]);
 
 	const renderStars = (rating) => {
 		return [...Array(5)].map((_, index) => (
@@ -107,11 +72,13 @@ const Reviews = () => {
 		if (userId === "all") {
 			setFilteredReviews(reviews);
 		} else {
-			setFilteredReviews(reviews.filter(review => review.userId._id === userId));
+			setFilteredReviews(
+				reviews.filter((review) => review.userId._id === userId),
+			);
 		}
 	};
 
-	const uniqueUsers = [...new Set(reviews.map(review => review.userId._id))];
+	const uniqueUsers = [...new Set(reviews.map((review) => review.userId._id))];
 
 	return (
 		<>
@@ -148,7 +115,7 @@ const Reviews = () => {
 												className="h-2 bg-yellow-400 rounded"
 												style={{
 													width: `${calculatePercentage(
-														stats.ratingDistribution[rating]
+														stats.ratingDistribution[rating],
 													)}%`,
 												}}
 											></div>
@@ -165,14 +132,14 @@ const Reviews = () => {
 
 				{/* User Filter */}
 				<div className="mb-6">
-					<select 
+					<select
 						value={selectedUser}
 						onChange={(e) => handleUserFilter(e.target.value)}
 						className="w-full md:w-auto px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
 					>
 						<option value="all">All Reviews</option>
-						{uniqueUsers.map(userId => {
-							const user = reviews.find(r => r.userId._id === userId)?.userId;
+						{uniqueUsers.map((userId) => {
+							const user = reviews.find((r) => r.userId._id === userId)?.userId;
 							return (
 								<option key={userId} value={userId}>
 									{user?.firstName} {user?.lastName}&apos;s Reviews
@@ -202,7 +169,7 @@ const Reviews = () => {
 									</div>
 								</div>
 							</div>
-							<p className="text-gray-600">{review.feedback}</p>
+							<p className="text-gray-600">{review.review}</p>
 						</div>
 					))}
 

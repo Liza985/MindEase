@@ -18,6 +18,8 @@ export const createReview=async(req,res)=>{
             rating,
             review,
         })
+        req.user.review.push(newReview._id);
+        await req.user.save();
         Response(res,201,true,message.createReviewMessage,newReview)
     } catch (error) {
         Response(res,500,false,error.message)
@@ -38,11 +40,12 @@ export const getAllReviews=async(req,res)=>{
 
 export const getReviewsByVolId=async(req,res)=>{
     try {
-        const {id}=req.volunteer._id;
+        const {id}=req.volunteer;
         if(!id){
             return Response(res,400,false,message.idNotFound);
         }
         const reviews=await Review.find({volunteerId:id});
+        console.log(reviews)
         Response(res,200,true,message.reviewsFetchSuccessfulMessage,reviews)
         
     } catch (error) {
