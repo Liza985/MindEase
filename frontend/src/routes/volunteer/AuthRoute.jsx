@@ -1,11 +1,17 @@
-import React from 'react'
 import { useSelector } from 'react-redux'
 import { Navigate } from 'react-router-dom'
 
 const AuthRoute = ({children}) => {
-    const {isVolAuthenticated} =useSelector(state=>state.volunteer)
+    const {isVolAuthenticated} = useSelector(state => state.volunteer)
+    const {isAuthenticated} = useSelector(state => state.user)
 
-    return !isVolAuthenticated?children:<Navigate to="/retailerDashboard"/>;
+    if (isVolAuthenticated) {
+        return <Navigate to="/volunteer/dashboard"/>
+    }
+    if (isAuthenticated) {
+        return <Navigate to="/"/>
+    }
+    return children;
 }
 
 export default AuthRoute
