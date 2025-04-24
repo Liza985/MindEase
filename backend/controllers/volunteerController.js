@@ -69,8 +69,6 @@ export const registerVolunteer = async (req, res) => {
 
 		await newVolunteer.save();
 
-		// Generate token
-		const token = await newVolunteer.generateToken();
 
 		// Read email template
 		let emailTemplate = fs.readFileSync(
@@ -99,7 +97,6 @@ export const registerVolunteer = async (req, res) => {
 			success: true,
 			message: message.volunteerCreated,
 			newVolunteer,
-			token,
 		});
 	} catch (error) {
 		return Response(res, 500, false, error.message);
@@ -199,7 +196,7 @@ export const verifyVolunteer = async (req, res) => {
 		//sending response
 		res.status(200).cookie("token", token, options).json({
 			success: true,
-			message: message.volunteerAlreadyVerified,
+			message: message.volunteerVerified,
 			data: volunteer,
 		});
 	} catch (error) {
