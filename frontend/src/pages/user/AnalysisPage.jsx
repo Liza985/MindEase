@@ -11,6 +11,7 @@ const AnalysisPage = () => {
   const [overallRisk, setOverallRisk] = useState('');
   const [overallPercentage, setOverallPercentage] = useState(0);
   const [recommendations, setRecommendations] = useState([]);
+  const [mlPrediction, setMlPrediction] = useState(null);
 
   useEffect(() => {
     if (location.state?.formData) {
@@ -18,49 +19,92 @@ const AnalysisPage = () => {
     }
   }, [location.state]);
 
-  const analyzeResults = (formData) => {
+  const analyzeResults = async (formData) => {
     setLoading(true);
     
-    // Calculate category scores
-    const categoryScores = {
-      "Sleep & Energy": calculateCategoryScore(formData, ["Sleep", "SleepDisturbance", "Fatigue", "LowEnergy"]),
-      "Mood & Emotions": calculateCategoryScore(formData, ["Worthlessness", "Hopelessness", "Aggression", "Interest"]),
-      "Physical Symptoms": calculateCategoryScore(formData, ["Appetite", "Agitation", "Restlessness", "PanicAttacks"]),
-      "Cognition & Thoughts": calculateCategoryScore(formData, ["Concentration", "SuicidalIdeation"])
-    };
-    
-    // Calculate overall score
-    const totalScore = Object.values(categoryScores).reduce((sum, score) => sum + score.value, 0);
-    const maxPossibleScore = Object.values(categoryScores).reduce((sum, score) => sum + score.maxPossible, 0);
-    const calculatedOverallPercentage = (totalScore / maxPossibleScore) * 100;
-    
-    // Determine risk level based on overall percentage
-    let risk;
-    if (calculatedOverallPercentage < 25) {
-      risk = 'Low';
-    } else if (calculatedOverallPercentage < 50) {
-      risk = 'Moderate';
-    } else if (calculatedOverallPercentage < 75) {
-      risk = 'High';
-    } else {
-      risk = 'Severe';
+    try {
+      // Get ML model prediction
+      const response = await fetch('http://localhost:5000/predict', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      });
+
+      const mlResult = await response.json();
+      setMlPrediction(mlResult);
+
+      // Calculate category scores
+      const categoryScores = {
+        "Sleep & Energy": calculateCategoryScore(formData, ["Sleep", "SleepDisturbance", "Fatigue", "LowEnergy"]),
+        "Mood & Emotions": calculateCategoryScore(formData, ["Worthlessness", "Hopelessness", "Aggression", "Interest"]),
+        "Physical Symptoms": calculateCategoryScore(formData, ["Appetite", "Agitation", "Restlessness", "PanicAttacks"]),
+        "Cognition & Thoughts": calculateCategoryScore(formData, ["Concentration", "SuicidalIdeation"])
+      };
+      
+      // Calculate overall percentage based on both ML prediction and rule-based scoring
+      const totalScore = Object.values(categoryScores).reduce((sum, score) => sum + score.value, 0);
+      const maxPossibleScore = Object.values(categoryScores).reduce((sum, score) => sum + score.maxPossible, 0);
+      const calculatedOverallPercentage = (totalScore / maxPossibleScore) * 100;
+      
+      // Use ML model's prediction for risk level
+      const risk = mlResult.prediction;
+      
+      // Check for critical indicators (suicidal ideation)
+      if (parseInt(formData.SuicidalIdeation) >= 4) {
+        setOverallRisk('Critical');
+        setOverallPercentage(95); // Keep it in red zone
+      } else {
+        setOverallRisk(risk);
+        setOverallPercentage(calculatedOverallPercentage);
+      }
+      
+      // Generate recommendations
+      const recs = generateRecommendations(risk, categoryScores, formData, mlResult);
+      
+      setScores(categoryScores);
+      setRecommendations(recs);
+      
+    } catch (error) {
+      console.error('Error getting ML prediction:', error);
+      // Fallback to rule-based analysis
+      const categoryScores = {
+        "Sleep & Energy": calculateCategoryScore(formData, ["Sleep", "SleepDisturbance", "Fatigue", "LowEnergy"]),
+        "Mood & Emotions": calculateCategoryScore(formData, ["Worthlessness", "Hopelessness", "Aggression", "Interest"]),
+        "Physical Symptoms": calculateCategoryScore(formData, ["Appetite", "Agitation", "Restlessness", "PanicAttacks"]),
+        "Cognition & Thoughts": calculateCategoryScore(formData, ["Concentration", "SuicidalIdeation"])
+      };
+      
+      const totalScore = Object.values(categoryScores).reduce((sum, score) => sum + score.value, 0);
+      const maxPossibleScore = Object.values(categoryScores).reduce((sum, score) => sum + score.maxPossible, 0);
+      const calculatedOverallPercentage = (totalScore / maxPossibleScore) * 100;
+      
+      let risk;
+      if (calculatedOverallPercentage < 25) {
+        risk = 'No depression';
+      } else if (calculatedOverallPercentage < 50) {
+        risk = 'Mild';
+      } else if (calculatedOverallPercentage < 75) {
+        risk = 'Moderate';
+      } else {
+        risk = 'Severe';
+      }
+      
+      if (parseInt(formData.SuicidalIdeation) >= 4) {
+        risk = 'Critical';
+        setOverallPercentage(95);
+      } else {
+        setOverallPercentage(calculatedOverallPercentage);
+      }
+      
+      const recs = generateRecommendations(risk, categoryScores, formData);
+      
+      setScores(categoryScores);
+      setOverallRisk(risk);
+      setRecommendations(recs);
     }
     
-    // Check for critical indicators (suicidal ideation)
-    if (parseInt(formData.SuicidalIdeation) >= 4) {
-      risk = 'Critical';
-      // For the gauge visualization, we'll set Critical at 95% to keep it in the red zone
-      setOverallPercentage(95);
-    } else {
-      setOverallPercentage(calculatedOverallPercentage);
-    }
-    
-    // Generate recommendations based on risk level and specific high scores
-    const recs = generateRecommendations(risk, categoryScores, formData);
-    
-    setScores(categoryScores);
-    setOverallRisk(risk);
-    setRecommendations(recs);
     setLoading(false);
   };
 
@@ -85,8 +129,17 @@ const AnalysisPage = () => {
     return 'Severe';
   };
   
-  const generateRecommendations = (risk, categoryScores, formData) => {
+  const generateRecommendations = (risk, categoryScores, formData, mlResult = null) => {
     const recommendations = [];
+    
+    // Add ML model confidence if available
+    if (mlResult) {
+      recommendations.push({
+        title: 'Assessment Confidence',
+        description: `Our AI model is ${(mlResult.confidence * 100).toFixed(1)}% confident in this assessment.`,
+        urgent: false
+      });
+    }
     
     // General recommendations based on risk level
     switch (risk) {
@@ -104,59 +157,62 @@ const AnalysisPage = () => {
           urgent: true
         });
         break;
-      case 'High':
+      case 'Moderate':
         recommendations.push({
           title: 'Consider Professional Support',
-          description: 'Consider scheduling an appointment with a therapist or counselor to discuss your symptoms.',
+          description: 'Consider talking to a mental health professional about your symptoms. Regular counseling may be beneficial.',
+          urgent: false
+        });
+        break;
+      case 'Mild':
+        recommendations.push({
+          title: 'Self-Care Focus',
+          description: 'Focus on self-care strategies and monitor your symptoms. Consider talking to a counselor if symptoms persist.',
           urgent: false
         });
         break;
       default:
         recommendations.push({
-          title: 'Self-Care Strategies',
-          description: 'Continue practicing self-care and monitoring your mental well-being.',
+          title: 'Maintain Well-being',
+          description: 'Continue practicing good mental health habits and self-care routines.',
           urgent: false
         });
     }
     
-    // Specific recommendations based on category scores
-    if (categoryScores["Sleep & Energy"].level === 'High' || categoryScores["Sleep & Energy"].level === 'Severe') {
-      recommendations.push({
-        title: 'Sleep Hygiene',
-        description: 'Establish a regular sleep schedule and create a relaxing bedtime routine. Limit screen time before bed and consider sleep-promoting activities like reading or meditation.',
-        urgent: false
-      });
-    }
-    
-    if (categoryScores["Mood & Emotions"].level === 'High' || categoryScores["Mood & Emotions"].level === 'Severe') {
-      recommendations.push({
-        title: 'Mood Management',
-        description: 'Practice mindfulness and emotional regulation techniques. Consider keeping a mood journal to identify triggers and patterns.',
-        urgent: false
-      });
-    }
-    
-    if (categoryScores["Physical Symptoms"].level === 'High' || categoryScores["Physical Symptoms"].level === 'Severe') {
-      recommendations.push({
-        title: 'Physical Well-being',
-        description: 'Regular physical activity can help reduce anxiety and improve mood. Consider incorporating relaxation techniques like deep breathing or progressive muscle relaxation.',
-        urgent: false
-      });
-    }
-    
-    if (categoryScores["Cognition & Thoughts"].level === 'High' || categoryScores["Cognition & Thoughts"].level === 'Severe') {
-      recommendations.push({
-        title: 'Thought Management',
-        description: 'Practice identifying and challenging negative thought patterns. Consider cognitive-behavioral techniques or guided meditation focused on thought awareness.',
-        urgent: false
-      });
-    }
-    
-    // Add resource recommendation
-    recommendations.push({
-      title: 'Resources',
-      description: 'Explore our resource library for self-help materials, guided activities, and information about mental health services in your area.',
-      urgent: false
+    // Add specific recommendations based on category scores
+    Object.entries(categoryScores).forEach(([category, score]) => {
+      if (score.percentage > 50) {
+        switch (category) {
+          case 'Sleep & Energy':
+            recommendations.push({
+              title: 'Sleep Hygiene',
+              description: 'Focus on improving sleep habits: maintain a regular sleep schedule, create a relaxing bedtime routine, and limit screen time before bed.',
+              urgent: false
+            });
+            break;
+          case 'Mood & Emotions':
+            recommendations.push({
+              title: 'Emotional Support',
+              description: 'Consider joining a support group or starting a mood journal. Regular exercise can also help regulate emotions.',
+              urgent: false
+            });
+            break;
+          case 'Physical Symptoms':
+            recommendations.push({
+              title: 'Physical Well-being',
+              description: 'Practice relaxation techniques like deep breathing or progressive muscle relaxation. Regular exercise may help reduce physical symptoms.',
+              urgent: false
+            });
+            break;
+          case 'Cognition & Thoughts':
+            recommendations.push({
+              title: 'Mental Wellness',
+              description: 'Try mindfulness meditation and cognitive exercises. If negative thoughts persist, consider cognitive behavioral therapy.',
+              urgent: false
+            });
+            break;
+        }
+      }
     });
     
     return recommendations;
@@ -164,22 +220,27 @@ const AnalysisPage = () => {
 
   const getCategoryColor = (level) => {
     switch (level) {
-      case 'Low': return 'bg-green-400';
-      case 'Moderate': return 'bg-amber-400';
-      case 'High': return 'bg-orange-400';
-      case 'Severe': return 'bg-red-400';
-      default: return 'bg-gray-400';
+      case 'Low':
+        return 'bg-green-500';
+      case 'Moderate':
+        return 'bg-yellow-500';
+      case 'High':
+        return 'bg-orange-500';
+      case 'Severe':
+        return 'bg-red-500';
+      default:
+        return 'bg-gray-500';
     }
   };
 
   return (
     <>
       <Header />
-      <div className="bg-gradient-to-br from-blue-50 to-indigo-50 min-h-screen py-12 px-4 sm:px-6 lg:px-8 mt-10">
-        <div className="max-w-4xl mx-auto">
+      <div className="min-h-screen bg-gray-50 pt-20">
+        <div className="container mx-auto px-4 py-8">
           {loading ? (
-            <div className="text-center py-16">
-              <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
+            <div className="text-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto mb-4"></div>
               <p className="mt-4 text-gray-600">Analyzing your responses...</p>
             </div>
           ) : (
@@ -187,17 +248,22 @@ const AnalysisPage = () => {
               <div className="bg-white rounded-xl shadow-md overflow-hidden mb-8">
                 <div className="bg-indigo-600 px-6 py-4">
                   <h1 className="text-2xl font-bold text-white">Your MindEase Assessment Results</h1>
-                  <p className="text-indigo-100 mt-1">Based on your responses, we've prepared a personalized analysis.</p>
+                  <p className="text-indigo-100 mt-1">Based on your responses and AI analysis, we've prepared a personalized assessment.</p>
                 </div>
                 
                 <div className="p-6">
                   <div className="mb-8">
                     <h2 className="text-xl font-semibold text-gray-900 mb-3 text-center">Overall Assessment</h2>
                     <div className="flex flex-col items-center mt-4">
-                    <RiskGauge percentage={overallPercentage} />
+                      <RiskGauge percentage={overallPercentage} />
+                      {mlPrediction && (
+                        <div className="mt-4 text-sm text-gray-600">
+                          AI Model Confidence: {(mlPrediction.confidence * 100).toFixed(1)}%
+                        </div>
+                      )}
                     </div>
                     <p className="mt-6 text-gray-600 text-center px-8">
-                      This assessment is based on your responses across different areas of mental well-being. 
+                      This assessment combines advanced AI analysis with clinical metrics to evaluate your mental well-being. 
                       Remember that this is not a clinical diagnosis but an indicator of potential areas of concern.
                     </p>
                   </div>
