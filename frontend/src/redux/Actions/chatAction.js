@@ -137,26 +137,28 @@ export const updateChatStatus = (id, status) => async (dispatch) => {
 	}
 };
 
-
 export const getAllChats = () => async (dispatch) => {
 	try {
 		dispatch({ type: "GET_ALL_CHATS_REQUEST" });
 
 		const { data } = await axios.get(`${url}/admin/chats`, {
 			withCredentials: true,
+			headers: {
+				"Content-Type": "application/json",
+			},
 		});
 
 		dispatch({
 			type: "GET_ALL_CHATS_SUCCESS",
 			payload: {
-				data: data.data,
+				data: data.data || [],
 				message: data.message,
 			},
 		});
 	} catch (error) {
 		dispatch({
 			type: "GET_ALL_CHATS_FAILURE",
-			payload: error.response.data.message,
+			payload: error?.response?.data?.message || "Failed to fetch chats",
 		});
 	}
 };
