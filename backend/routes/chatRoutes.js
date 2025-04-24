@@ -1,6 +1,8 @@
 import express from "express";
 import {
 	createChat,
+	deleteChat,
+	getAllChats,
 	getChatById,
 	getUserChats,
 	getVolunteerChats,
@@ -20,4 +22,7 @@ router.post("/create", isVolAuthenticated, createChat);
 router.get("/volunteer/chats", isVolAuthenticated, getVolunteerChats);
 router.patch("/chat/:id/status", isVolAuthenticated, updateChatStatus);
 
+// Admin routes
+router.get("/admin/chats", getAllChats); 
+router.delete("/admin/chat/:id", deleteChat);
 export default router;

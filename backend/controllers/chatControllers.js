@@ -169,3 +169,30 @@ export const updateChatStatus = async (req, res) => {
 		return Response(res, 500, false, error.message);
 	}
 };
+
+export const getAllChats= async (req, res) => {
+	try {
+		const chats = await Chat.find()
+			.populate("userId", "firstName lastName email")
+			.populate("volunteerId", "firstName lastName email expertiseArea")
+			.populate("requestId", "Topic category")
+			.sort({ updatedAt: -1 });
+		return Response(res, 200, true, "Chats fetched successfully", chats);
+	} catch (error) {
+		return Response(res, 500, false, error.message);
+	}
+}
+export const deleteChat = async (req, res) => {
+	try {
+		const { id } = req.params;
+		const chat = await Chat.findByIdAndDelete(id);
+
+		if (!chat) {
+			return Response(res, 404, false, "Chat not found");
+		}
+
+		return Response(res, 200, true, "Chat deleted successfully", chat);
+	} catch (error) {
+		return Response(res, 500, false, error.message);
+	}
+};

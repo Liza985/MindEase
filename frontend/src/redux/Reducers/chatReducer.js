@@ -22,6 +22,14 @@ const updateChatStatusRequest = createAction("UPDATE_CHAT_STATUS_REQUEST");
 const updateChatStatusSuccess = createAction("UPDATE_CHAT_STATUS_SUCCESS");
 const updateChatStatusFailure = createAction("UPDATE_CHAT_STATUS_FAILURE");
 
+const getAllChatsRequest = createAction("GET_ALL_CHATS_REQUEST");
+const getAllChatsSuccess = createAction("GET_ALL_CHATS_SUCCESS");
+const getAllChatsFailure = createAction("GET_ALL_CHATS_FAILURE");
+
+const deleteChatRequest = createAction("DELETE_CHAT_REQUEST");
+const deleteChatSuccess = createAction("DELETE_CHAT_SUCCESS");
+const deleteChatFailure = createAction("DELETE_CHAT_FAILURE");
+
 const clearError = createAction("CLEAR_ERROR");
 const clearMessage = createAction("CLEAR_MESSAGE");
 
@@ -84,6 +92,32 @@ export const chatReducer = createReducer(initialState, (builder) => {
 			state.message = action.payload.message;
 		})
 		.addCase(updateChatStatusFailure, (state, action) => {
+			state.loading = false;
+			state.error = action.payload;
+		})
+
+		.addCase(getAllChatsRequest, (state) => {
+			state.loading = true;
+		})
+		.addCase(getAllChatsSuccess, (state, action) => {
+			state.loading = false;
+			state.allChats = action.payload.data;
+			state.message = action.payload.message;
+		})
+		.addCase(getAllChatsFailure, (state, action) => {
+			state.loading = false;
+			state.error = action.payload;
+		})
+
+		.addCase(deleteChatRequest, (state) => {
+			state.loading = true;
+		})
+		.addCase(deleteChatSuccess, (state, action) => {
+			state.loading = false;
+			state.deletedChat = action.payload.data;
+			state.message = action.payload.message;
+		})
+		.addCase(deleteChatFailure, (state, action) => {
 			state.loading = false;
 			state.error = action.payload;
 		})

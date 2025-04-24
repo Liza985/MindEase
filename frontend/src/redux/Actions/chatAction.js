@@ -136,3 +136,50 @@ export const updateChatStatus = (id, status) => async (dispatch) => {
 		});
 	}
 };
+
+
+export const getAllChats = () => async (dispatch) => {
+	try {
+		dispatch({ type: "GET_ALL_CHATS_REQUEST" });
+
+		const { data } = await axios.get(`${url}/admin/chats`, {
+			withCredentials: true,
+		});
+
+		dispatch({
+			type: "GET_ALL_CHATS_SUCCESS",
+			payload: {
+				data: data.data,
+				message: data.message,
+			},
+		});
+	} catch (error) {
+		dispatch({
+			type: "GET_ALL_CHATS_FAILURE",
+			payload: error.response.data.message,
+		});
+	}
+};
+
+export const deleteChat = (id) => async (dispatch) => {
+	try {
+		dispatch({ type: "DELETE_CHAT_REQUEST" });
+
+		const { data } = await axios.delete(`${url}/admin/chat/${id}`, {
+			withCredentials: true,
+		});
+
+		dispatch({
+			type: "DELETE_CHAT_SUCCESS",
+			payload: {
+				data: data.data,
+				message: data.message,
+			},
+		});
+	} catch (error) {
+		dispatch({
+			type: "DELETE_CHAT_FAILURE",
+			payload: error.response.data.message,
+		});
+	}
+};
