@@ -1,4 +1,5 @@
 import { createAction, createReducer } from "@reduxjs/toolkit";
+import { adminLogin } from './../../../../backend/controllers/admin';
 const initialState = {};
 
 const userLoginRequest = createAction("USER_LOGIN_REQUEST");
@@ -40,6 +41,14 @@ const getAllUsersFailure = createAction("GET_ALL_USERS_FAILURE");
 const getUserProfileRequest = createAction("GET_USER_PROFILE_REQUEST");
 const getUserProfileSuccess = createAction("GET_USER_PROFILE_SUCCESS");		
 const getUserProfileFailure = createAction("GET_USER_PROFILE_FAILURE");
+
+const adminLoginRequest = createAction("ADMIN_LOGIN_REQUEST");
+const adminLoginSuccess = createAction("ADMIN_LOGIN_SUCCESS");
+const adminLoginFailure = createAction("ADMIN_LOGIN_FAILURE");
+
+const adminLogoutRequest = createAction("ADMIN_LOGOUT_REQUEST");
+const adminLogoutSuccess = createAction("ADMIN_LOGOUT_SUCCESS");
+const adminLogoutFailure = createAction("ADMIN_LOGOUT_FAILURE");
 
 const clearError = createAction("CLEAR_ERROR");
 const clearMessage = createAction("CLEAR_MESSAGE");
@@ -210,5 +219,29 @@ export const userReducer = createReducer(initialState, (builder) => {
 			state.error = action.payload;
 			state.isAuthenticated = false;
 		})
-		
+		.addCase(adminLoginRequest, (state) => {
+			state.loading = true;
+		})
+		.addCase(adminLoginSuccess, (state, action) => {
+			state.loading = false;
+			state.isadminAuthenticated = true;
+			state.message = action.payload.message;
+			state.admin = action.payload.admin;
+		})
+		.addCase(adminLoginFailure, (state, action) => {
+			state.loading = false;
+			state.error = action.payload;
+		})
+		.addCase(adminLogoutRequest, (state) => {
+			state.loading = true;
+		})
+		.addCase(adminLogoutSuccess, (state) => {
+			state.loading = false;
+			state.isadminAuthenticated = false;
+			state.admin = null;
+		})
+		.addCase(adminLogoutFailure, (state, action) => {
+			state.loading = false;
+			state.error = action.payload;
+		});
 });

@@ -306,3 +306,51 @@ export const getUserProfile = () => async (dispatch) => {
 		});
 	}
 };
+
+export const adminLogin= (details) => async (dispatch) => {
+	try {
+		dispatch({
+			type: "ADMIN_LOGIN_REQUEST",
+		});
+
+		const { data } = await axios.post(`${BACKEND_URL}api/v1/admin/login`, details, {
+			headers: {
+				"content-Type": "application/json",
+			},
+			withCredentials: true,
+		});
+
+		dispatch({
+			type: "ADMIN_LOGIN_SUCCESS",
+			payload: {
+				message: data.message,
+				id: data.data,
+			},
+		});
+	} catch (error) {
+		dispatch({
+			type: "ADMIN_LOGIN_FAILURE",
+			payload: error.response?.data?.message,
+		});
+	}
+}
+
+export const adminLogout= () => async (dispatch) => {
+	try {
+		dispatch({
+			type: "ADMIN_LOGOUT_REQUEST",
+		});
+		const { data } = await axios.get(`${BACKEND_URL}api/v1/admin/logout`, {
+			withCredentials: true,
+		});
+		dispatch({
+			type: "ADMIN_LOGOUT_SUCCESS",
+			payload: data.message,
+		});
+	} catch (error) {
+		dispatch({
+			type: "ADMIN_LOGOUT_FAILURE",
+			payload: error.response?.data?.message,
+		});
+	}
+}

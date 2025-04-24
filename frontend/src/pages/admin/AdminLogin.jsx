@@ -5,11 +5,13 @@ import {
 	faKey,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import toastOptions from "../../constants/toast";
+import { adminLogin } from "../../redux/Actions/userAction";
+
 
 const AdminLogin = () => {
 	const [showPasskey, setShowPasskey] = useState(false);
@@ -18,11 +20,21 @@ const AdminLogin = () => {
 		passkey: "",
 	});
 
+
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
-	const loading = false; 
-	const error = null;
-	// const { loading, error } = useSelector((state) => state.admin);
+	const { loading, message,error } = useSelector((state) => state.user);
+
+
+	useEffect(() => {
+		if(message=="Login successful"){
+			navigate("/admin");
+		}
+		if (error) {
+			toast.error(error, toastOptions);
+			dispatch({ type: "clearError" });
+		}
+	}, [error, message, dispatch, navigate]);
 
 	const togglePasskey = () => {
 		setShowPasskey(!showPasskey);
@@ -37,8 +49,7 @@ const AdminLogin = () => {
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		// TODO: Implement admin login action
-		// dispatch(adminLogin(loginForm));
+		dispatch(adminLogin(loginForm));
 	};
 
 	return (

@@ -15,6 +15,7 @@ import {
 } from "../controllers/userController.js";
 import { isAuthenticated } from "./../middlewares/auth.js";
 
+
 const userRouter = express.Router();
 
 userRouter.post("/register", registerUser);
@@ -29,5 +30,7 @@ userRouter.post("/changePassword/:id", changePassword);
 userRouter.put("/profile/update", isAuthenticated, updateUserProfile);
 userRouter.delete("/delete/:id", isAuthenticated, deleteUser);
 userRouter.get("/all", getAllUsers);
+
+
 
 export default userRouter;

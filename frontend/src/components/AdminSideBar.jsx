@@ -7,9 +7,12 @@ import {
 	Users,
 } from "lucide-react";
 import React from "react";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { adminLogout } from "../redux/Actions/userAction";
 
 const AdminSidebar = () => {
+	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const links = [
 		{ name: "Dashboard", icon: <BarChart size={20} />, path: "/admin" },
@@ -62,7 +65,10 @@ const AdminSidebar = () => {
 
 			<div className="p-4 border-t border-orange-500">
 				<button
-					onClick={() => navigate("/")}
+					onClick={() => {
+						dispatch(adminLogout());
+						navigate("/admin/login");
+					}}
 					className="flex items-center space-x-3 text-orange-200 hover:text-white transition w-full"
 				>
 					<span>Sign Out</span>

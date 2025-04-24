@@ -13,6 +13,7 @@ import feedbackRouter from "./routes/feedbackRoute.js";
 import reviewRouter from "./routes/reviewRoute.js";
 import userRouter from "./routes/userRoute.js";
 import volunteerRouter from "./routes/volunteerRoute.js";
+import { adminLogin, adminLogout } from "./controllers/admin.js";
 
 dotenv.config({ path: "./config/.env" });
 
@@ -54,5 +55,7 @@ app.use("/api/v1/feedback", feedbackRouter);
 app.use("/api/v1/content", contentRouter);
 app.use("/api/v1/request", chatRequestRouter);
 app.use("/api/v1/chat", chatRoutes);
+app.post("/api/v1/admin/login", adminLogin);
+app.get("/api/v1/admin/logout",adminLogout);
 
 export default app;

@@ -5,19 +5,28 @@ import { toast } from "react-toastify";
 import toastOptions from "../../constants/toast";
 
 const ProtectedRoute = ({ children }) => {
-	const { isAuthenticated, error } = useSelector((state) => state.user);
-	const {isVolAuthenticated}=useSelector(state=>state.volunteer);
-	const dispatch = useDispatch();
-	useEffect(() => {
-		if (error) {
-			toast.error(error, toastOptions);
-			dispatch({ type: "CLEAR_AUTH_ERROR" });
-		}
-	}, [error]);
+    const { isAuthenticated } = useSelector((state) => state.user);
+    const { isVolAuthenticated, error } = useSelector((state) => state.volunteer);
+    const { isAdminAuthenticated } = useSelector((state) => state.user);
+    const dispatch = useDispatch();
 
-	return (
-		isVolAuthenticated ? children : isAuthenticated ? <Navigate to="/"/>:<Navigate to="/login"/>
-	)
+    useEffect(() => {
+        if (error) {
+            toast.error(error, toastOptions);
+            dispatch({ type: "CLEAR_VOLUNTEER_ERROR" });
+        }
+    }, [error]);
+
+    if (isVolAuthenticated) {
+        return children;
+    }
+    if (isAuthenticated) {
+        return <Navigate to="/" />;
+    }
+    if (isAdminAuthenticated) {
+        return <Navigate to="/admin" />;
+    }
+    return <Navigate to="/volunteer/login" />;
 };
 
 export default ProtectedRoute;
