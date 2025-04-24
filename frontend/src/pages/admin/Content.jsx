@@ -17,6 +17,7 @@ import {
 import AdminSidebar from "../../components/AdminSideBar";
 import UploadModal from "../../components/AdminUploadModal";
 import ContentViewModal from "../../components/ContentViewModal";
+import { saveAs } from "file-saver";
 
 const Content = () => {
 	// Mock content data
@@ -66,6 +67,23 @@ const Content = () => {
 		dispatch(deleteContent(id)).then(() => {
 			dispatch(getAllContent()); // Re-fetch content after deletion
 		});
+	};
+
+	// Function to handle export
+	const handleExport = () => {
+		const exportData = contentItems.map((item) => ({
+			title: item.title,
+			contentType: item.contentType,
+			category: item.category,
+			status: item.status,
+			views: item.views,
+			updatedAt: item.updatedAt,
+		}));
+
+		const blob = new Blob([JSON.stringify(exportData, null, 2)], {
+			type: "application/json",
+		});
+		saveAs(blob, "content_export.json");
 	};
 
 	// Filter and sort content
@@ -137,7 +155,10 @@ const Content = () => {
 							<PlusCircle size={16} />
 							New Content
 						</button>
-						<button className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded flex items-center gap-2">
+						<button
+							onClick={handleExport}
+							className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded flex items-center gap-2"
+						>
 							<Download size={16} />
 							Export
 						</button>

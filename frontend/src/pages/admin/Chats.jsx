@@ -1,3 +1,4 @@
+import { saveAs } from "file-saver";
 import {
 	ArrowUpDown,
 	Download,
@@ -9,6 +10,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import AdminSidebar from "../../components/AdminSideBar";
 import { getAllChats } from "../../redux/Actions/chatAction";
+import ChatViewModal from "../../components/ChatViewModal";
 
 const Chats = () => {
 	const { allChats } = useSelector((state) => state.chat);
@@ -19,6 +21,9 @@ const Chats = () => {
 	const [statusFilter, setStatusFilter] = useState("All");
 	const [sortField, setSortField] = useState("updatedAt");
 	const [sortDirection, setSortDirection] = useState("desc");
+
+	// State for managing the modal
+	const [viewChat, setViewChat] = useState(null);
 
 	useEffect(() => {
 		dispatch(getAllChats());
@@ -105,6 +110,29 @@ const Chats = () => {
 		});
 	};
 
+	// Function to handle export
+	const handleExport = () => {
+		const exportData = allChats.map((chat) => ({
+			chatId: chat._id,
+			user: `${chat.userId?.firstName || "Unknown"} ${chat.userId?.lastName || ""}`,
+			volunteer: `${chat.volunteerId?.firstName || "Unknown"} ${chat.volunteerId?.lastName || ""}`,
+			messages: chat.messages?.length || 0,
+			status: chat.status || "Unknown",
+			lastActivity: chat.updatedAt || "N/A",
+		}));
+
+		const blob = new Blob([JSON.stringify(exportData, null, 2)], {
+			type: "application/json",
+		});
+		saveAs(blob, "chats_export.json");
+	};
+
+	// Add logging to debug the view button functionality
+	const handleView = (chat) => {
+		console.log("Selected chat for viewing:", chat);
+		setViewChat(chat);
+	};
+
 	return (
 		<div className="flex min-h-screen bg-gray-100">
 			<AdminSidebar />
@@ -112,7 +140,10 @@ const Chats = () => {
 			<div className="ml-64 flex-grow p-6">
 				<div className="flex justify-between items-center mb-6">
 					<h1 className="text-2xl font-bold text-gray-800">Chats Management</h1>
-					<button className="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded flex items-center gap-2">
+					<button
+						onClick={handleExport}
+						className="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded flex items-center gap-2"
+					>
 						<Download size={16} />
 						Export Data
 					</button>
@@ -361,14 +392,11 @@ const Chats = () => {
 										</td>
 										<td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
 											<div className="flex space-x-2">
-												<button className="text-orange-600 hover:text-orange-800">
+												<button
+													className="text-orange-600 hover:text-orange-800"
+													onClick={() => handleView(chat)}
+												>
 													View
-												</button>
-												<button className="text-blue-600 hover:text-blue-800">
-													Archive
-												</button>
-												<button className="text-gray-600 hover:text-gray-800">
-													<MoreHorizontal size={16} />
 												</button>
 											</div>
 										</td>
@@ -406,6 +434,11 @@ const Chats = () => {
 					</div>
 				</div>
 			</div>
+
+			{/* Modal for viewing chat details */}
+			{viewChat && (
+				<ChatViewModal chat={viewChat} onClose={() => setViewChat(null)} />
+			)}
 		</div>
 	);
 };

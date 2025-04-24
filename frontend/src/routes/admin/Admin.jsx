@@ -3,13 +3,14 @@ import { Route, Routes } from "react-router-dom";
 import AuthRoute from "./AuthRoute";
 import AdminLogin from "../../pages/admin/AdminLogin";
 import ProtectedRoute from "./ProtectedRoute";
-import AdminDashboard from "../../pages/admin/AdminDashboard";
 import Chats from "./../../pages/admin/Chats";
 import Users from "./../../pages/admin/Users";
 import Content from "./../../pages/admin/Content";
 import Volunteers from "./../../pages/admin/Volunteers";
 import Setting from "./../../pages/admin/Setting";
 import Feedback from "../../pages/admin/Feedback";
+import AdminDashBoard from "../../pages/admin/AdminDashBoard";
+
 
 const Admin = () => {
 	return (
@@ -18,67 +19,67 @@ const Admin = () => {
 				<Route
 					path="/admin/login"
 					element={
-						//<AuthRoute>
+						<AuthRoute>
 						<AdminLogin />
-						//</AuthRoute>
+						</AuthRoute>
 					}
 				/>
 				<Route
 					path="/admin"
 					element={
-						//<ProtectedRoute>
-						<AdminDashboard />
-						//</ProtectedRoute>
+						<ProtectedRoute>
+						<AdminDashBoard />
+						</ProtectedRoute>
 					}
 				/>
 
 				<Route
 					path="/admin/chats"
 					element={
-						//<ProtectedRoute>
+						<ProtectedRoute>
 						<Chats />
-						//</ProtectedRoute>
+						</ProtectedRoute>
 					}
 				/>
 				<Route
 					path="/admin/users"
 					element={
-						//<ProtectedRoute>
+						<ProtectedRoute>
 						<Users />
-						//</ProtectedRoute>
+						</ProtectedRoute>
 					}
 				/>
 				<Route
 					path="/admin/content"
 					element={
-						//<ProtectedRoute>
+						<ProtectedRoute>
 						<Content />
-						//</ProtectedRoute>
+						</ProtectedRoute>
 					}
 				/>
 				<Route
 					path="/admin/volunteers"
 					element={
-						//<ProtectedRoute>
+						<ProtectedRoute>
 						<Volunteers />
-						//</ProtectedRoute>
+						</ProtectedRoute>
 					}
 				/>
 
 				<Route
 					path="/admin/settings"
 					element={
-						//<ProtectedRoute>
+						<ProtectedRoute>
 						<Setting />
-						//</ProtectedRoute>
+						</ProtectedRoute>
 					}
 				/>
 				<Route
 					path="/admin/feedback"
 					element={
-						//<ProtectedRoute>
+						<ProtectedRoute>
 						<Feedback />
-						//</ProtectedRoute>
+						</ProtectedRoute>
 					}
 				/>				
 			</Routes>

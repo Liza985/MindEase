@@ -75,6 +75,10 @@ export const Request = () => {
 		}
 	};
 
+	useEffect(() => {
+		console.log('Current requests:', requests);
+	}, [requests]);
+
 	return (
 		<>
 			<VolHeader />
@@ -112,8 +116,8 @@ export const Request = () => {
 													<div className="flex-grow">
 														<div className="flex items-center gap-3 mb-2">
 															<h3 className="font-medium text-lg">
-																{request.userId.firstName}{" "}
-																{request.userId.lastName}
+																{request.userId?.firstName}{" "}
+																{request.userId?.lastName}
 															</h3>
 															<span className="px-2 py-1 bg-orange-100 text-orange-800 rounded-full text-sm">
 																{request.category}

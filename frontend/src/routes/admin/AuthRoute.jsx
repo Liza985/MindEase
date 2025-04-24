@@ -1,9 +1,13 @@
-import React from 'react'
+import { useSelector } from 'react-redux'
+import { Navigate } from 'react-router-dom'
 
-const AuthRoute = () => {
-  return (
-    <div>AuthRoute</div>
-  )
+const AuthRoute = ({children}) => {
+    const { isadminAuthenticated } = useSelector(state => state.user);
+
+    if (isadminAuthenticated) {
+        return <Navigate to="/admin"/>
+    }
+    return children;
 }
 
 export default AuthRoute
