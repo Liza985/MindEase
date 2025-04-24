@@ -8,101 +8,142 @@ import {
 	Users,
 	Video,
 } from "lucide-react";
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+	getAllContent,
+	deleteContent,
+} from "../../redux/Actions/activityAction";
 import StatCard from "../../components/AdminStatCard";
 import UploadModal from "../../components/AdminUploadModal";
 import AdminHeader from "./../../components/AdminHeader";
 import AdminSidebar from "./../../components/AdminSideBar";
+import ContentViewModal from "../../components/ContentViewModal";
 
 const AdminDashBoard = () => {
 	const [showUploadModal, setShowUploadModal] = useState(false);
 	const [uploadType, setUploadType] = useState("");
-	// Content Row Component
-	const ContentRow = ({ title, type, creator, date, status }) => {
-		return (
-			<tr>
-				<td className="px-6 py-4 whitespace-nowrap">
-					<div className="text-sm font-medium text-gray-900">{title}</div>
-				</td>
-				<td className="px-6 py-4 whitespace-nowrap">
-					<div className="flex items-center">
-						{type === "Video" ? (
-							<Video size={16} className="text-orange-500 mr-2" />
-						) : type === "PDF" ? (
-							<FileText size={16} className="text-orange-500 mr-2" />
-						) : (
-							<FileText size={16} className="text-orange-500 mr-2" />
-						)}
-						<span className="text-sm text-gray-500">{type}</span>
-					</div>
-				</td>
-				<td className="px-6 py-4 whitespace-nowrap">
-					<div className="text-sm text-gray-500">{creator}</div>
-				</td>
-				<td className="px-6 py-4 whitespace-nowrap">
-					<div className="text-sm text-gray-500">{date}</div>
-				</td>
-				<td className="px-6 py-4 whitespace-nowrap">
-					<span
-						className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-							status === "Published"
-								? "bg-green-100 text-green-800"
-								: "bg-yellow-100 text-yellow-800"
-						}`}
-					>
-						{status}
-					</span>
-				</td>
-				<td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-					<button className="text-orange-600 hover:text-orange-900 mr-3">
-						Edit
-					</button>
-					<button className="text-red-600 hover:text-red-900">Delete</button>
-				</td>
-			</tr>
-		);
+	const [viewModalData, setViewModalData] = useState(null);
+
+	const dispatch = useDispatch();
+	const { contentItems } = useSelector((state) => state.content);
+	const { volunteers } = useSelector((state) => state.volunteer);
+	const { users } = useSelector((state) => state.user);
+
+	const getFullName = (vol) =>
+		[vol.firstName, vol.middleName, vol.lastName].filter(Boolean).join(" ");
+
+	useEffect(() => {
+		dispatch(getAllContent());
+	}, [dispatch]);
+
+	const handleDelete = (id) => {
+		dispatch(deleteContent(id)).then(() => {
+			dispatch(getAllContent());
+		});
 	};
 
-	// Volunteer Row Component
-	const VolunteerRow = ({ name, date, chats, status }) => {
-		return (
-			<tr>
-				<td className="px-6 py-4 whitespace-nowrap">
-					<div className="text-sm font-medium text-gray-900">{name}</div>
-				</td>
-				<td className="px-6 py-4 whitespace-nowrap">
-					<div className="text-sm text-gray-500">{date}</div>
-				</td>
-				<td className="px-6 py-4 whitespace-nowrap">
-					<div className="text-sm text-gray-500">{chats}</div>
-				</td>
-				<td className="px-6 py-4 whitespace-nowrap">
-					<span
-						className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-							status === "Active"
-								? "bg-green-100 text-green-800"
-								: "bg-red-100 text-red-800"
-						}`}
+	const handleView = (item) => {
+		setViewModalData(item);
+	};
+
+	const ContentRow = ({ item }) => (
+		<tr>
+			<td className="px-6 py-4 whitespace-nowrap">
+				<div className="text-sm font-medium text-gray-900">{item.title}</div>
+			</td>
+			<td className="px-6 py-4 whitespace-nowrap">
+				<div className="flex items-center">
+					{item.contentType === "Video" ? (
+						<Video size={16} className="text-orange-500 mr-2" />
+					) : (
+						<FileText size={16} className="text-orange-500 mr-2" />
+					)}
+					<span className="text-sm text-gray-500">{item.contentType}</span>
+				</div>
+			</td>
+			<td className="px-6 py-4 whitespace-nowrap">
+				<div className="text-sm text-gray-500">{item.author}</div>
+			</td>
+			<td className="px-6 py-4 whitespace-nowrap">
+				<div className="text-sm text-gray-500">
+					{new Date(item.createdAt).toLocaleDateString("en-US", {
+						year: "numeric",
+						month: "short",
+						day: "numeric",
+					})}
+				</div>
+			</td>
+			<td className="px-6 py-4 whitespace-nowrap">
+				<span
+					className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+						item.status === "Published"
+							? "bg-green-100 text-green-800"
+							: "bg-yellow-100 text-yellow-800"
+					}`}
+				>
+					{item.status}
+				</span>
+			</td>
+			<td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+				<div className="flex gap-2">
+					<button
+						onClick={() => handleView(item)}
+						className="text-red-600 hover:text-red-900"
 					>
-						{status}
-					</span>
-				</td>
-				<td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-					<button className="text-orange-600 hover:text-orange-900 mr-3">
 						View
 					</button>
-					<button className="text-blue-600 hover:text-blue-900">Message</button>
-				</td>
-			</tr>
-		);
-	};
+					<button
+						onClick={() => handleDelete(item._id)}
+						className="text-red-600 hover:text-red-900"
+					>
+						Delete
+					</button>
+				</div>
+			</td>
+		</tr>
+	);
+
+	const VolunteerRow = ({ volunteer }) => (
+		<tr>
+			<td className="px-6 py-4 whitespace-nowrap">
+				<div className="text-sm font-medium text-gray-900">
+					{getFullName(volunteer)}
+				</div>
+			</td>
+			<td className="px-6 py-4 whitespace-nowrap">
+				<div className="text-sm text-gray-500">{volunteer.createdAt}</div>
+			</td>
+			<td className="px-6 py-4 whitespace-nowrap">
+				<div className="text-sm text-gray-500">{volunteer.chatsCompleted}</div>
+			</td>
+			<td className="px-6 py-4 whitespace-nowrap">
+				<span
+					className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+						volunteer.isVerified
+							? "bg-green-100 text-green-800"
+							: "bg-red-100 text-red-800"
+					}`}
+				>
+					{volunteer.isVerified ? "Verified" : "Not Verified"}
+				</span>
+			</td>
+
+			<td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+				<button className="text-orange-600 hover:text-orange-900 mr-3">
+					View
+				</button>
+				<button className="text-blue-600 hover:text-blue-900">Message</button>
+			</td>
+		</tr>
+	);
+
 	return (
 		<>
-    <AdminSidebar />
+			<AdminSidebar />
 			<div className="flex min-h-screen">
-      <div className="w-64 flex-shrink-0"></div>
-      
+				<div className="w-64 flex-shrink-0"></div>
 				<div className="flex-1">
 					<AdminHeader title="Admin Dashboard" />
 					<main className="p-6 bg-orange-50">
@@ -110,13 +151,13 @@ const AdminDashBoard = () => {
 						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
 							<StatCard
 								title="Total Users"
-								value="2,547"
+								value={users?.length || 0}
 								increase="+12%"
 								icon={<Users size={24} className="text-orange-500" />}
 							/>
 							<StatCard
 								title="Total Volunteers"
-								value="148"
+								value={volunteers?.length || 0}
 								increase="+5%"
 								icon={<Users size={24} className="text-orange-500" />}
 							/>
@@ -128,7 +169,7 @@ const AdminDashBoard = () => {
 							/>
 							<StatCard
 								title="Content Uploads"
-								value="312"
+								value={contentItems?.length || 0}
 								increase="+7%"
 								icon={<Upload size={24} className="text-orange-500" />}
 							/>
@@ -168,7 +209,7 @@ const AdminDashBoard = () => {
 							</div>
 						</div>
 
-						{/* Content Management & Upload Section */}
+						{/* Content Management Section */}
 						<div className="bg-white rounded-lg shadow-md p-6 mb-8">
 							<div className="flex justify-between items-center mb-6">
 								<h2 className="text-xl font-semibold text-orange-700">
@@ -182,7 +223,6 @@ const AdminDashBoard = () => {
 									<span>Add Content</span>
 								</button>
 							</div>
-
 							<div className="overflow-x-auto">
 								<table className="min-w-full divide-y divide-orange-100">
 									<thead className="bg-orange-50">
@@ -208,41 +248,9 @@ const AdminDashBoard = () => {
 										</tr>
 									</thead>
 									<tbody className="bg-white divide-y divide-orange-100">
-										<ContentRow
-											title="Introduction to Volunteering"
-											type="Video"
-											creator="Admin"
-											date="Feb 25, 2025"
-											status="Published"
-										/>
-										<ContentRow
-											title="Best Practices for Support Chats"
-											type="PDF"
-											creator="Sarah Johnson"
-											date="Feb 22, 2025"
-											status="Published"
-										/>
-										<ContentRow
-											title="Volunteer Training Module 1"
-											type="Video"
-											creator="Admin"
-											date="Feb 20, 2025"
-											status="Published"
-										/>
-										<ContentRow
-											title="Mental Health Resources"
-											type="PDF"
-											creator="David Wilson"
-											date="Feb 18, 2025"
-											status="Draft"
-										/>
-										<ContentRow
-											title="Building Rapport with Users"
-											type="Article"
-											creator="Admin"
-											date="Feb 15, 2025"
-											status="Published"
-										/>
+										{contentItems?.map((item) => (
+											<ContentRow key={item._id} item={item} />
+										))}
 									</tbody>
 								</table>
 							</div>
@@ -255,13 +263,12 @@ const AdminDashBoard = () => {
 									Recent Volunteers
 								</h2>
 								<Link
-									to="#"
+									to="/admin/volunteers"
 									className="text-orange-500 hover:text-orange-600 text-sm font-medium"
 								>
 									View All
 								</Link>
 							</div>
-
 							<div className="overflow-x-auto">
 								<table className="min-w-full divide-y divide-orange-100">
 									<thead className="bg-orange-50">
@@ -284,49 +291,26 @@ const AdminDashBoard = () => {
 										</tr>
 									</thead>
 									<tbody className="bg-white divide-y divide-orange-100">
-										<VolunteerRow
-											name="John Doe"
-											date="Feb 25, 2025"
-											chats="12"
-											status="Active"
-										/>
-										<VolunteerRow
-											name="Emma Wilson"
-											date="Feb 22, 2025"
-											chats="8"
-											status="Active"
-										/>
-										<VolunteerRow
-											name="Michael Brown"
-											date="Feb 20, 2025"
-											chats="15"
-											status="Active"
-										/>
-										<VolunteerRow
-											name="Lisa Wong"
-											date="Feb 18, 2025"
-											chats="7"
-											status="Inactive"
-										/>
-										<VolunteerRow
-											name="James Rodriguez"
-											date="Feb 15, 2025"
-											chats="20"
-											status="Active"
-										/>
+										{volunteers?.map((volunteer, index) => (
+											<VolunteerRow key={index} volunteer={volunteer} />
+										))}
 									</tbody>
 								</table>
 							</div>
 						</div>
 					</main>
 				</div>
-
-				{/* Upload Modal */}
 				{showUploadModal && (
 					<UploadModal
 						onClose={() => setShowUploadModal(false)}
 						setUploadType={setUploadType}
 						uploadType={uploadType}
+					/>
+				)}
+				{viewModalData && (
+					<ContentViewModal
+						item={viewModalData}
+						onClose={() => setViewModalData(null)}
 					/>
 				)}
 			</div>
