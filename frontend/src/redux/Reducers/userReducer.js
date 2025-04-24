@@ -1,5 +1,4 @@
 import { createAction, createReducer } from "@reduxjs/toolkit";
-import { adminLogin } from './../../../../backend/controllers/admin';
 const initialState = {};
 
 const userLoginRequest = createAction("USER_LOGIN_REQUEST");
