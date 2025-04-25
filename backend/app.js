@@ -58,6 +58,6 @@ app.use("/api/v1/request", chatRequestRouter);
 app.use("/api/v1/chat", chatRoutes);
 app.use("/api/v1/survey", surveyRouter);
 app.post("/api/v1/admin/login", adminLogin);
-app.get("/api/v1/admin/logout",adminLogout);
+app.get("/api/v1/admin/logout", adminLogout);
 
 export default app;

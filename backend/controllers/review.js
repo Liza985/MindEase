@@ -45,7 +45,6 @@ export const getReviewsByVolId=async(req,res)=>{
             return Response(res,400,false,message.idNotFound);
         }
         const reviews=await Review.find({volunteerId:id});
-        console.log(reviews)
         Response(res,200,true,message.reviewsFetchSuccessfulMessage,reviews)
         
     } catch (error) {
