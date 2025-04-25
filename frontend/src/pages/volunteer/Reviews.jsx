@@ -78,7 +78,7 @@ const Reviews = () => {
 		}
 	};
 
-	const uniqueUsers = [...new Set(reviews.map((review) => review.userId._id))];
+	const uniqueUsers = [...new Set(reviews?.map((review) => review.userId._id))];
 
 	return (
 		<>
