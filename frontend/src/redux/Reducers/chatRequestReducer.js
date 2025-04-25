@@ -153,7 +153,7 @@ export const chatRequestReducer = createReducer(initialState, (builder) => {
 			state.request = null;
 			state.message = action.payload.message;
 		})
-		.addCase(deleteRequestFailure, (state) => {
+		.addCase(deleteRequestFailure, (state,action) => {
 			state.loading = false;
 			state.error = action.payload;
 		})

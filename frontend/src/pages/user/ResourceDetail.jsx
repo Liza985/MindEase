@@ -11,8 +11,8 @@ const wellnessResources = [
     icon: "Moon",
     category: "mindfulness",
     imageUrl: "https://img.freepik.com/premium-vector/middleaged-man-sits-quiet-room-eyes-closed-while-listening-customized-playlist-songs_216520-113520.jpg",
-    videoUrl: "https://www.youtube.com/watch?v=W19PdslW7iw",
-    videoThumbnail: "https://youtu.be/W19PdslW7iw?si=R8p5JqTNf5y-c669",
+    youtubeUrl: "https://www.youtube.com/embed/KJwYBJMSbPI",
+    videoThumbnail: "https://i.ytimg.com/vi/KJwYBJMSbPI/maxresdefault.jpg",
     content: `
       <h1><b>About Guided Meditation</b></h1>
       <p>Guided meditation is a process where one or more participants meditate in response to the guidance provided by a trained practitioner or teacher, either in person or via a written text, sound recording, video, or audiovisual media.</p>
@@ -37,7 +37,7 @@ const wellnessResources = [
     `,
     duration: "10-15 minutes",
     recommendedFrequency: "Daily",
-    expertAuthor: "Dr. Sarah Johnson",
+    expertAuthor: "Dr. Khushi Aggarwal",
     relatedResources: ["Mood Tracking", "Calming Sounds"],
     videos: [
       {
@@ -60,8 +60,8 @@ const wellnessResources = [
     icon: "BookOpen",
     category: "self-care",
     imageUrl: "https://media.licdn.com/dms/image/v2/D4D12AQFpNaeNZNPBbg/article-cover_image-shrink_600_2000/article-cover_image-shrink_600_2000/0/1679902040405?e=2147483647&v=beta&t=2DkEoMD2xEPkjjheyLpNXekOJnNUv_jYcLVfnMQhduU",
-    videoUrl: "https://example.com/videos/mood-tracking.mp4",
-    videoThumbnail: "/api/placeholder/640/360",
+    youtubeUrl: "https://www.youtube.com/embed/dOkyKyVFnSs",
+    videoThumbnail: "https://i.ytimg.com/vi/dOkyKyVFnSs/maxresdefault.jpg",
     content: `
       <h2><b>About Mood Tracking</b></h2>
       <p>Mood tracking is the practice of recording your emotional state at regular intervals to identify patterns and triggers that affect your mental wellbeing.</p>
@@ -86,20 +86,20 @@ const wellnessResources = [
     `,
     duration: "2 minutes per entry",
     recommendedFrequency: "2-3 times daily",
-    expertAuthor: "Dr. Michael Chen",
+    expertAuthor: "Dr. Lalit Jindal",
     relatedResources: ["Guided Meditation", "Mind-Body Exercise"],
     videos: [
       {
         title: "How to Track Your Emotions Effectively",
         duration: "7:45",
         thumbnail: "https://www.shutterstock.com/image-vector/emotions-concept-mood-scale-arrow-260nw-1922808407.jpg",
-        youtubeUrl: "https://youtu.be/dOkyKyVFnSs?si=ScR-Fav2Hte51UUp",
+        youtubeUrl: "https://www.youtube.com/embed/dOkyKyVFnSs",
       },
       {
         title: "Understanding Your Mood Patterns",
         duration: "12:37",
         thumbnail: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTgKRuteerEE1-6pHLiHJ3KmAep03F74s2Rsw&s",
-        youtubeUrl: "https://www.youtube.com/watch?v=Onb6_bRJ0Bw",
+        youtubeUrl: "https://www.youtube.com/embed/Onb6_bRJ0Bw",
       }
     ]
   },
@@ -109,8 +109,8 @@ const wellnessResources = [
     icon: "Music",
     category: "relaxation",
     imageUrl: "https://krisp.ai/blog/wp-content/uploads/2019/08/Top-relaxing-sounds-to-help-you-focus-1.jpg",
-    videoUrl: "https://example.com/videos/calming-sounds.mp4",
-    videoThumbnail: "/api/placeholder/640/360",
+    youtubeUrl: "https://www.youtube.com/embed/G8nNGk6LHaM",
+    videoThumbnail: "https://i.ytimg.com/vi/G8nNGk6LHaM/maxresdefault.jpg",
     content: `
       <h2><b>About Calming Sounds</b></h2>
       <p>Calming sounds therapy uses specific audio frequencies and natural soundscapes to promote relaxation, reduce stress, and improve focus.</p>
@@ -135,20 +135,20 @@ const wellnessResources = [
     `,
     duration: "Variable (5-60 minutes)",
     recommendedFrequency: "As needed",
-    expertAuthor: "Amanda Williams, Music Therapist",
+    expertAuthor: "Dr. Lakshay Bhatia",
     relatedResources: ["Guided Meditation", "Mind-Body Exercise"],
     videos: [
       {
         title: "Ocean Waves - 30 Minute Relaxation",
         duration: "30:00",
         thumbnail: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS89u8LllZ7RDy_KazACP_rTc-3NIvWzHeJbg&s",
-        youtubeUrl: "https://youtu.be/G8nNGk6LHaM?si=s5QtbkKXmlxw6Ah1",
+        youtubeUrl: "https://www.youtube.com/embed/G8nNGk6LHaM",
       },
       {
         title: "Forest Sounds for Focus and Concentration",
         duration: "45:22",
         thumbnail: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCYfDfQPiOaXaJMcyefPMtqkh68kSpDH3PJA&s",
-        youtubeUrl: "https://www.youtube.com/watch?v=RzVvThhjAKw",
+        youtubeUrl: "https://www.youtube.com/embed/RzVvThhjAKw",
       }
     ]
   },
@@ -158,8 +158,8 @@ const wellnessResources = [
     icon: "Activity",
     category: "physical",
     imageUrl: "https://img.freepik.com/premium-vector/retired-individual-maintaining-their-health-mobility-by-participating-virtual-workout_216520-81394.jpg",
-    videoUrl: "https://example.com/videos/mind-body.mp4",
-    videoThumbnail: "/api/placeholder/640/360",
+    youtubeUrl: "https://www.youtube.com/embed/GIEPLHvN6lY",
+    videoThumbnail: "https://i.ytimg.com/vi/GIEPLHvN6lY/maxresdefault.jpg",
     content: `
       <h2><b>About Mind-Body Exercise></b></h2>
       <p>Mind-body exercises combine physical movement with mental focus and controlled breathing to improve both physical fitness and mental wellbeing.</p>
@@ -184,24 +184,25 @@ const wellnessResources = [
     `,
     duration: "15-45 minutes",
     recommendedFrequency: "3-5 times weekly",
-    expertAuthor: "Robert Kim, Certified Yoga Instructor",
+    expertAuthor: "Dr. Liza",
     relatedResources: ["Guided Meditation", "Calming Sounds"],
     videos: [
       {
         title: "Gentle Morning Yoga Flow for Beginners",
         duration: "15:48",
         thumbnail: "https://static.vecteezy.com/system/resources/thumbnails/055/087/255/small/yoga-and-meditation-retreat-illustration-for-relaxation-and-mindfulness-in-a-flat-style-background-vector.jpg",
-        youtubeUrl: "https://youtu.be/GIEPLHvN6lY?si=vw_1STxbUu4T8TZ4",
+        youtubeUrl: "https://www.youtube.com/embed/GIEPLHvN6lY",
       },
       {
         title: "Introduction to Tai Chi Fundamentals",
         duration: "22:15",
         thumbnail: "https://media.gettyimages.com/id/1472628333/video/yoga-fitness-and-class-with-a-people-in-a-studio-for-wellness-mental-health-or-inner-peace.jpg?s=640x640&k=20&c=H_W3GgERG4sDsC1xKwUWek8BZ-DP0F8OjKI6j1WMrtI=",
-        youtubeUrl: "https://youtu.be/gj0xiH7tca8",
+        youtubeUrl: "https://www.youtube.com/embed/gj0xiH7tca8",
       }
     ]
   }
 ];
+
 const VideoModal = ({ video, isOpen, onClose }) => {
   if (!isOpen || !video) return null;
   

@@ -6,36 +6,36 @@ import cloudinary from "cloudinary";
 
 export const createBlog = async (req, res) => {
 	try {
-		const { image, title, topic, description, body } = req.body;
-		if (!title || !topic || !description || !body) {
-			return Response(res, 400, false, message.missingFieldMessage);
-		}
-		let result;
-		if (image) {
-			result = await cloudinary.v2.uploader.upload(image, {
-				folder: "blog",
-			});
-		}
-		const newBlog = await Blog.create({
-			volunteerId: req.volunteer._id,
-			image: {
-				public_id: result?.public_id,
-				url: result?.secure_url,
-			},
-			title,
-			topic,
-			description,
-			body,
+	  const { image, title, topic, description, body, volunteerContent } = req.body; // Include volunteerContent
+	  if (!title || !topic || !description || !body) {
+		return Response(res, 400, false, message.missingFieldMessage);
+	  }
+	  let result;
+	  if (image) {
+		result = await cloudinary.v2.uploader.upload(image, {
+		  folder: "blog",
 		});
-		Volunteer.findByIdAndUpdate(req.volunteer._id, {
-			$push: { blogs: newBlog._id },
-		}).exec();
-		Response(res, 201, true, message.createBlogMessage, newBlog);
+	  }
+	  const newBlog = await Blog.create({
+		volunteerId: req.volunteer._id,
+		image: {
+		  public_id: result?.public_id,
+		  url: result?.secure_url,
+		},
+		title,
+		topic,
+		description,
+		body,
+		volunteerContent, // Save volunteerContent
+	  });
+	  Volunteer.findByIdAndUpdate(req.volunteer._id, {
+		$push: { blogs: newBlog._id },
+	  }).exec();
+	  Response(res, 201, true, message.createBlogMessage, newBlog);
 	} catch (error) {
-		Response(res, 500, false, error.message);
+	  Response(res, 500, false, error.message);
 	}
-};
-
+  };
 export const getAllBlogs = async (req, res) => {
 	try {
 		const blogs = await Blog.find().populate(
@@ -49,25 +49,43 @@ export const getAllBlogs = async (req, res) => {
 	}
 };
 
+// export const getBlogsById = async (req, res) => {
+// 	try {
+// 		const { id } = req.params;
+// 		if (!id) {
+// 			return Response(res, 400, false, message.idNotFound);
+// 		}
+// 		const blog = await Blog.findById(id).populate(
+// 			"volunteerId",
+// 			"firstName lastName",
+// 		);
+// 		if (!blog) {
+// 			return Response(res, 404, false, message.blogNotFoundMessage);
+// 		}
+// 		Response(res, 200, true, message.blogsFetchSuccessfulMessage, blog);
+// 	} catch (error) {
+// 		Response(res, 500, false, error.message);
+// 	}
+// };
 export const getBlogsById = async (req, res) => {
 	try {
-		const { id } = req.params;
-		if (!id) {
-			return Response(res, 400, false, message.idNotFound);
-		}
-		const blog = await Blog.findById(id).populate(
-			"volunteerId",
-			"firstName lastName",
-		);
-		if (!blog) {
-			return Response(res, 404, false, message.blogNotFoundMessage);
-		}
-		Response(res, 200, true, message.blogsFetchSuccessfulMessage, blog);
+	  const { id } = req.params;
+	  console.log("Received ID:", id); // Log the received ID for debugging
+	  if (!id) {
+		return Response(res, 400, false, message.idNotFound);
+	  }
+	  const blog = await Blog.findById(id).populate(
+		"volunteerId",
+		"firstName lastName"
+	  );
+	  if (!blog) {
+		return Response(res, 404, false, message.blogNotFoundMessage);
+	  }
+	  Response(res, 200, true, message.blogsFetchSuccessfulMessage, blog);
 	} catch (error) {
-		Response(res, 500, false, error.message);
+	  Response(res, 500, false, error.message);
 	}
-};
-
+  };
 export const getBlogsByVolunteer = async (req, res) => {
 	try {
 		const blogs = await Blog.find({ volunteerId: req.volunteer._id }).populate(
