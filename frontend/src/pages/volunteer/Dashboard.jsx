@@ -1,8 +1,7 @@
 import { Clock, MessageSquare, Users } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import VolHeader from "../../components/VolHeader";
-import axios from "axios"; // Make sure axios is installed
 import { useDispatch, useSelector } from "react-redux";
 import { getRequestsByVolunteerCategory } from "../../redux/Actions/chatRequestAction";
 import { createChat, getVolunteerChat } from "../../redux/Actions/chatAction";
@@ -53,29 +52,6 @@ const Dashboard = () => {
 			<p className="font-medium">{name}</p>
 			<p className="text-sm text-gray-600">{topic}</p>
 			<p className="text-xs text-gray-500 mt-1">{time}</p>
-		</div>
-	);
-
-	const ActivityItem = ({ message, time }) => (
-		<div className="border-b border-gray-100 pb-3">
-			<p className="text-gray-800">{message}</p>
-			<p className="text-xs text-gray-500 mt-1">{time}</p>
-		</div>
-	);
-
-	const UpcomingSession = ({ id, name, topic, time }) => (
-		<div className="flex justify-between items-center border-b border-gray-100 pb-3">
-			<div>
-				<p className="font-medium">{name}</p>
-				<p className="text-sm text-gray-600">{topic}</p>
-				<p className="text-xs text-gray-500 mt-1">{time}</p>
-			</div>
-			<button
-				className="bg-orange-500 text-white px-4 py-2 rounded-md text-sm hover:bg-orange-600 transition"
-				onClick={() => navigate(`/chat/${id}`)}
-			>
-				Join
-			</button>
 		</div>
 	);
 
