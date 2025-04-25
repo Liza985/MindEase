@@ -7,51 +7,11 @@ import VolHeader from "../../components/VolHeader";
 import { createChat } from "../../redux/Actions/chatAction";
 import { getRequestsByVolunteerCategory } from "./../../redux/Actions/chatRequestAction";
 
-// const staticRequests = [
-// 	{
-// 		_id: "1",
-// 		userId: {
-// 			firstName: "John",
-// 			lastName: "Doe",
-// 		},
-// 		category: "Mental Health",
-// 		Topic: "Anxiety Management",
-// 		description: "Need help with managing daily anxiety and panic attacks",
-// 		createdAt: "2025-04-21T10:30:00",
-// 		status: "pending",
-// 	},
-// 	{
-// 		_id: "2",
-// 		userId: {
-// 			firstName: "Jane",
-// 			lastName: "Smith",
-// 		},
-// 		category: "Stress Management",
-// 		Topic: "Work-Life Balance",
-// 		description: "Struggling with balancing professional and personal life",
-// 		createdAt: "2025-04-21T09:15:00",
-// 		status: "pending",
-// 	},
-// 	{
-// 		_id: "3",
-// 		userId: {
-// 			firstName: "Mike",
-// 			lastName: "Johnson",
-// 		},
-// 		category: "Depression",
-// 		Topic: "Depression Support",
-// 		description: "Looking for guidance to cope with depression symptoms",
-// 		createdAt: "2025-04-20T16:45:00",
-// 		status: "accepted",
-// 	},
-// ];
-
 export const Request = () => {
 	// const [request, setRequest] = useState(staticRequests);
 	const [editingId, setEditingId] = useState(null);
 	const [editTopic, setEditTopic] = useState("");
 	const dispatch = useDispatch();
-	const navigate = useNavigate();
 	const { requests } = useSelector((state) => state.chatRequest);
 
 	useEffect(() => {
@@ -60,23 +20,22 @@ export const Request = () => {
 
 	const handleAccept = async (id) => {
 		try {
-			const response = dispatch(createChat(id));
-			if (response.success) {
-				dispatch(getRequestsByVolunteerCategory());
-			}
+			await dispatch(createChat(id));
+			dispatch(getRequestsByVolunteerCategory());
 		} catch (error) {
 			toast.error(
 				error?.response?.data?.message || "Failed to accept request",
 				{
 					position: "top-right",
 					autoClose: 3000,
-				},
+				}
 			);
 		}
 	};
 
+
 	useEffect(() => {
-		console.log('Current requests:', requests);
+		console.log("Current requests:", requests);
 	}, [requests]);
 
 	return (
