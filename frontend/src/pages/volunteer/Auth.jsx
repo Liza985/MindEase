@@ -241,11 +241,12 @@ const Auth = () => {
 			>
 				{/* Register Form */}
 				<div
-					className={`absolute top-0 left-0 h-full w-full md:w-3/4 transition-all duration-600 ease-in-out overflow-y-auto ${
-						isRightPanelActive
-							? "md:translate-x-1/3 opacity-100 z-50"
-							: "opacity-0 z-10"
-					}`}
+					className={`absolute top-0 left-0 h-full w-full md:w-3/4 transition-all duration-500 ease-in-out overflow-y-auto bg-white/90
+    ${
+			isRightPanelActive
+				? "md:translate-x-[33.333333%] opacity-100 z-20 pointer-events-auto"
+				: "opacity-0 z-10 pointer-events-none"
+		}`}
 				>
 					<form
 						onSubmit={handleRegisterSubmit}
@@ -497,7 +498,7 @@ const Auth = () => {
 											availability: {
 												...prev.availability,
 												daysAvailable: selectedOptions.map(
-													(option) => option.value,
+													(option) => option.value
 												),
 											},
 										}));
@@ -668,9 +669,12 @@ const Auth = () => {
 
 				{/* Sign In Form */}
 				<div
-					className={`absolute top-0 left-0 h-full w-full md:w-1/2 transition-all duration-600 ease-in-out z-20 overflow-y-auto ${
-						isRightPanelActive ? "md:translate-x-full" : ""
-					}`}
+					className={`absolute top-0 left-0 h-full w-full md:w-1/2 transition-all duration-500 ease-in-out z-20 overflow-y-auto bg-white/90
+    ${
+			isRightPanelActive
+				? "md:translate-x-full opacity-0 z-10 pointer-events-none"
+				: "opacity-100 z-20 pointer-events-auto"
+		}`}
 				>
 					<form
 						onSubmit={handleLoginSubmit}
