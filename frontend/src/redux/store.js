@@ -8,6 +8,7 @@ import { reviewReducer } from "./Reducers/reviewReducer";
 import { userReducer } from "./Reducers/userReducer";
 import { volunteerReducer } from "./Reducers/volunteerReducer";
 import { surveyReducer } from "./Reducers/surveyReducer";
+import { settingsReducer } from "./Reducers/settingsReducer";
 
 const store = configureStore({
 	reducer: {
@@ -19,7 +20,8 @@ const store = configureStore({
 		content: contentReducer,
 		chatRequest: chatRequestReducer,
 		chat: chatReducer,
-		survey: surveyReducer
+		survey: surveyReducer,
+		settings: settingsReducer,
 	},
 });
 
