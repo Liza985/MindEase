@@ -1,8 +1,7 @@
 import dotenv from "dotenv";
 
-
 export const adminLogin = (req, res) => {
-    console.log(req.body)
+	console.log(req.body);
 	const { name, passkey } = req.body;
 
 	// Check if name and password are provided

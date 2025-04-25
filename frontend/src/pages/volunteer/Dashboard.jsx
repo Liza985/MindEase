@@ -1,127 +1,19 @@
-// import { Clock, MessageSquare, Users } from "lucide-react";
-// import React from "react";
-// import { useNavigate } from "react-router-dom";
-// import VolHeader from "../../components/VolHeader";
-
-// const Dashboard = () => {
-// 	const navigate = useNavigate();
-
-// 	const StatCard = ({ title, value, icon }) => (
-// 		<div className="bg-white rounded-lg shadow-md p-6 flex items-center">
-// 			<div className="mr-4">{icon}</div>
-// 			<div>
-// 				<h3 className="text-gray-500 text-sm">{title}</h3>
-// 				<p className="text-2xl font-bold">{value}</p>
-// 			</div>
-// 		</div>
-// 	);
-
-// 	const ActivityItem = ({ message, time }) => (
-// 		<div className="border-b border-gray-100 pb-3">
-// 			<p className="text-gray-800">{message}</p>
-// 			<p className="text-xs text-gray-500 mt-1">{time}</p>
-// 		</div>
-// 	);
-
-// 	const UpcomingSession = ({ name, topic, time }) => (
-// 		<div className="flex justify-between items-center border-b border-gray-100 pb-3">
-// 			<div>
-// 				<p className="font-medium">{name}</p>
-// 				<p className="text-sm text-gray-600">{topic}</p>
-// 				<p className="text-xs text-gray-500 mt-1">{time}</p>
-// 			</div>
-// 			<button className="bg-orange-500 text-white px-4 py-2 rounded-md text-sm hover:bg-orange-600 transition">
-// 				Join
-// 			</button>
-// 		</div>
-// 	);
-
-// 	return (
-// 		<>
-// 			<VolHeader />
-// 			<div className="min-h-screen bg-gray-50">
-// 				<h2 className="text-2xl font-semibold p-6 pt-8 text-gray-800">
-// 					Dashboard
-// 				</h2>
-// 				<main className="p-6 max-w-7xl mx-auto">
-// 					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-// 						<StatCard
-// 							title="Pending Requests"
-// 							value="12"
-// 							icon={<Clock className="text-orange-500" />}
-// 						/>
-// 						<StatCard
-// 							title="Active Chats"
-// 							value="5"
-// 							icon={<MessageSquare className="text-orange-500" />}
-// 						/>
-// 						<StatCard
-// 							title="Completed Sessions"
-// 							value="28"
-// 							icon={<Users className="text-orange-500" />}
-// 						/>
-// 					</div>
-
-// 					<div className="space-y-6">
-// 						<div className="bg-white rounded-lg shadow-md p-6">
-// 							<h2 className="text-xl font-semibold mb-4 text-orange-700">
-// 								Recent Activity
-// 							</h2>
-// 							<div className="space-y-4">
-// 								<ActivityItem
-// 									message="New chat request from Sarah about career guidance"
-// 									time="2 minutes ago"
-// 								/>
-// 								<ActivityItem
-// 									message="You completed a session with Mike"
-// 									time="Yesterday at 4:30 PM"
-// 								/>
-// 								<ActivityItem
-// 									message="New blog post published: 'How to effectively mentor others'"
-// 									time="2 days ago"
-// 								/>
-// 							</div>
-// 						</div>
-
-// 						<div className="bg-white rounded-lg shadow-md p-6">
-// 							<h2 className="text-xl font-semibold mb-4 text-orange-700">
-// 								Upcoming Sessions
-// 							</h2>
-// 							<div className="space-y-4">
-// 								<UpcomingSession
-// 									name="John Doe"
-// 									topic="Financial planning advice"
-// 									time="Today, 3:00 PM"
-// 								/>
-// 								<UpcomingSession
-// 									name="Emma Wilson"
-// 									topic="Career transition guidance"
-// 									time="Tomorrow, 10:00 AM"
-// 								/>
-// 							</div>
-// 						</div>
-// 					</div>
-// 				</main>
-// 				<footer className="bg-white shadow-sm border-t border-gray-200 p-4 text-center text-black-800">
-// 				<p className="text-sm">
-// 					&copy; 2025 MindEaseConnect. All rights reserved.
-// 				</p>
-// 			</footer>
-// 			</div>
-// 		</>
-// 	);
-// };
-
-// export default Dashboard;
-
 import { Clock, MessageSquare, Users } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import VolHeader from "../../components/VolHeader";
 import axios from "axios"; // Make sure axios is installed
+import { useDispatch, useSelector } from "react-redux";
+import { getRequestsByVolunteerCategory } from "../../redux/Actions/chatRequestAction";
+import { getVolunteerChat } from "../../redux/Actions/chatAction";
 
 const Dashboard = () => {
 	const navigate = useNavigate();
+	const dispatch = useDispatch();
+
+	const { requests } = useSelector((state) => state.chatRequest);
+	const {volunteerChats} = useSelector((state) => state.chat);
+
 	const [pendingRequests, setPendingRequests] = useState([]);
 	const [activeChats, setActiveChats] = useState([]);
 	const [completedSessions, setCompletedSessions] = useState(0);
@@ -133,6 +25,8 @@ const Dashboard = () => {
 	useEffect(() => {
 		// Fetch all necessary data when component mounts
 		fetchDashboardData();
+		dispatch(getRequestsByVolunteerCategory());
+		dispatch(getVolunteerChat());
 	}, []);
 
 	const fetchDashboardData = async () => {
@@ -141,17 +35,19 @@ const Dashboard = () => {
 			// You can make parallel requests using Promise.all
 			const [requestsRes, chatsRes, sessionsRes, activityRes, upcomingRes] =
 				await Promise.all([
-					axios.get("/api/requests/pending"),
+					axios.get("/api/v1/requests/volunteer-category"),
 					axios.get("/api/chats/active"),
 					axios.get("/api/sessions/completed/count"),
 					axios.get("/api/activity/recent"),
 					axios.get("/api/sessions/upcoming"),
 				]);
+			
 
 			// Make sure pendingRequests is always an array
 			const pendingRequestsData = Array.isArray(requestsRes.data)
 				? requestsRes.data
 				: requestsRes.data.data || requestsRes.data.requests || [];
+			
 
 			// Do the same for other array data
 			const activeChatsData = Array.isArray(chatsRes.data)
@@ -292,12 +188,12 @@ const Dashboard = () => {
 					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
 						<StatCard
 							title="Pending Requests"
-							value={pendingRequests.length}
+							value={requests?.length}
 							icon={<Clock className="text-orange-500" />}
 						/>
 						<StatCard
 							title="Active Chats"
-							value={activeChats.length}
+							value={volunteerChats?.length}
 							icon={<MessageSquare className="text-orange-500" />}
 						/>
 						<StatCard
@@ -308,18 +204,18 @@ const Dashboard = () => {
 					</div>
 
 					<div className="space-y-6">
-						{pendingRequests.length > 0 && (
+						{requests.length > 0 && (
 							<div className="bg-white rounded-lg shadow-md p-6">
 								<h2 className="text-xl font-semibold mb-4 text-orange-700">
 									Pending Requests
 								</h2>
 								<div className="space-y-1">
-									{pendingRequests.map((request) => (
+									{requests.map((request) => (
 										<PendingRequest
-											key={request.id}
-											id={request.id}
-											name={request.userName}
-											topic={request.topic}
+											key={request._id}
+											id={request._id}
+											name={request?.userId?.firstName + " " + request?.userId?.lastName}
+											topic={request?.Topic}
 											time={new Date(request.createdAt).toLocaleString()}
 										/>
 									))}

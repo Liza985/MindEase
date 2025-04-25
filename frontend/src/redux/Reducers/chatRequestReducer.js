@@ -88,7 +88,7 @@ export const chatRequestReducer = createReducer(initialState, (builder) => {
 			state.requests = action.payload.data;
 			state.message = action.payload.message;
 		})
-		.addCase(getAllRequestsFailure, (state) => {
+		.addCase(getAllRequestsFailure, (state, action) => {
 			state.loading = false;
 			state.error = action.payload;
 		})
@@ -101,7 +101,7 @@ export const chatRequestReducer = createReducer(initialState, (builder) => {
 			state.requestByUser = action.payload.data;
 			state.message = action.payload.message;
 		})
-		.addCase(getRequestByUserIdFailure, (state) => {
+		.addCase(getRequestByUserIdFailure, (state, action) => {
 			state.loading = false;
 			state.error = action.payload;
 		})
@@ -114,7 +114,7 @@ export const chatRequestReducer = createReducer(initialState, (builder) => {
 			state.request = action.payload.data;
 			state.message = action.payload.message;
 		})
-		.addCase(updateRequestFailure, (state) => {
+		.addCase(updateRequestFailure, (state, action) => {
 			state.loading = false;
 			state.error = action.payload;
 		})
@@ -127,7 +127,7 @@ export const chatRequestReducer = createReducer(initialState, (builder) => {
 			state.requestByCategory = action.payload.data;
 			state.message = action.payload.message;
 		})
-		.addCase(getRequestByCategoryFailure, (state) => {
+		.addCase(getRequestByCategoryFailure, (state, action) => {
 			state.loading = false;
 			state.error = action.payload;
 		})
@@ -140,7 +140,7 @@ export const chatRequestReducer = createReducer(initialState, (builder) => {
 			state.requestById = action.payload.data;
 			state.message = action.payload.message;
 		})
-		.addCase(getRequestByIdFailure, (state) => {
+		.addCase(getRequestByIdFailure, (state, action) => {
 			state.loading = false;
 			state.error = action.payload;
 		})
@@ -153,7 +153,7 @@ export const chatRequestReducer = createReducer(initialState, (builder) => {
 			state.request = null;
 			state.message = action.payload.message;
 		})
-		.addCase(deleteRequestFailure, (state) => {
+		.addCase(deleteRequestFailure, (state, action) => {
 			state.loading = false;
 			state.error = action.payload;
 		})
@@ -165,7 +165,7 @@ export const chatRequestReducer = createReducer(initialState, (builder) => {
 			state.loading = false;
 			state.message = action.payload;
 		})
-		.addCase(acceptRequestFailure, (state,action) => {
+		.addCase(acceptRequestFailure, (state, action) => {
 			state.loading = false;
 			state.error = action.payload;
 		})
