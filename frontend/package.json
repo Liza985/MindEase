@@ -23,6 +23,7 @@
     "axios": "^1.7.9",
     "chart.js": "^4.4.9",
     "file-saver": "^2.0.5",
+    "file-server": "^2.2.1",
     "framer-motion": "^12.4.3",
     "frontend": "file:",
     "immer": "^10.1.1",

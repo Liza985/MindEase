@@ -1,15 +1,14 @@
+
 import React, { useEffect } from "react";
 import Header from "../../components/Header";
-// import { useRouter } from "next/router";
-// import Link from "next/link";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getBlogByTopic, getBlogsById } from "../../redux/Actions/blogAction";
+import axios from 'axios'; // Added missing axios import
 
 const BlogDetail = () => {
-	// const router = useRouter();
-
 	const { id } = useParams();
+	console.log("Blog ID:", id); // Log the received ID for debugging
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const { blogById, topicBlog, loading, error, message } = useSelector(
@@ -55,8 +54,7 @@ const BlogDetail = () => {
       
       <h2>When to Seek Professional Help</h2>
       <p>While self-help strategies can be effective for mild to moderate anxiety, it's important to know when to seek professional help. Consider reaching out to a mental health professional if:</p>
-      <ul>import Header from './../../components/Header';
-
+      <ul>
         <li>Your anxiety interferes with daily activities</li>
         <li>You experience panic attacks</li>
         <li>Your anxiety is accompanied by depression</li>
@@ -74,7 +72,28 @@ const BlogDetail = () => {
 			"Dr. Sarah Johnson is a licensed clinical psychologist specializing in anxiety disorders with over 15 years of experience. She holds a Ph.D. in Clinical Psychology from Stanford University and maintains a private practice in Boston.",
 		relatedPosts: [2, 3, 4],
 	};
-
+	
+	const fetchBlogById = async (id) => {
+		try {
+			// Add proper error handling and authorization headers if needed
+			const response = await axios.get(`/api/v1/blog/${id}`, {
+				// If authentication is required, add headers here
+				// headers: {
+				//   'Authorization': `Bearer ${yourAuthToken}`
+				// }
+			});
+			console.log(response.data);
+		} catch (error) {
+			console.error("Error fetching blog:", error.response?.data || error.message);
+		}
+	};
+	
+	useEffect(() => {
+		if (id) {
+			fetchBlogById(id); // Use `id` from `useParams`
+		}
+	}, [id]); // Added proper dependency
+	
 	// Sample data for related posts
 	const relatedPostsData = [
 		{
@@ -101,10 +120,14 @@ const BlogDetail = () => {
 
 	useEffect(() => {
 		dispatch(getBlogsById(id));
-	});
+	}, [dispatch, id]); // Added proper dependencies
+	
 	useEffect(() => {
-		dispatch(getBlogByTopic(blogById?.topic[0]));
-	});
+		if (blogById?.topic && blogById.topic.length > 0) {
+			dispatch(getBlogByTopic(blogById.topic[0]));
+		}
+	}, [dispatch, blogById?.topic]); // Added proper dependencies with null check
+	
 	return (
 		<>
 			<div className="min-h-screen flex flex-col bg-orange-50 pt-20">
@@ -143,60 +166,105 @@ const BlogDetail = () => {
 								onClick={() =>
 									navigate(
 										`/blogs/categories/${blogById?.category
-											.toLowerCase()
-											.replace(/\s+/g, "-")}`,
+											?.toLowerCase()
+											?.replace(/\s+/g, "-")}`
 									)
 								}
 							>
-								{blogById?.category}
+								{blogById?.category || "Category"}
 							</span>
 						</div>
 						{/* Blog Image */}
 						{blogById?.image && (
 							<img
 								src={blogById?.image?.url}
-								alt={blogById?.title}
+								alt={blogById?.title || "Blog post"}
 								className="w-full h-64 object-contain rounded-lg mb-6"
 							/>
 						)}
 						{/* Category and Read Time */}
 						<div className="flex items-center text-sm text-orange-600 mb-4">
 							<span className="bg-orange-50 px-2 py-1 rounded">
-								{blogById?.category}
+								{blogById?.category || "Category"}
 							</span>
 							<span className="mx-2">•</span>
-							<span>{blogById?.readTime}</span>
+							<span>{blogById?.readTime || "Read time"}</span>
 						</div>
 
 						{/* Title */}
 						<h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-							{blogById?.title}
+							{blogById?.title || "Blog Title"}
 						</h1>
 
 						{/* Meta info */}
 						<div className="flex items-center mb-8 text-gray-500 text-sm">
 							<span>
-								By {blogById?.volunteerId?.firstName}{" "}
-								{blogById?.volunteerId?.lastName}
+								By {blogById?.volunteerId?.firstName || "Author"}{" "}
+								{blogById?.volunteerId?.lastName || ""}
 							</span>
 							<span className="mx-2">•</span>
-							<span>{blogById?.createdAt?.split("T")[0]}</span>
+							<span>{blogById?.createdAt ? blogById.createdAt.split("T")[0] : "Date"}</span>
 						</div>
 
 						{/* Article content */}
 						<div
 							className="prose prose-orange max-w-none"
-							dangerouslySetInnerHTML={{ __html: blogById?.content }}
+							dangerouslySetInnerHTML={{ __html: blogById?.content || "" }}
 						/>
 
-						{/* Author bio */}
-						<div className="mt-12 pt-8 border-t border-gray-100">
-							<h3 className="text-xl font-semibold text-gray-800 mb-2">
-								About the Author
+						{/* Key Takeaways Section - Static Content Addition */}
+						<div className="mt-12 pt-8 border-t border-gray-100 bg-orange-50 rounded-lg p-6">
+							<h3 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+								<svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+								</svg>
+								Key Takeaways
 							</h3>
-							<p className="text-gray-600">{blogById?.authorBio}</p>
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+								<div className="bg-white p-4 rounded-lg shadow-sm">
+									<div className="flex items-start">
+										<span className="bg-orange-600 text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 flex-shrink-0">1</span>
+										<p className="text-gray-700">Anxiety is a normal emotion that can become problematic when experienced at disproportionate levels.</p>
+									</div>
+								</div>
+								<div className="bg-white p-4 rounded-lg shadow-sm">
+									<div className="flex items-start">
+										<span className="bg-orange-600 text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 flex-shrink-0">2</span>
+										<p className="text-gray-700">Common triggers include work pressure, financial concerns, health issues, and social situations.</p>
+									</div>
+								</div>
+								<div className="bg-white p-4 rounded-lg shadow-sm">
+									<div className="flex items-start">
+										<span className="bg-orange-600 text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 flex-shrink-0">3</span>
+										<p className="text-gray-700">Effective coping strategies include deep breathing, muscle relaxation, and mindfulness meditation.</p>
+									</div>
+								</div>
+								<div className="bg-white p-4 rounded-lg shadow-sm">
+									<div className="flex items-start">
+										<span className="bg-orange-600 text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 flex-shrink-0">4</span>
+										<p className="text-gray-700">Seek professional help if anxiety interferes with daily activities or is accompanied by serious symptoms.</p>
+									</div>
+								</div>
+							</div>
+							<div className="mt-4 bg-orange-100 p-4 rounded-lg">
+								<p className="text-sm text-gray-700 italic flex items-center">
+									<svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+										<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+									</svg>
+									Remember: Managing anxiety is a journey, not a destination. Be patient with yourself and celebrate small victories along the way. With consistent practice and support, many people find significant relief from anxiety symptoms.
+								</p>
+							</div>
 						</div>
-
+						
+						{/* Additional Content */}
+						<div className="mt-12 pt-8 border-t border-gray-100">
+						<h3 className="text-xl font-semibold text-gray-800 mb-2">
+							About the Volunteer
+						</h3>
+						<p className="text-gray-600">
+							This blog was contributed by {blogById?.volunteerId?.firstName || "our volunteer"} {blogById?.volunteerId?.lastName || ""}, one of our dedicated volunteers. They are passionate about spreading awareness and providing valuable insights on mental health topics.
+						</p>
+						</div>
 						{/* Share buttons */}
 						<div className="mt-8 pt-6 border-t border-gray-100">
 							<div className="flex items-center">
@@ -274,7 +342,7 @@ const BlogDetail = () => {
 												</div>
 												<span
 													className="text-orange-600 font-medium hover:text-orange-700 flex items-center cursor-pointer"
-													onClick={() => navigate(`/blog/${post._id}`)}
+													onClick={() => navigate(`/blog/${post.id}`)}
 												>
 													Read More
 													<svg

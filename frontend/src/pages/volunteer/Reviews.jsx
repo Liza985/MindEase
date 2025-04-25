@@ -8,8 +8,7 @@ import { getReviewsByVolId } from "../../redux/Actions/reviewAction";
 
 const Reviews = () => {
 	const dispatch = useDispatch();
-	const { volReview: reviews, loading } = useSelector((state) => state.review);
-	const [stats, setStats] = useState({
+	const { volReview: reviews = [], loading } = useSelector((state) => state.review);	const [stats, setStats] = useState({
 		averageRating: 0,
 		totalReviews: 0,
 		ratingDistribution: {

@@ -1,5 +1,5 @@
 import express from "express";
-import { createBlog, deleteBlog, getAllBlogs, getBlogByTopic, getBlogsById, getBlogsByVolunteer, updateBlog } from "../controllers/blog.js";
+import { createBlog, deleteBlog, getAllBlogs, getBlogByTopic, getBlogsById, getBlogsByVolunteer, updateBlog ,} from "../controllers/blog.js";
 import { isVolAuthenticated } from './../middlewares/volAuth.js';
 import { isAuthenticated } from './../middlewares/auth.js';
 
@@ -13,5 +13,6 @@ blogRouter.get("/:id",getBlogsById);
 blogRouter.delete("/delete/:id",isVolAuthenticated,deleteBlog);
 blogRouter.get("/:topic",isAuthenticated,getBlogByTopic);
 blogRouter.put("/update/:id",isVolAuthenticated,updateBlog);
+
 
 export default blogRouter;
