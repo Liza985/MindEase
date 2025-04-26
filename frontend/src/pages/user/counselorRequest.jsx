@@ -8,6 +8,7 @@ import { useSocket } from "../../context/SocketContext";
 import {
 	deleteRequest,
 	getRequestByUserId,
+	updateRequest,
 } from "../../redux/Actions/chatRequestAction";
 import { createReview } from "../../redux/Actions/reviewAction";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -28,9 +29,12 @@ const CounselorRequests = () => {
 	const [rating, setRating] = useState(0);
 	const [hover, setHover] = useState(0);
 	const [review, setReview] = useState("");
+	const [editModalOpen, setEditModalOpen] = useState(false);
+	const [selectedRequest, setSelectedRequest] = useState(null);
+	const [editedRequest, setEditedRequest] = useState({});
 
 	const { loading, requestByUser, error, message } = useSelector(
-		(state) => state.chatRequest,
+		(state) => state.chatRequest
 	);
 	const { userChats } = useSelector((state) => state.chat);
 	const { user } = useSelector((state) => state.user);
@@ -86,8 +90,35 @@ const CounselorRequests = () => {
 		navigate(`/counselor-chat/${chatId}`);
 	};
 
-	const handleEdit = (id) => {
-		navigate(`/edit-request/${id}`);
+	const openEditModal = (request) => {
+		setSelectedRequest(request);
+		setEditedRequest(request);
+		setEditModalOpen(true);
+	};
+
+	const closeEditModal = () => {
+		setEditModalOpen(false);
+		setSelectedRequest(null);
+		setEditedRequest({});
+	};
+
+	const handleSubmitEdit = async (e) => {
+		e.preventDefault();
+		try {
+			await dispatch(updateRequest(selectedRequest._id, editedRequest));
+			await dispatch(getRequestByUserId(user._id)); // 👈 Fetch updated data
+			closeEditModal();
+		} catch (error) {
+			console.error("Failed to update request:", error);
+		}
+	};
+
+
+
+
+	const handleEditChange = (e) => {
+		const { name, value } = e.target;
+		setEditedRequest((prev) => ({ ...prev, [name]: value }));
 	};
 
 	const openDeleteModal = (id) => {
@@ -95,8 +126,9 @@ const CounselorRequests = () => {
 		setDeleteModalOpen(true);
 	};
 
-	const confirmDelete = () => {
-		dispatch(deleteRequest(selectedRequestId));
+	const confirmDelete = async () => {
+		await dispatch(deleteRequest(selectedRequestId));
+		await dispatch(getRequestByUserId(user._id)); 
 		setDeleteModalOpen(false);
 		setSelectedRequestId(null);
 	};
@@ -137,7 +169,7 @@ const CounselorRequests = () => {
 			createReview(selectedChat.volunteerId._id, {
 				rating,
 				review,
-			}),
+			})
 		);
 		setReviewModalOpen(false);
 		setRating(0);
@@ -190,7 +222,7 @@ const CounselorRequests = () => {
 						<div>
 							{requestByUser && requestByUser.length > 0 ? (
 								<div className="space-y-4">
-									{requestByUser?.map((request) => (
+									{[...requestByUser].reverse().map((request) => (
 										<div
 											key={request._id}
 											className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
@@ -214,7 +246,7 @@ const CounselorRequests = () => {
 													</span>
 													<button
 														className="text-gray-500 hover:text-orange-600"
-														onClick={() => handleEdit(request._id)}
+														onClick={() => openEditModal(request)}
 													>
 														<Pencil size={18} />
 													</button>
@@ -380,8 +412,8 @@ const CounselorRequests = () => {
 									{[...Array(5)].map((_, index) => {
 										const ratingValue = index + 1;
 										return (
-											<button
-												type="button"
+										<button
+											type="button"
 												key={ratingValue}
 												className={`focus:outline-none text-2xl ${
 													(hover || rating) >= ratingValue
@@ -397,9 +429,9 @@ const CounselorRequests = () => {
 														(hover || rating) >= ratingValue
 															? solidStar
 															: regularStar
-													}
-												/>
-											</button>
+												}
+											/>
+										</button>
 										);
 									})}
 								</div>
@@ -442,6 +474,87 @@ const CounselorRequests = () => {
 								>
 									Submit Review
 								</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			)}
+
+			{/* Edit Modal */}
+			{editModalOpen && selectedRequest && (
+				<div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
+					<div className="bg-white rounded-xl p-6 w-full max-w-lg shadow-lg">
+						<div className="flex justify-between items-center mb-4">
+							<h3 className="text-lg font-semibold text-gray-800">
+								Edit Request
+							</h3>
+							<button
+								onClick={closeEditModal}
+								className="text-gray-400 hover:text-gray-600"
+							>
+								<X size={20} />
+							</button>
+						</div>
+
+						<form onSubmit={handleSubmitEdit}>
+							<div className="space-y-4">
+								<div>
+									<label className="text-sm font-medium text-gray-700 mb-2 block">
+										Topic
+									</label>
+									<input
+										type="text"
+										name="Topic"
+										value={editedRequest.Topic}
+										onChange={handleEditChange}
+										required
+										className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+									/>
+								</div>
+
+								<div>
+									<label className="text-sm font-medium text-gray-700 mb-2 block">
+										Description
+									</label>
+									<textarea
+										name="description"
+										value={editedRequest.description}
+										onChange={handleEditChange}
+										rows="4"
+										required
+										className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+									></textarea>
+								</div>
+
+								<div>
+									<label className="text-sm font-medium text-gray-700 mb-2 block">
+										Category
+									</label>
+									<input
+										type="text"
+										name="category"
+										value={editedRequest.category}
+										onChange={handleEditChange}
+										required
+										className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+									/>
+								</div>
+
+								<div className="flex justify-end space-x-3 pt-4">
+									<button
+										type="button"
+										onClick={closeEditModal}
+										className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+									>
+										Cancel
+									</button>
+									<button
+										type="submit"
+										className="px-4 py-2 text-sm font-medium text-white bg-orange-500 rounded-md hover:bg-orange-600"
+									>
+										Save Changes
+									</button>
+								</div>
 							</div>
 						</form>
 					</div>

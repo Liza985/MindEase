@@ -85,26 +85,26 @@ export const getRequestByUserId = (id) => async (dispatch) => {
 };
 
 //here we have to add the things which we should send in backend
-export const updateRequest = (id) => async (dispatch) => {
+export const updateRequest = (id, data) => async (dispatch) => {
 	try {
 		dispatch({
 			type: "UPDATE_REQUEST_REQUEST",
 		});
-		const { data } = await axios.put(
-			`${url}/update/${id}`,
-			{},
+		const { data: responseData } = await axios.put(
+			`${url}/update/${id}`, // ✅ Corrected here
+			data,
 			{
 				withCredentials: true,
 				headers: {
 					"Content-Type": "application/json",
 				},
-			},
+			}
 		);
 		dispatch({
 			type: "UPDATE_REQUEST_SUCCESS",
 			payload: {
-				message: data.message,
-				data: data.data,
+				message: responseData.message,
+				data: responseData.data,
 			},
 		});
 	} catch (error) {
@@ -114,6 +114,7 @@ export const updateRequest = (id) => async (dispatch) => {
 		});
 	}
 };
+
 
 export const getRequestByCategory = (category) => async (dispatch) => {
 	try {
