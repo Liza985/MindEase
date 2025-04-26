@@ -10,7 +10,6 @@ function App() {
 	return (
 		<Provider store={store}>
 			<SocketProvider>
-				<ToastContainer />
 				<Volunteer />
 				<User />
 				<Admin />
