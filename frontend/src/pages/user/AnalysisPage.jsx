@@ -123,7 +123,7 @@ const AnalysisPage = () => {
 			let risk = mlResult.prediction;
 			if (parseInt(formData.SuicidalIdeation) >= 4) {
 				risk = "Critical";
-				calculatedOverallPercentage = 95;
+				// calculatedOverallPercentage = 95;
 			}
 
 			setScores(categoryScores);
