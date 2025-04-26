@@ -11,7 +11,7 @@ const wellnessResources = [
     icon: "Moon",
     category: "mindfulness",
     imageUrl: "https://img.freepik.com/premium-vector/middleaged-man-sits-quiet-room-eyes-closed-while-listening-customized-playlist-songs_216520-113520.jpg",
-    videoUrl: "https://www.youtube.com/watch?v=W19PdslW7iw",
+    youtubeUrl: "https://www.youtube.com/watch?v=W19PdslW7iw",
     videoThumbnail: "https://youtu.be/W19PdslW7iw?si=R8p5JqTNf5y-c669",
     content: `
       <h1><b>About Guided Meditation</b></h1>
@@ -37,7 +37,7 @@ const wellnessResources = [
     `,
     duration: "10-15 minutes",
     recommendedFrequency: "Daily",
-    expertAuthor: "Dr. Sarah Johnson",
+    expertAuthor: "Dr. Lalit Jindal",
     relatedResources: ["Mood Tracking", "Calming Sounds"],
     videos: [
       {
@@ -60,7 +60,7 @@ const wellnessResources = [
     icon: "BookOpen",
     category: "self-care",
     imageUrl: "https://media.licdn.com/dms/image/v2/D4D12AQFpNaeNZNPBbg/article-cover_image-shrink_600_2000/article-cover_image-shrink_600_2000/0/1679902040405?e=2147483647&v=beta&t=2DkEoMD2xEPkjjheyLpNXekOJnNUv_jYcLVfnMQhduU",
-    videoUrl: "https://example.com/videos/mood-tracking.mp4",
+    youtubeUrl: "https://example.com/videos/mood-tracking.mp4",
     videoThumbnail: "/api/placeholder/640/360",
     content: `
       <h2><b>About Mood Tracking</b></h2>
@@ -86,7 +86,7 @@ const wellnessResources = [
     `,
     duration: "2 minutes per entry",
     recommendedFrequency: "2-3 times daily",
-    expertAuthor: "Dr. Michael Chen",
+    expertAuthor: "Dr. Khushi Aggarwal",
     relatedResources: ["Guided Meditation", "Mind-Body Exercise"],
     videos: [
       {
@@ -109,7 +109,7 @@ const wellnessResources = [
     icon: "Music",
     category: "relaxation",
     imageUrl: "https://krisp.ai/blog/wp-content/uploads/2019/08/Top-relaxing-sounds-to-help-you-focus-1.jpg",
-    videoUrl: "https://example.com/videos/calming-sounds.mp4",
+    youtubeUrl: "https://example.com/videos/calming-sounds.mp4",
     videoThumbnail: "/api/placeholder/640/360",
     content: `
       <h2><b>About Calming Sounds</b></h2>
@@ -135,7 +135,7 @@ const wellnessResources = [
     `,
     duration: "Variable (5-60 minutes)",
     recommendedFrequency: "As needed",
-    expertAuthor: "Amanda Williams, Music Therapist",
+    expertAuthor: "Dr. Liza",
     relatedResources: ["Guided Meditation", "Mind-Body Exercise"],
     videos: [
       {
@@ -158,7 +158,7 @@ const wellnessResources = [
     icon: "Activity",
     category: "physical",
     imageUrl: "https://img.freepik.com/premium-vector/retired-individual-maintaining-their-health-mobility-by-participating-virtual-workout_216520-81394.jpg",
-    videoUrl: "https://example.com/videos/mind-body.mp4",
+    youtubeUrl: "https://example.com/videos/mind-body.mp4",
     videoThumbnail: "/api/placeholder/640/360",
     content: `
       <h2><b>About Mind-Body Exercise></b></h2>
@@ -184,7 +184,7 @@ const wellnessResources = [
     `,
     duration: "15-45 minutes",
     recommendedFrequency: "3-5 times weekly",
-    expertAuthor: "Robert Kim, Certified Yoga Instructor",
+    expertAuthor: "Dr. Lakshay Bhatia",
     relatedResources: ["Guided Meditation", "Calming Sounds"],
     videos: [
       {
