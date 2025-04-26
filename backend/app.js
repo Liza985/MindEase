@@ -26,14 +26,6 @@ dotenv.config({ path: "./config/.env" });
 const app = express();
 export const httpServer = createServer(app);
 
-app.use(
-	cors({
-		origin: [process.env.LOCAL_URL],
-		methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-		credentials: true,
-	}),
-);
-
 // Socket.IO setup
 const io = new Server(httpServer, {
 	cors: {
@@ -42,8 +34,19 @@ const io = new Server(httpServer, {
 	},
 });
 
+// Store io instance in app
+app.set("io", io);
+
 // Initialize Socket.IO
 initializeSocket(io);
+
+app.use(
+	cors({
+		origin: [process.env.LOCAL_URL],
+		methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+		credentials: true,
+	}),
+);
 
 app.use(express.json({ limit: "50mb" }));
 app.use(cookieParser({ extended: false }));

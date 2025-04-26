@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import ChatRequest from "../models/chatRequest.js";
 import { message } from "../utils/message.js";
 import { Response } from "../utils/response.js";
+import Chat from "../models/Chat.js";
 
 export const createRequest = async (req, res) => {
 	try {
@@ -19,6 +20,12 @@ export const createRequest = async (req, res) => {
 		});
 		req.user.chatRequests.push(newRequest._id);
 		await req.user.save();
+
+		// Emit new request event
+		req.app.get("io").emit("new_request", {
+			request: newRequest,
+		});
+
 		return Response(res, 201, true, message.createRequestMessage, newRequest);
 	} catch (error) {
 		return Response(res, 500, false, error.message);
@@ -124,12 +131,31 @@ export const AcceptRequest = async (req, res) => {
 			id,
 			{ status: "accepted" },
 			{ new: true },
-		);
+		).populate("userId");
+
 		if (!request) {
 			return Response(res, 404, false, message.requestNotFound);
 		}
-		const requests = await getRequestByVolunteerCategory(req.volunteer);
 
+		// Create chat after request is accepted
+		const chat = await Chat.create({
+			requestId: id,
+			userId: request.userId._id,
+			volunteerId: req.volunteer._id,
+			topic: request.Topic,
+			messages: [],
+			status: "active",
+		});
+
+		// Emit socket event for request acceptance with chat data
+		req.app.get("io").emit("request_accepted", {
+			userId: request.userId._id,
+			requestId: request._id,
+			chatId: chat._id,
+			volunteerId: req.volunteer._id,
+		});
+
+		const requests = await getRequestByVolunteerCategory(req.volunteer);
 		return Response(res, 200, true, message.requestAcceptMessage, requests);
 	} catch (error) {
 		return Response(res, 500, false, error.message);

@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import Header from "../../components/Header";
 import toastOptions from "../../constants/toast";
 import { getUserChat } from "../../redux/Actions/chatAction";
+import { useSocket } from "../../context/SocketContext";
 import {
 	deleteRequest,
 	getRequestByUserId,
@@ -15,10 +16,10 @@ import { faStar as regularStar } from "@fortawesome/free-regular-svg-icons";
 import { Pencil, Trash, X } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
-const requests = {};
 const CounselorRequests = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
+	const { socket } = useSocket();
 	const [activeTab, setActiveTab] = useState("requests");
 	const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 	const [selectedRequestId, setSelectedRequestId] = useState(null);
@@ -34,17 +35,42 @@ const CounselorRequests = () => {
 	const { userChats } = useSelector((state) => state.chat);
 	const { user } = useSelector((state) => state.user);
 
+	// Initial data fetch
 	useEffect(() => {
 		if (user && user._id) {
 			dispatch(getRequestByUserId(user._id));
 		}
 		dispatch(getUserChat());
-	}, [dispatch]);
+	}, [dispatch, user]);
 
-	// useEffect(()=>{
+	// Socket event listeners
+	useEffect(() => {
+		if (socket && user?._id) {
+			// Listen for request acceptance
+			socket.on("request_accepted", ({ userId, requestId, chatId }) => {
+				if (userId === user._id) {
+					// Update both request list and chat list
+					dispatch(getRequestByUserId(user._id));
+					dispatch(getUserChat());
 
-	// },[dispatch])
+					// Show success notification
+					toast.success("A volunteer has accepted your request!", toastOptions);
+				}
+			});
 
+			// Listen for new chat messages
+			socket.on("receive_message", () => {
+				dispatch(getUserChat());
+			});
+
+			return () => {
+				socket.off("request_accepted");
+				socket.off("receive_message");
+			};
+		}
+	}, [socket, user, dispatch]);
+
+	// Error and message handlers
 	useEffect(() => {
 		if (error) {
 			toast.error(error, toastOptions);
@@ -350,36 +376,44 @@ const CounselorRequests = () => {
 									Rate your experience with{" "}
 									{selectedChat?.volunteerId?.firstName}
 								</label>
-								<div className="flex gap-1">
-									{[1, 2, 3, 4, 5].map((star) => (
-										<button
-											key={star}
-											type="button"
-											className="text-2xl focus:outline-none"
-											onClick={() => setRating(star)}
-											onMouseEnter={() => setHover(star)}
-											onMouseLeave={() => setHover(0)}
-										>
-											<FontAwesomeIcon
-												icon={
-													star <= (hover || rating) ? solidStar : regularStar
-												}
-												className={
-													star <= (hover || rating)
+								<div className="flex space-x-1">
+									{[...Array(5)].map((_, index) => {
+										const ratingValue = index + 1;
+										return (
+											<button
+												type="button"
+												key={ratingValue}
+												className={`focus:outline-none text-2xl ${
+													(hover || rating) >= ratingValue
 														? "text-yellow-400"
 														: "text-gray-300"
-												}
-											/>
-										</button>
-									))}
+												}`}
+												onClick={() => setRating(ratingValue)}
+												onMouseEnter={() => setHover(ratingValue)}
+												onMouseLeave={() => setHover(0)}
+											>
+												<FontAwesomeIcon
+													icon={
+														(hover || rating) >= ratingValue
+															? solidStar
+															: regularStar
+													}
+												/>
+											</button>
+										);
+									})}
 								</div>
 							</div>
 
 							<div>
-								<label className="block text-sm font-medium text-gray-700 mb-2">
+								<label
+									htmlFor="review"
+									className="block text-sm font-medium text-gray-700 mb-2"
+								>
 									Your Review
 								</label>
 								<textarea
+									id="review"
 									value={review}
 									onChange={(e) => setReview(e.target.value)}
 									className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"

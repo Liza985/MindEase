@@ -4,39 +4,70 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import VolHeader from "../../components/VolHeader";
+import { useSocket } from "../../context/SocketContext";
 import { createChat } from "../../redux/Actions/chatAction";
-import { getRequestsByVolunteerCategory } from "./../../redux/Actions/chatRequestAction";
+import {
+	getRequestsByVolunteerCategory,
+	acceptRequest,
+} from "./../../redux/Actions/chatRequestAction";
 
 export const Request = () => {
-	// const [request, setRequest] = useState(staticRequests);
+	const navigate = useNavigate();
 	const [editingId, setEditingId] = useState(null);
 	const [editTopic, setEditTopic] = useState("");
 	const dispatch = useDispatch();
+	const { socket } = useSocket();
 	const { requests } = useSelector((state) => state.chatRequest);
+	const { volunteer } = useSelector((state) => state.volunteer);
 
 	useEffect(() => {
 		dispatch(getRequestsByVolunteerCategory());
 	}, [dispatch]);
 
+	// Listen for request updates
+	useEffect(() => {
+		if (socket && volunteer?._id) {
+			// Listen for new requests
+			socket.on("new_request", ({ request }) => {
+				// If the request matches volunteer's expertise, refresh the list
+				if (volunteer.expertiseArea.includes(request.category)) {
+					dispatch(getRequestsByVolunteerCategory());
+					toast.info("New request received!");
+				}
+			});
+
+			// Listen for request acceptance
+			socket.on("request_accepted", ({ requestId, chatId, volunteerId }) => {
+				if (volunteerId === volunteer._id) {
+					// Refresh the requests list when any request is accepted
+					dispatch(getRequestsByVolunteerCategory());
+					toast.success("Request accepted successfully!");
+				} else {
+					// If another volunteer accepted a request, just refresh the list
+					dispatch(getRequestsByVolunteerCategory());
+				}
+			});
+
+			return () => {
+				socket.off("new_request");
+				socket.off("request_accepted");
+			};
+		}
+	}, [socket, volunteer, dispatch]);
+
 	const handleAccept = async (id) => {
 		try {
-			await dispatch(createChat(id));
-			dispatch(getRequestsByVolunteerCategory());
+			await dispatch(acceptRequest(id));
 		} catch (error) {
 			toast.error(
 				error?.response?.data?.message || "Failed to accept request",
 				{
 					position: "top-right",
 					autoClose: 3000,
-				}
+				},
 			);
 		}
 	};
-
-
-	useEffect(() => {
-		console.log("Current requests:", requests);
-	}, [requests]);
 
 	return (
 		<>
@@ -160,6 +191,7 @@ export const Request = () => {
 					</main>
 				</div>
 			</div>
+
 			<footer className="bg-white shadow-sm border-t border-gray-200 p-4 text-center text-black-800">
 				<p className="text-sm">
 					&copy; 2025 MindEaseConnect. All rights reserved.
