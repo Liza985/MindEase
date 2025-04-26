@@ -10,13 +10,17 @@ import {
   import { useEffect, useState } from "react";
   import { useDispatch, useSelector } from "react-redux";
   import { Link, useNavigate } from "react-router-dom";
-  import { volunteerLogout } from "../redux/Actions/volunteerAction";
+  import { getVolunteerProfile, volunteerLogout } from "../redux/Actions/volunteerAction";
   
   export const VolHeader = ({ title }) => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 	const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+	useEffect(() => {
+		dispatch(getVolunteerProfile());
+	}, [dispatch]);
   
 	const links = [
 	  {

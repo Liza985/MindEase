@@ -18,14 +18,17 @@ import toastOptions from "../../constants/toast";
 import Select from "react-select";
 import VolHeader from "../../components/VolHeader";
 import { Link } from "react-router-dom";
+import { getReviewsByVolId } from "../../redux/Actions/reviewAction";
 
 const Profile = () => {
 	const dispatch = useDispatch();
 	const { volunteer, loading, error, message } = useSelector(
 		(state) => state.volunteer
 	);
+	const { volReview: reviews } = useSelector((state) => state.review); // Add this
+
 	const [isEditing, setIsEditing] = useState(false);
-	
+
 	const dayOptions = [
 		{ value: "monday", label: "Monday" },
 		{ value: "tuesday", label: "Tuesday" },
@@ -67,7 +70,9 @@ const Profile = () => {
 
 	useEffect(() => {
 		dispatch(getVolunteerProfile());
+		dispatch(getReviewsByVolId()); // Fetch reviews too
 	}, [dispatch]);
+
 	useEffect(() => {
 		if (volunteer) {
 			setFormData({
@@ -175,7 +180,7 @@ const Profile = () => {
 	};
 
 	// Get latest 2 reviews
-	const latestReviews = volunteer?.ratings?.slice(0, 2) || [];
+	const latestReviews = reviews?.slice(0, 2) || [];
 
 	return (
 		<>
@@ -495,13 +500,6 @@ const Profile = () => {
 										<h2 className="text-xl font-bold text-white">
 											Recent Reviews
 										</h2>
-										<Link
-											to="/volunteer/reviews"
-											className="text-white hover:text-orange-100 flex items-center transition-colors duration-200"
-										>
-											View All
-											<FontAwesomeIcon icon={faArrowRight} className="ml-2" />
-										</Link>
 									</div>
 								</div>
 
@@ -535,7 +533,7 @@ const Profile = () => {
 														</div>
 													</div>
 													<p className="text-gray-600 text-sm bg-white p-4 rounded-lg">
-														{review.feedback}
+														{review.review}
 													</p>
 												</div>
 											))}
@@ -547,13 +545,13 @@ const Profile = () => {
 										</div>
 									)}
 
-									{volunteer?.ratings?.length > 2 && (
+									{reviews?.length > 2 && (
 										<div className="mt-6 text-center">
 											<Link
 												to="/volunteer/reviews"
 												className="inline-flex items-center text-orange-500 hover:text-orange-600 font-medium transition-colors duration-200"
 											>
-												See all {volunteer.ratings.length} reviews
+												See all {reviews.length} reviews
 												<FontAwesomeIcon icon={faArrowRight} className="ml-2" />
 											</Link>
 										</div>
