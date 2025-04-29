@@ -59,7 +59,7 @@ const CounselorChat = () => {
 			chatId,
 			content: newMessage.trim(),
 			senderId: user._id,
-			senderType: "User"
+			senderType: "User",
 		});
 
 		setNewMessage("");
@@ -67,20 +67,20 @@ const CounselorChat = () => {
 
 	const formatMessageTime = (timestamp) => {
 		const date = new Date(timestamp);
-		return date.toLocaleTimeString([], { 
-			hour: "2-digit", 
+		return date.toLocaleTimeString([], {
+			hour: "2-digit",
 			minute: "2-digit",
-			hour12: true 
+			hour12: true,
 		});
 	};
 
 	const formatMessageDate = (timestamp) => {
 		const date = new Date(timestamp);
 		return date.toLocaleDateString("en-US", {
-			weekday: 'long',
-			year: 'numeric',
-			month: 'long',
-			day: 'numeric'
+			weekday: "long",
+			year: "numeric",
+			month: "long",
+			day: "numeric",
 		});
 	};
 
@@ -111,13 +111,13 @@ const CounselorChat = () => {
 				</div>
 			</nav>
 
-			<main className="container mx-auto px-4 py-8 flex-1 flex flex-col">
+			<main className="container mx-auto px-4 py-8 flex-1">
 				{loading ? (
 					<div className="flex justify-center items-center py-12 flex-1">
 						<div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-orange-500"></div>
 					</div>
 				) : (
-					<div className="bg-white rounded-lg shadow-md flex flex-col h-full flex-1">
+					<div className="bg-white rounded-lg shadow-md flex flex-col h-[calc(100vh-180px)]">
 						<div className="border-b border-gray-200 px-6 py-4 flex items-center">
 							<button
 								onClick={() => navigate("/counselor-requests")}
@@ -190,7 +190,7 @@ const CounselorChat = () => {
 							<div ref={messageEndRef} />
 						</div>
 
-						<div className="border-t border-gray-200 p-4">
+						<div className="border-t border-gray-200 p-4 bg-white">
 							<form onSubmit={handleSendMessage} className="flex">
 								<input
 									type="text"

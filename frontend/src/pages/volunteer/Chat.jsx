@@ -28,9 +28,9 @@ export const Chat = () => {
 			});
 
 			// Mark messages as read
-			socket.emit("mark_messages_read", { 
-				chatId: selectedChatId, 
-				userId: volunteer._id 
+			socket.emit("mark_messages_read", {
+				chatId: selectedChatId,
+				userId: volunteer._id,
 			});
 
 			// Listen for messages marked as read
@@ -65,7 +65,7 @@ export const Chat = () => {
 			chatId: selectedChatId,
 			content: newMessage.trim(),
 			senderId: volunteer._id,
-			senderType: "Volunteer"
+			senderType: "Volunteer",
 		});
 
 		setNewMessage("");
@@ -81,15 +81,15 @@ export const Chat = () => {
 					</h1>
 					<main className="p-6">
 						<div className="bg-white rounded-lg shadow-md overflow-hidden">
-							<div className="grid md:grid-cols-3 h-[600px]">
+							<div className="grid md:grid-cols-3 h-[calc(100vh-180px)]">
 								{/* Chat List */}
-								<div className="border-r border-orange-100">
+								<div className="border-r border-orange-100 flex flex-col overflow-hidden">
 									<div className="p-4 border-b border-orange-100 bg-orange-50">
 										<h2 className="font-semibold text-orange-700">
 											Conversations
 										</h2>
 									</div>
-									<div className="overflow-y-auto h-[calc(600px-57px)]">
+									<div className="flex-1 overflow-y-auto">
 										{volunteerChats?.map((chat) => (
 											<div
 												key={chat._id}
@@ -122,7 +122,7 @@ export const Chat = () => {
 								</div>
 
 								{/* Chat Window */}
-								<div className="col-span-2 flex flex-col">
+								<div className="col-span-2 flex flex-col overflow-hidden">
 									<div className="p-4 border-b border-orange-100 bg-orange-50">
 										<h2 className="font-semibold text-orange-700">
 											{chatDetails?.topic || "Select a conversation"}
@@ -135,7 +135,7 @@ export const Chat = () => {
 										)}
 									</div>
 
-									<div className="flex-grow p-4 overflow-y-auto space-y-4">
+									<div className="flex-1 p-4 overflow-y-auto">
 										{chatDetails?.messages?.map((message, index) => (
 											<div
 												key={index}
